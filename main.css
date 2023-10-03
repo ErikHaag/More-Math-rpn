@@ -1,0 +1,12 @@
+li {
+    padding: 10px;
+    display: inline-block;
+}
+
+ol {
+    padding-left: 0px;
+}
+
+li.curr {
+    background-color: palegreen;
+}
