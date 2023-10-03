@@ -7,6 +7,10 @@ ol {
     padding-left: 0px;
 }
 
+#is>li{
+    font-family: 'Source Code Pro', monospace;
+}
+
 li.curr {
     background-color: palegreen;
 }
