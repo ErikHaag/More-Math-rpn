@@ -1,10 +1,12 @@
 const input = document.getElementById("input");
-const instructionList = document.getElementById("is");
 const valueStack = document.getElementById("vs");
+const repeatPile = document.getElementById("rp");
+const instructionList = document.getElementById("is");
 const startButton = document.getElementById("start");
 const stopButton = document.getElementById("stop");
 const speedButton = document.getElementById("speed");
 let instructions = [];
+let repeats = [];
 let values = [];
 let current = -1;
 let allowRunning = true;
@@ -18,6 +20,7 @@ startButton.addEventListener("click", () => {
     }
     instructions = input.value.split("\n");
     values = [];
+    repeats = [];
     allowRunning = true;
     stopButton.innerHTML = "Stop";
     current = 0;
@@ -60,6 +63,11 @@ function updateUI() {
         list += "<li " + (i == current ? "class=\"curr\" >" : ">") + instructions[i] + "</li>\n";
     }
     instructionList.innerHTML = list;
+    list = "";
+    for (let i = 0; i < repeats.length; i++) {
+        list += "<li>" + repeats[i][0].toString() + ", " + repeats[i][1].toString() + ", " + repeats[i][2].toString() + "</li>\n";
+    }
+    repeatPile.innerHTML = list;
     list = ""
     for (let i = (values.length - 1); i >= 0; i--) {
         list += "<li><img src=\"https://latex.codecogs.com/svg.image?" + values[i].toLatex() + "\"alt=\"" + values[i].toLatex() + "\"></li>\n";
@@ -120,6 +128,11 @@ function step() {
                 } else if (values[0] instanceof Matrix && values[1] instanceof Rational) {
                     let A = values[0].clone();
                     let B = values[1].clone();
+                    A.scale(B)
+                    values.splice(0, 2, A.clone());
+                } else if (values[0] instanceof Rational && values[1] instanceof Matrix) {
+                    let A = values[1].clone();
+                    let B = values[0].clone();
                     A.scale(B)
                     values.splice(0, 2, A.clone());
                 } else if (values[0] instanceof Matrix && values[1] instanceof Matrix) {
@@ -219,7 +232,28 @@ function step() {
                     alert("invalid arguments");
                     current = -2;
                 }
-            } else if (I[0] == "Inv") {
+            } else if (I[0] == "next") {
+                if (repeats.length >= 1) {
+                    if (repeats[0][0] < repeats[0][1]) {
+                        repeats[0][0]++;
+                        current = repeats[0][2];
+                    } else {
+                        repeats.shift();
+                    }
+                } else {
+                    current = -2;
+                    alert("not in a loop");
+                }
+            } else if (I[0] == "break") {
+                let n = instructions.indexOf("next", current)
+                if (n > current) {
+                    current = n;
+                    repeats.shift();
+                } else {
+                    current = -2;
+                    alert("not in a loop");
+                }
+            } else if (I[0] == "inverse") {
                 if (values[0] instanceof Matrix) {
                     let A = values[0].clone();
                     values.splice(0, 1, A.inverse());
@@ -227,10 +261,50 @@ function step() {
                     alert("invalid arguments");
                     current = -2;
                 }
-            } else if (I[0] == "T") {
+            } else if (I[0] == "transpose") {
                 if (values[0] instanceof Matrix) {
                     let A = values[0].clone();
                     values.splice(0, 1, A.transpose());
+                } else {
+                    alert("invalid arguments");
+                    current = -2;
+                }
+            } else if (I[0] == "augment") {
+                if (values[0] instanceof Matrix && values[1] instanceof Matrix) {
+                    let A = values[1].clone();
+                    values.splice(0, 2, A.augment(values[0]));
+                } else {
+                    alert("invalid arguments");
+                    current = -2;
+                }
+            } else if (I[0] == "dot") {
+                if (values[0] instanceof Matrix && values[1] instanceof Matrix) {
+                    let A = values[1].clone();
+                    values.splice(0, 2, A.dotProduct(values[0]));
+                } else {
+                    alert("invalid arguments");
+                    current = -2;
+                }
+            } else if (I[0] == "hadamard") {
+                if (values[0] instanceof Matrix && values[1] instanceof Matrix) {
+                    let A = values[1].clone();
+                    values.splice(0, 2, A.hadamardProduct(values[0]));
+                } else {
+                    alert("invalid arguments");
+                    current = -2;
+                }
+            } else if (I[0] == "kronecker") {
+                if (values[0] instanceof Matrix && values[1] instanceof Matrix) {
+                    let A = values[1].clone();
+                    values.splice(0, 2, A.kroneckerProduct(values[0]));
+                } else {
+                    alert("invalid arguments");
+                    current = -2;
+                }
+            } else if (I[0] == "outer") {
+                if (values[0] instanceof Matrix && values[1] instanceof Matrix) {
+                    let A = values[1].clone();
+                    values.splice(0, 2, A.outerProduct(values[0]));
                 } else {
                     alert("invalid arguments");
                     current = -2;
@@ -252,6 +326,15 @@ function step() {
                 if (dist != 0) {
                     current += dist - 1;
                 }
+            } else if (I[0] == "repeat") {
+                repeats.unshift([1n, BigInt(I[1]), current]);
+            } else if (I[0] == ">>>") {
+                if (repeats.length >= Number.parseInt(I[1])) {
+                    values.unshift(new Rational(repeats[Number.parseInt(I[1])][0]));
+                } else {
+                    current = -2;
+                    alert("not deep enough");
+                }
             } else {
                 alert("invalid command");
                 current = -2;
@@ -264,6 +347,14 @@ function step() {
                     arg.reverse();
                     arg.unshift(Number.parseInt(I[1]));
                     values.unshift(new Matrix(...arg));
+                } else {
+                    alert("invalid arguments");
+                    current = -2;
+                }
+            } else if (I[0] = "addRow") {
+                if (values[0] instanceof Rational && values[1] instanceof Matrix) {
+                    let A = values[1].clone();
+                    A.addRow(Number.parseInt(I[1]), Number.parseInt(I[2]), values[0].clone());
                 } else {
                     alert("invalid arguments");
                     current = -2;
