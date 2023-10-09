@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Commands</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel='stylesheet' type='text/css' media='screen' href='main.css'>
+</head>
+<body>
+    <h1>Commands</h1>
+    <p>
+        Operations are seperated by newlines (hitting the enter key), and parameters go after the operator seperated by
+        spaces
+    </p>
+    <table>
+        <tr>
+            <th colspan="4" class="od">Standard</th>
+        </tr>
+        <tr>
+            <th>operation</th>
+            <th>description</th>
+            <th>parameters required</th>
+            <th>arguments required</th>
+        </tr>
+        <tr>
+            <td>10</td>
+            <td>places 10/1 on top of the stack</td>
+            <td>none</td>
+            <td>none</td>
+        </tr>
+        <tr>
+            <td rowspan="2">+</td>
+            <td>addition</td>
+            <td>none</td>
+            <td>2 rationals</td>
+        </tr>
+        <tr>
+            <td class="override">matrix addition</td>
+            <td>none</td>
+            <td>2 matrices</td>
+        </tr>
+        <tr>
+            <td>-</td>
+            <td>subtraction</td>
+            <td>none</td>
+            <td>2 rationals</td>
+        </tr>
+        <tr>
+            <td rowspan="3">*</td>
+            <td>multiplication</td>
+            <td>none</td>
+            <td>2 rationals</td>
+        </tr>
+        <tr>            
+            <td class="override">scale matrix</td>
+            <td>none</td>
+            <td>1 matrix and 1 rational (order doesn't matter)</td>
+        </tr>
+        <tr>
+            <td class="override">matrix multiplication</td>
+            <td>none</td>
+            <td>2 matrices</td>
+        </tr>
+        <tr>
+            <td>/</td>
+            <td>division</td>
+            <td>none</td>
+            <td>2 rationals</td>
+        </tr>
+        <tr>
+            <td>int</td>
+            <td>integer part</td>
+            <td>none</td>
+            <td>1 rational</td>
+        </tr>
+        <tr>
+            <td>floor</td>
+            <td>rounds down</td>
+            <td>none</td>
+            <td>1 rational</td>
+        </tr>
+        <tr>
+            <td>ceil</td>
+            <td>rounds up</td>
+            <td>none</td>
+            <td>1 rational</td>
+        </tr>
+        <tr>
+            <td>%</td>
+            <td>modulus</td>
+            <td>none</td>
+            <td>2 rationals</td>
+        </tr>
+        <tr>
+            <td>step</td>
+            <td>x &lt;= 0 &rightarrow; 0,<br>0 &lt; x &rightarrow; 1</td>
+            <td>none</td>
+            <td>1 rational</td>
+        </tr>
+        <tr>
+            <td>compare</td>
+            <td>compares 2 rationals outputing -1, 0, or 1</td>
+            <td>none</td>
+            <td>2 rationals</td>
+        </tr>
+        <tr>
+            <td>&gt;</td>
+            <td>in parameters, prepend a &gt; to use a stack value</td>
+            <td>it is the parameter</td>
+            <td>none</td>
+        </tr>
+        <tr>
+            <td>&gt;&gt;</td>
+            <td>copy</td>
+            <td>depth to copy (0 is top)</td>
+            <td>none</td>
+        </tr>
+        <tr>
+            <td>del</td>
+            <td>delete</td>
+            <td>depth to delete (0 is top)</td>
+            <td>none</td>
+        </tr>
+        <tr>
+            <th colspan="4" class="od">Matrices</th>
+        </tr>
+        <tr>
+            <th>operation</th>
+            <th>description</th>
+            <th>parameters required</th>
+            <th>arguments required</th>
+        </tr>
+        <tr>
+            <td>m</td>
+            <td>create matrix</td>
+            <td>columns, rows</td>
+            <td>(columns*rows) rationals</td>
+        </tr>
+        <tr>
+            <td>addRow</td>
+            <td>adds a scaled copy of one row to another</td>
+            <td>row from, row to (0 is first row)</td>
+            <td>1 matrix and 1 rational (order doesn't matter)</td>
+        </tr>
+        <tr>
+            <td>rowScale</td>
+            <td>scales a row of a matrix by a rational</td>
+            <td>row number (0 is first row)</td>
+            <td>1 matrix and 1 rational (order doesn't matter)</td>
+        </tr>
+        <tr>
+            <td>T</td>
+            <td>transpose</td>
+            <td>none</td>
+            <td>1 matrix</td>
+        </tr>
+        <tr>
+            <td>inv</td>
+            <td>inverses a matrix</td>
+            <td>none</td>
+            <td>1 matrix</td>
+        </tr>
+        <tr>
+            <td>ref</td>
+            <td>does gaussian elimination</td>
+            <td>none</td>
+            <td>1 matrix</td>
+        </tr>
+        <tr>
+            <td>ind</td>
+            <td>pushes index to stack</td>
+            <td>row, column</td>
+            <td>1 Matrix (stays)</td>
+        </tr>
+        <tr>
+            <td>dot</td>
+            <td>dot product of 2 vectors</td>
+            <td>none</td>
+            <td>2 matrices (1 column)</td>
+        </tr>
+        <tr>
+            <td>hadamard</td>
+            <td>hadamard product</td>
+            <td>none</td>
+            <td>2 matrices</td>
+        </tr>
+        <tr>
+            <td>kronecker</td>
+            <td>kronecker product</td>
+            <td>none</td>
+            <td>2 matrices</td>
+        </tr>
+        <tr>
+            <td>outer</td>
+            <td>outer product</td>
+            <td>none</td>
+            <td>2 matrices</td>
+        </tr>
+        <tr>
+            <th colspan="4" class="od">Loops</th>
+        </tr>
+        <tr>
+            <th>operation</th>
+            <th>description</th>
+            <th>parameters required</th>
+            <th>arguments required</th>
+        </tr>
+        <tr>
+            <td>repeat</td>
+            <td>adds a new loop to the repeat pile</td>
+            <td>number of loops</td>
+            <td>none</td>
+        </tr>
+        <tr>
+            <td>next</td>
+            <td>does next iteration of top repeat</td>
+            <td>none</td>
+            <td>none</td>
+        </tr>
+        <tr>
+            <td>&gt;&gt;&gt;</td>
+            <td>copy iteration of loop</td>
+            <td>loop depth to copy</td>
+            <td>none</td>
+        </tr>
+        <tr>
+            <td>break</td>
+            <td>breaks out of top loop</td>
+            <td>none</td>
+            <td>none</td>
+        </tr>
+    </table>
+</body>
+</html>

@@ -105,6 +105,10 @@ function step() {
                     let B = values[0].clone();
                     A.add(B);
                     values.splice(0, 2, A.clone());
+                } else if (values[0] instanceof Matrix && values[1] instanceof Matrix) {
+                    let A = values[1].clone();
+                    let B = values[0].clone();
+                    values.splice(0, 2, A.add(B));
                 } else {
                     alert("invalid arguments");
                     current = -2;
@@ -253,7 +257,7 @@ function step() {
                     current = -2;
                     alert("not in a loop");
                 }
-            } else if (I[0] == "inverse") {
+            } else if (I[0] == "inv") {
                 if (values[0] instanceof Matrix) {
                     let A = values[0].clone();
                     values.splice(0, 1, A.inverse());
@@ -261,7 +265,7 @@ function step() {
                     alert("invalid arguments");
                     current = -2;
                 }
-            } else if (I[0] == "transpose") {
+            } else if (I[0] == "T") {
                 if (values[0] instanceof Matrix) {
                     let A = values[0].clone();
                     values.splice(0, 1, A.transpose());
@@ -269,7 +273,24 @@ function step() {
                     alert("invalid arguments");
                     current = -2;
                 }
-            } else if (I[0] == "augment") {
+            } else if (I[0] == "ref") {
+                if (values[0] instanceof Matrix) {
+                    let A = values[0].clone();
+                    A.gaussianElimination();
+                    values.splice(0, 1, A);
+                } else {
+                    alert("invalid arguments");
+                    current = -2;
+                }
+            }else if (I[0] == "det") {
+                if (values[0] instanceof Matrix) {
+                    let A = values[0].clone();
+                    values.splice(0, 1, A.determinate());
+                } else {
+                    alert("invalid arguments");
+                    current = -2;
+                }
+            } else if (I[0] == "aug") {
                 if (values[0] instanceof Matrix && values[1] instanceof Matrix) {
                     let A = values[1].clone();
                     values.splice(0, 2, A.augment(values[0]));
@@ -335,6 +356,19 @@ function step() {
                     current = -2;
                     alert("not deep enough");
                 }
+            } else if (I[0] == "scaleRow") {
+                if (values[0] instanceof Rational && values[1] instanceof Matrix) {
+                    let A = values[1].clone();
+                    A.scaleRow(Number.parseInt(I[1]), values[0]);
+                    values.splice(0, 2, A.clone());
+                } else if (values[1] instanceof Rational && values[0] instanceof Matrix) {
+                    let A = values[0].clone();
+                    A.scaleRow(Number.parseInt(I[1]), values[1]);
+                    values.splice(0, 2, A.clone);
+                } else {
+                    alert("invalid arguments");
+                    current = -2;
+                }
             } else {
                 alert("invalid command");
                 current = -2;
@@ -351,10 +385,23 @@ function step() {
                     alert("invalid arguments");
                     current = -2;
                 }
+            } else if (I[0] == "ind") {
+                if (values[0] instanceof Matrix) {
+                    let A = values[0].clone();
+                    values.unshift(A.indices[Number.parseInt(I[1])][Number.parseInt(I[2])].clone());
+                } else {
+                    alert("invalid arguments");
+                    current = -2;
+                }
             } else if (I[0] = "addRow") {
                 if (values[0] instanceof Rational && values[1] instanceof Matrix) {
                     let A = values[1].clone();
                     A.addRow(Number.parseInt(I[1]), Number.parseInt(I[2]), values[0].clone());
+                    values.splice(0, 2, A);
+                } else if (values[1] instanceof Rational && values[0] instanceof Matrix) {
+                    let A = values[0].clone();
+                    A.addRow(Number.parseInt(I[1]), Number.parseInt(I[2]), values[1].clone());
+                    values.splice(0, 2, A);
                 } else {
                     alert("invalid arguments");
                     current = -2;
