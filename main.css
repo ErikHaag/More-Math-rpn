@@ -1,6 +1,7 @@
 li {
     padding: 10px;
     display: inline-block;
+    vertical-align: middle;
 }
 
 ol {
@@ -15,29 +16,31 @@ li.curr {
     background-color: palegreen;
 }
 
-td,th {
-    font-family: 'Source Code Pro', monospace;
-    text-align: center;
-    border: 2px solid lime;
-}
-
-tr:nth-child(odd)>td:not(:first-child), tr:nth-child(odd)>td.override{
-    background-color: #eee;
-}
-
-tr:nth-child(even)>td:not(:first-child), tr:nth-child(even)>td.override{
-    background-color: #ddf;
-}
-
-
 table {
     border-collapse: collapse;
 }
 
-.od {
-    background-color: gold;
+td {
+    text-align: center;
 }
 
-td:first-child:not(.override) {
-    background-color: aqua;
+td.numerator {
+    border-bottom: 2px solid black;
+}
+
+td.denominator {
+    border-top: 2px solid black;
+}
+
+td.matrixIndex {
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+td.matrixIndex:first-child {
+    border-left: 2px solid black;
+}
+
+td.matrixIndex:last-child {
+    border-right: 2px solid black;
 }

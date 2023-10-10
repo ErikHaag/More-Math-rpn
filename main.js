@@ -57,6 +57,26 @@ speedButton.addEventListener("click", () => {
     }
 });
 
+function matrixToTable(M) {
+    let h = "<table>"
+    for (let i = 0; i < M.rows; i++) {
+        h += "\n<tr>";
+        for (let j = 0; j < M.columns; j++) {
+            h += "\n<td class=\"matrixIndex\">" + rationalToTable(M.indices[i][j].clone()) + "</td>";
+        }
+        h += "\n</tr>";
+    }
+    return h + "\n</table>";
+}
+
+function rationalToTable(R) {
+    if (R.denominator == 1n) {
+        return /*"<table>\n<tr>\n<td>" + */R.numerator.toString()/* + "</td>\n</tr></table>"*/;
+    } else {
+        return "<table>\n<tr>\n<td class=\"numerator\">" + R.numerator.toString() + "</td>\n</tr>\n<tr>\n<td class=\"denominator\">" + R.denominator.toString() + "</td>\n</tr>\n</table>";
+    }
+}
+
 function updateUI() {
     let list = "";
     for (let i = 0; i < instructions.length; i++) {
@@ -70,7 +90,11 @@ function updateUI() {
     repeatPile.innerHTML = list;
     list = ""
     for (let i = (values.length - 1); i >= 0; i--) {
-        list += "<li><img src=\"https://latex.codecogs.com/svg.image?" + values[i].toLatex() + "\"alt=\"" + values[i].toLatex() + "\"></li>\n";
+        if (values[i] instanceof Rational) {
+            list += "<li>" + rationalToTable(values[i].clone()) + "</li>\n";
+        } else if (values[i] instanceof Matrix) {
+            list += "<li>" + matrixToTable(values[i].clone()) + "</li>\n";
+        }
     }
     valueStack.innerHTML = list;
 }
@@ -282,7 +306,7 @@ function step() {
                     alert("invalid arguments");
                     current = -2;
                 }
-            }else if (I[0] == "det") {
+            } else if (I[0] == "det") {
                 if (values[0] instanceof Matrix) {
                     let A = values[0].clone();
                     values.splice(0, 1, A.determinate());
