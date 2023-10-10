@@ -1,6 +1,7 @@
 # More Math rpn
 play around with More-Math without programming in JS.
-Using a simple interface, do complex calculations without going to multiple sites!
+Using a simple interface, do complex calculations without going to multiple sites!  
+[Try it out!](https://erikhaag.github.io/More-Math-rpn/)
 
 ## How it works
 In RPN (Reverse Polish Notation), values are on a stack and operations act and modify the top of the stack.
