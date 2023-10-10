@@ -36,11 +36,3 @@ td.matrixIndex {
     padding-left: 5px;
     padding-right: 5px;
 }
-
-td.matrixIndex:first-child {
-    border-left: 2px solid black;
-}
-
-td.matrixIndex:last-child {
-    border-right: 2px solid black;
-}

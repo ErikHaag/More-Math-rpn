@@ -61,8 +61,26 @@ function matrixToTable(M) {
     let h = "<table>"
     for (let i = 0; i < M.rows; i++) {
         h += "\n<tr>";
+        if (M.rows == 1) {
+            h += "\n<td>[</td>"
+        }else if (i == 0) {
+            h += "\n<td>⎡</td>"
+        } else if (i == M.rows - 1) {
+            h += "\n<td>⎣</td>"
+        }else {
+            h += "\n<td>⎢ </td>"
+        }
         for (let j = 0; j < M.columns; j++) {
             h += "\n<td class=\"matrixIndex\">" + rationalToTable(M.indices[i][j].clone()) + "</td>";
+        }
+        if (M.rows == 1) {
+            h += "\n<td>]</td>"
+        }else if (i == 0) {
+            h += "\n<td>⎤</td>"
+        } else if (i == M.rows - 1) {
+            h += "\n<td>⎦</td>"
+        }else {
+            h += "\n<td>⎥</td>"
         }
         h += "\n</tr>";
     }
