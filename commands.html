@@ -93,6 +93,18 @@
             <td>2 rationals</td>
         </tr>
         <tr>
+            <td>gcd</td>
+            <td>greatest common divisor</td>
+            <td>none</td>
+            <td>2 integers (rational with denominator of 1)</td>
+        </tr>
+        <tr>
+            <td>lcm</td>
+            <td>lowest common multiple</td>
+            <td>none</td>
+            <td>2 integers (rational with denominator of 1)</td>
+        </tr>
+        <tr>
             <td>step</td>
             <td>x &lt;= 0 &rightarrow; 0,<br>0 &lt; x &rightarrow; 1</td>
             <td>none</td>
@@ -105,20 +117,32 @@
             <td>2 rationals</td>
         </tr>
         <tr>
+            <td>#</td>
+            <td>value stack height</td>
+            <td>none</td>
+            <td>none</td>
+        </tr>
+        <tr>
             <td>&gt;</td>
             <td>in parameters, prepend a &gt; to use a stack value</td>
             <td>it is the parameter</td>
             <td>none</td>
         </tr>
         <tr>
+            <td>-&gt;</td>
+            <td>moves value at depth to the top</td>
+            <td>depth to pull</td>
+            <td>none</td>
+        </tr>
+        <tr>
             <td>&gt;&gt;</td>
-            <td>copy</td>
+            <td>copies value at depth</td>
             <td>depth to copy (0 is top)</td>
             <td>none</td>
         </tr>
         <tr>
             <td>del</td>
-            <td>delete</td>
+            <td>deletes value at depth</td>
             <td>depth to delete (0 is top)</td>
             <td>none</td>
         </tr>

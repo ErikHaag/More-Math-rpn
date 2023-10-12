@@ -10,3 +10,6 @@ Because of this, the system can have any operation ordering **without** parathes
 ### examples
 1. (10 + 5) * 3 -> 10 5 + 3 *
 1. 10 + (5 * 3) -> 10 5 3 * +
+
+## Copying
+I implore you to improve my code, especially More-Math. I'd love to here about your explorations with my program!

@@ -4,6 +4,10 @@ td,th {
     border: 2px solid lime;
 }
 
+th {
+    background-color: #ffd755;
+}
+
 tr:nth-child(odd)>td:not(:first-child), tr:nth-child(odd)>td.override{
     background-color: #eee;
 }
