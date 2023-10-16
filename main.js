@@ -9,6 +9,7 @@ const stopButton = document.getElementById("stop");
 const speedButton = document.getElementById("speed");
 let useLatex = false;
 let instructions = [];
+let comments = [];
 let repeats = [];
 let values = [];
 let current = -1;
@@ -85,6 +86,25 @@ function reset() {
     instructions = input.value.split("\n");
     values = [];
     repeats = [];
+    comments = [];
+    let cpos = [];
+    for (let i = 0; i < instructions.length; i++) {
+        if (instructions[i].startsWith("\"")) {
+            cpos.push(i);
+        }
+    }
+    for (let i = 0; i < cpos.length; i++) {
+        if (i >= 1 && cpos[i] == cpos[i - 1] + 1) {
+            let c = comments.pop();
+            c.push(instructions[cpos[i]].substring(1));
+            comments.push(c);
+        } else {
+            comments.push([cpos[i] - i, instructions[cpos[i]].substring(1)]);
+        }
+    }
+    for (let i = cpos.length - 1; i >= 0; i--) {
+        instructions.splice(cpos[i], 1);
+    }
 }
 
 function matrixToTable(M) {
@@ -145,8 +165,20 @@ function updateUI() {
     }
     repeatPile.innerHTML = list;
     list = "";
+    let c = comments.findIndex((e) => { return e[0] == 0; });
+        if (c >= 0) {
+            for (let j = 1; j < comments[c].length; j++) {
+                list += "<li><p title=\"" + comments[c][j] + "\">\"</p></li>\n";
+            }
+        }
     for (let i = 0; i < instructions.length; i++) {
         list += "<li " + (i == current ? "class=\"curr\" >" : ">") + instructions[i] + "</li>\n";
+        let c = comments.findIndex((e) => { return e[0] == i + 1; });
+        if (c >= 0) {
+            for (let j = 1; j < comments[c].length; j++) {
+                list += "<li " + (i == current ? "class=\"curr\" >" : ">") + "<p title=\"" + comments[c][j] + "\">\"</p></li>\n";
+            }
+        }
     }
     instructionList.innerHTML = list;
 }
@@ -460,7 +492,7 @@ function step() {
             } else if (I[0] == "->") {
                 values.unshift(values.splice(Number.parseInt(I[1]), 1)[0]);
             } else if (I[0] == "<-") {
-                values.splice(Number.parseInt(I[1]),0,values.shift());
+                values.splice(Number.parseInt(I[1]), 0, values.shift());
             } else if (I[0] == "repeat") {
                 repeats.unshift([1n, BigInt(I[1]), current]);
             } else if (I[0] == ">>>") {
