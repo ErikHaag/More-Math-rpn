@@ -161,13 +161,23 @@ function step() {
     }
     let I = instructions[current].split(" ");
     for (let i = 1; i < I.length; i++) {
-        if (I[i].startsWith(">")) {
+        if (I[i].startsWith("]")) {
             let refer = Number.parseInt(I[i].substring(1));
             let parameter = values[refer];
             if (parameter instanceof Rational) {
                 I.splice(i, 1, (parameter.numerator / parameter.denominator).toString());
             } else {
-                alert("parameter can't be Matrix");
+                alert("parameter must be Rational");
+                current = -1;
+                return;
+            }
+        } else if (I[i].startsWith("[")) {
+            let refer = values.length - Number.parseInt(I[i].substring(1)) - 1;
+            let parameter = values[refer];
+            if (parameter instanceof Rational) {
+                I.splice(i, 1, (parameter.numerator / parameter.denominator).toString());
+            } else {
+                alert("parameter must be Rational");
                 current = -1;
                 return;
             }
@@ -449,6 +459,8 @@ function step() {
                 }
             } else if (I[0] == "->") {
                 values.unshift(values.splice(Number.parseInt(I[1]), 1)[0]);
+            } else if (I[0] == "<-") {
+                values.splice(Number.parseInt(I[1]),0,values.shift());
             } else if (I[0] == "repeat") {
                 repeats.unshift([1n, BigInt(I[1]), current]);
             } else if (I[0] == ">>>") {

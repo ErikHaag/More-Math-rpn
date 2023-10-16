@@ -123,10 +123,32 @@
             <td>none</td>
         </tr>
         <tr>
-            <td>&gt;</td>
-            <td>in parameters, prepend a &gt; to use a stack value</td>
+            <td>[</td>
+            <td>in parameters, prepend a [ to use a stack value from bottom</td>
             <td>it is the parameter</td>
             <td>none</td>
+        </tr>
+        <tr>
+            <td>]</td>
+            <td>in parameters, prepend a ] to use a stack value from top</td>
+            <td>it is the parameter</td>
+            <td>none</td>
+        </tr>
+        
+        <tr>
+            <td>&gt;&gt;</td>
+            <td>copies value at depth</td>
+            <td>depth to copy (0 is top)</td>
+            <td>none</td>
+        </tr>
+        <tr>
+            <th colspan="4" class="od">Stack Manipulation</th>
+        </tr>
+        <tr>
+            <th>operation</th>
+            <th>description</th>
+            <th>parameters required</th>
+            <th>arguments required</th>
         </tr>
         <tr>
             <td>-&gt;</td>
@@ -135,9 +157,9 @@
             <td>none</td>
         </tr>
         <tr>
-            <td>&gt;&gt;</td>
-            <td>copies value at depth</td>
-            <td>depth to copy (0 is top)</td>
+            <td>&lt;-</td>
+            <td>moves top value to depth (inverse of -&gt;)</td>
+            <td>depth to push</td>
             <td>none</td>
         </tr>
         <tr>
