@@ -358,6 +358,13 @@ function step() {
                     alert("invalid arguments");
                     current = -2;
                 }
+            } else if (I[0] == "den") {
+                if (values[0] instanceof Rational) {
+                    values.splice(0,1,new Rational(values[0].denominator));
+                } else {
+                    alert("invalid arguments");
+                    current = -2;
+                }
             } else if (I[0] == "step") {
                 if (values[0] instanceof Rational) {
                     let A = 0n;
