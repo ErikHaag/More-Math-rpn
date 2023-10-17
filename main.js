@@ -176,7 +176,7 @@ function updateUI() {
         let c = comments.findIndex((e) => { return e[0] == i + 1; });
         if (c >= 0) {
             for (let j = 1; j < comments[c].length; j++) {
-                list += "<li " + (i == current ? "class=\"curr\" >" : ">") + "<p title=\"" + comments[c][j] + "\">\"</p></li>\n";
+                list += "<li><p title=\"" + comments[c][j] + "\">\"</p></li>\n";
             }
         }
     }
