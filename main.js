@@ -7,6 +7,7 @@ const resetButton = document.getElementById("reset");
 const startButton = document.getElementById("start");
 const stopButton = document.getElementById("stop");
 const speedButton = document.getElementById("speed");
+const link = document.getElementById("link");
 let useLatex = false;
 let instructions = [];
 let comments = [];
@@ -18,16 +19,32 @@ let timer;
 let speedSelect = 0;
 let speed = 500;
 
+document.addEventListener("DOMContentLoaded", () => {
+    let url = new URL(document.location.href);
+    let params = new URLSearchParams(url.search);
+    let instr = params.get("instr");
+    instr = instr.replaceAll("_"," ");
+    instr = instr.replaceAll("\\n","\n");
+    input.value = instr;
+});
+
+input.addEventListener("focusout", () => {
+    let formatted = input.value;
+    formatted = formatted.replaceAll("\n","\\n");
+    formatted = formatted.replaceAll(" ","_");
+    link.textContent = "https://erikhaag.github.io/More-Math-rpn/?instr="+formatted;
+});
+
 latexCheckbox.addEventListener("change", () => {
     useLatex = latexCheckbox.checked;
     updateUI();
-})
+});
 
 resetButton.addEventListener("click", () => {
     reset();
     current = -1;
     updateUI();
-})
+});
 
 startButton.addEventListener("click", () => {
     if (allowRunning) {
