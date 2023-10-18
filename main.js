@@ -20,11 +20,9 @@ let speedSelect = 0;
 let speed = 500;
 
 document.addEventListener("DOMContentLoaded", () => {
-    let url = new URL(document.location.href);
-    let params = new URLSearchParams(url.search);
-    if (params) {
-        let instr = params.get("instr");
-        instr = instr.replaceAll("_", " ");
+    let params = document.location.href.split("?instr=")[1];
+    if (params.length >= 1) {
+        let instr = params.replaceAll("_", " ");
         instr = instr.replaceAll("\\n", "\n");
         input.value = instr;
     }
