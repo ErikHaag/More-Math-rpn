@@ -20,11 +20,13 @@ let speedSelect = 0;
 let speed = 500;
 
 document.addEventListener("DOMContentLoaded", () => {
-    let params = document.location.href.split("?instr=")[1];
-    if (params.length >= 1) {
-        let instr = params.replaceAll("comment","\"");
-        instr = instr.replaceAll("_", " ");
+    let params = document.location.href.split("?instr=")
+    if (params.length == 2) {
+        let instr = params[1].replaceAll("_", " ");
         instr = instr.replaceAll("\\n", "\n");
+        instr = instr.replaceAll("%22","\"");
+        instr = instr.replaceAll("%3C","<");
+        instr = instr.replaceAll("%3E",">");
         input.value = instr;
     }
 });
@@ -33,7 +35,6 @@ input.addEventListener("focusout", () => {
     let formatted = input.value;
     formatted = formatted.replaceAll("\n", "\\n");
     formatted = formatted.replaceAll(" ", "_");
-    formatted = formatted.replaceAll("\"","comment");
     link.textContent = "https://erikhaag.github.io/More-Math-rpn/?instr=" + formatted;
 });
 
