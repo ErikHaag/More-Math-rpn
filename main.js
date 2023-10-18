@@ -166,11 +166,11 @@ function updateUI() {
     repeatPile.innerHTML = list;
     list = "";
     let c = comments.findIndex((e) => { return e[0] == 0; });
-        if (c >= 0) {
-            for (let j = 1; j < comments[c].length; j++) {
-                list += "<li><p title=\"" + comments[c][j] + "\">\"</p></li>\n";
-            }
+    if (c >= 0) {
+        for (let j = 1; j < comments[c].length; j++) {
+            list += "<li><p title=\"" + comments[c][j] + "\">\"</p></li>\n";
         }
+    }
     for (let i = 0; i < instructions.length; i++) {
         list += "<li " + (i == current ? "class=\"curr\" >" : ">") + instructions[i] + "</li>\n";
         let c = comments.findIndex((e) => { return e[0] == i + 1; });
@@ -360,7 +360,7 @@ function step() {
                 }
             } else if (I[0] == "den") {
                 if (values[0] instanceof Rational) {
-                    values.splice(0,1,new Rational(values[0].denominator));
+                    values.splice(0, 1, new Rational(values[0].denominator));
                 } else {
                     alert("invalid arguments");
                     current = -2;
@@ -446,6 +446,41 @@ function step() {
                 } else {
                     alert("invalid arguments");
                     current = -2;
+                }
+            } else if (I[0] == "rip") {
+                if (values[0] instanceof Matrix) {
+                    let A = values[0].clone();
+                    if (A.columns >= 2) {
+                        let col = [];
+                        let B = []
+                        for (let i = 0; i < A.rows; i++) {
+                            for (let j = 0; j < A.columns - 1; j++) {
+                                B.push(A.indices[i][j].clone());
+                            }
+                            col.push(A.indices[i][A.columns - 1].clone());
+                        }
+                        values.splice(0, 1, new Matrix(1, ...col), new Matrix(A.columns - 1, ...B));
+                    }
+                } else {
+                    alert("invalid arguments");
+                    current = -2;
+                }
+            } else if (I[0] == "flip") {
+                if (values[0] instanceof Matrix) {
+                    let A = values[0].clone();
+                    if (A.columns >= 2) {
+                        let B = [];
+                        for (let i = 0; i < A.rows; i++) {
+                            for (let j = A.columns - 1; j >= 0; j--) {
+                                B.push(A.indices[i][j].clone())
+                            }
+                        }
+                        values.splice(0, 1, new Matrix(A.columns, ...B));
+                    }
+                }
+            } else if (I[0] == "dim") {
+                if (values[0] instanceof Matrix) {
+                    values.unshift(new Rational(BigInt(values[0].rows)), new Rational(BigInt(values[0].columns)));
                 }
             } else if (I[0] == "dot") {
                 if (values[0] instanceof Matrix && values[0].columns == 1 && values[1] instanceof Matrix && values[1].columns == 1) {
@@ -541,7 +576,7 @@ function step() {
             } else if (I[0] == "ind") {
                 if (values[0] instanceof Matrix) {
                     let A = values[0].clone();
-                    values.unshift(A.indices[Number.parseInt(I[1])][Number.parseInt(I[2])].clone());
+                    values.unshift(A.indices[Number.parseInt(I[2])][Number.parseInt(I[1])].clone());
                 } else {
                     alert("invalid arguments");
                     current = -2;
