@@ -22,17 +22,19 @@ let speed = 500;
 document.addEventListener("DOMContentLoaded", () => {
     let url = new URL(document.location.href);
     let params = new URLSearchParams(url.search);
-    let instr = params.get("instr");
-    instr = instr.replaceAll("_"," ");
-    instr = instr.replaceAll("\\n","\n");
-    input.value = instr;
+    if (params) {
+        let instr = params.get("instr");
+        instr = instr.replaceAll("_", " ");
+        instr = instr.replaceAll("\\n", "\n");
+        input.value = instr;
+    }
 });
 
 input.addEventListener("focusout", () => {
     let formatted = input.value;
-    formatted = formatted.replaceAll("\n","\\n");
-    formatted = formatted.replaceAll(" ","_");
-    link.textContent = "https://erikhaag.github.io/More-Math-rpn/?instr="+formatted;
+    formatted = formatted.replaceAll("\n", "\\n");
+    formatted = formatted.replaceAll(" ", "_");
+    link.textContent = "https://erikhaag.github.io/More-Math-rpn/?instr=" + formatted;
 });
 
 latexCheckbox.addEventListener("change", () => {
