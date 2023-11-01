@@ -1,5 +1,5 @@
 const input = document.getElementById("input");
-const latexCheckbox = document.getElementById("latex");
+const appearenceSelect = document.getElementById("visual");
 const valueStack = document.getElementById("vs");
 const repeatPile = document.getElementById("rp");
 const instructionList = document.getElementById("is");
@@ -8,7 +8,7 @@ const startButton = document.getElementById("start");
 const stopButton = document.getElementById("stop");
 const speedButton = document.getElementById("speed");
 const link = document.getElementById("link");
-let useLatex = false;
+let appearence = "default";
 let instructions = [];
 let comments = [];
 let repeats = [];
@@ -24,9 +24,9 @@ document.addEventListener("DOMContentLoaded", () => {
     if (params.length == 2) {
         let instr = params[1].replaceAll("_", " ");
         instr = instr.replaceAll("\\n", "\n");
-        instr = instr.replaceAll("%22","\"");
-        instr = instr.replaceAll("%3C","<");
-        instr = instr.replaceAll("%3E",">");
+        instr = instr.replaceAll("%22", "\"");
+        instr = instr.replaceAll("%3C", "<");
+        instr = instr.replaceAll("%3E", ">");
         input.value = instr;
     }
 });
@@ -38,8 +38,8 @@ input.addEventListener("focusout", () => {
     link.textContent = "https://erikhaag.github.io/More-Math-rpn/?instr=" + formatted;
 });
 
-latexCheckbox.addEventListener("change", () => {
-    useLatex = latexCheckbox.checked;
+appearenceSelect.addEventListener("change", () => {
+    appearence = appearenceSelect.value;
     updateUI();
 });
 
@@ -159,16 +159,30 @@ function matrixToTable(M) {
 
 function rationalToTable(R) {
     if (R.denominator == 1n) {
-        return /*"<table>\n<tr>\n<td>" + */R.numerator.toString()/* + "</td>\n</tr></table>"*/;
+        return BigIntToString(R.numerator);
     } else {
-        return "<table>\n<tr>\n<td class=\"numerator\">" + R.numerator.toString() + "</td>\n</tr>\n<tr>\n<td class=\"denominator\">" + R.denominator.toString() + "</td>\n</tr>\n</table>";
+        return "<table>\n<tr>\n<td class=\"numerator\">" + BigIntToString(R.numerator) + "</td>\n</tr>\n<tr>\n<td class=\"denominator\">" + BigIntToString(R.denominator) + "</td>\n</tr>\n</table>";
     }
+}
+
+function BigIntToString(I) {
+    let s = I.toString();
+    let digits = s.length;
+    if (appearence == "commas") {
+        let digitsArray = [];
+        for (var i = 1; 3 * i <= digits - 1; i++) {
+            digitsArray.unshift(s.substring(digits - 3 * i, digits - 3 * i + 3));
+        }
+        digitsArray.unshift(s.substring(0, digits - 3 * i + 3));
+        s = digitsArray.join(",");
+    }
+    return s
 }
 
 function updateUI() {
     let list = "";
     for (let i = (values.length - 1); i >= 0; i--) {
-        if (useLatex) {
+        if (appearence == "latex") {
             list += "<li><img src=\"https://latex.codecogs.com/svg.image?" + values[i].toLatex() + "\"></li>";
         } else {
             if (values[i] instanceof Rational) {
