@@ -18,6 +18,7 @@ let allowRunning = true;
 let timer;
 let speedSelect = 0;
 let speed = 500;
+let steps = 1;
 
 document.addEventListener("DOMContentLoaded", () => {
     let params = document.location.href.split("?instr=")
@@ -84,22 +85,39 @@ stopButton.addEventListener("click", () => {
 });
 
 speedButton.addEventListener("click", () => {
+    clearTimeout(timer);
     switch (speedSelect) {
         case 0:
             speed = 250;
+            steps = 1;
             speedSelect = 1;
             speedButton.innerHTML = "Pacing";
             break;
         case 1:
             speed = 10;
             speedSelect = 2;
-            speedButton.innerHTML = "*Engine noises*";
+            steps = 1;
+            speedButton.innerHTML = "Quick";
             break;
         case 2:
+            speed = 10;
+            speedSelect = 3;
+            steps = 5;
+            speedButton.innerHTML = "Sprinting";
+            break;
+        case 3:
+            speed = 10;
+            speedSelect = 4;
+            steps = 10;
+            speedButton.innerHTML = "Mach";
+            break;
+        case 4:
             speed = 500;
+            steps = 1;
             speedSelect = 0;
             speedButton.innerHTML = "Slow"
     }
+    timer = setTimeout(step, speed);
 });
 
 function reset() {
@@ -218,12 +236,23 @@ function updateUI() {
 }
 
 function step() {
+    clearTimeout(timer);
+    for (let i = 0; i < steps; i++) {
+        if (doInstruction()) break;
+    }
+    updateUI();
+    if (allowRunning) {
+        timer = setTimeout(step, speed);
+    }
+}
+
+function doInstruction() {
     if (current == -1) {
-        return;
+        return true;
     }
     if (current == instructions.length) {
         current = -1;
-        return;
+        return true;
     }
     let I = instructions[current].split(" ");
     for (let i = 1; i < I.length; i++) {
@@ -235,7 +264,7 @@ function step() {
             } else {
                 alert("parameter must be Rational");
                 current = -1;
-                return;
+                return true;
             }
         } else if (I[i].startsWith("[")) {
             let refer = values.length - Number.parseInt(I[i].substring(1)) - 1;
@@ -245,7 +274,7 @@ function step() {
             } else {
                 alert("parameter must be Rational");
                 current = -1;
-                return;
+                return true;
             }
         }
     }
@@ -635,10 +664,7 @@ function step() {
             break;
     }
     current++;
-    updateUI();
-    if (allowRunning) {
-        timer = setTimeout(step, speed);
-    }
+    return false;
 }
 
 function strToBigInt(s) {
