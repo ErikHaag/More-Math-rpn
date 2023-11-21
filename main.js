@@ -462,9 +462,14 @@ function doInstruction() {
                 }
             } else if (I[0] == "break") {
                 let n = instructions.indexOf("next", current)
-                if (n > current) {
-                    current = n;
-                    repeats.shift();
+                if (repeats.length > 0) {
+                    if (n > current) {
+                        current = n;
+                        repeats.shift();
+                    } else {
+                        current = -2;
+                        alert("loop isn't closed!");
+                    }
                 } else {
                     current = -2;
                     alert("not in a loop");
@@ -593,6 +598,24 @@ function doInstruction() {
                 let dist = Number.parseInt(I[1]);
                 if (dist != 0) {
                     current += dist - 1;
+                }
+            } else if (I[0] == "leap") {
+                if (repeats.length > 0) {
+                    let n = instructions.indexOf("next", current);
+                    if (n > current) {
+                        let dist = Number.parseInt(I[1]);
+                        if (dist <= 0) {
+                            dist = 1;
+                        }
+                        current = n + dist - 1;
+                        repeats.shift();
+                    } else {
+                        current = -2;
+                        alert("loop isn't closed!");
+                    }
+                } else {
+                    current = -2;
+                    alert("not in a loop");
                 }
             } else if (I[0] == "->") {
                 values.unshift(values.splice(Number.parseInt(I[1]), 1)[0]);
