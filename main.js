@@ -237,8 +237,12 @@ function updateUI() {
 
 function step() {
     clearTimeout(timer);
-    for (let i = 0; i < steps; i++) {
-        if (doInstruction()) break;
+    if (allowRunning) {
+        for (let i = 0; i < steps; i++) {
+            if (doInstruction()) break;
+        }
+    }else{
+        doInstruction();
     }
     updateUI();
     if (allowRunning) {
