@@ -91,31 +91,31 @@ speedButton.addEventListener("click", () => {
             speed = 250;
             steps = 1;
             speedSelect = 1;
-            speedButton.innerHTML = "Pacing";
+            speedButton.innerHTML = "&#x1F892;&#x1F892;";
             break;
         case 1:
             speed = 10;
             speedSelect = 2;
             steps = 1;
-            speedButton.innerHTML = "Quick";
+            speedButton.innerHTML = "&#x1F892;&#x1F892;&#x1F892;";
             break;
         case 2:
             speed = 10;
             speedSelect = 3;
             steps = 5;
-            speedButton.innerHTML = "Sprinting";
+            speedButton.innerHTML = "&#x1F892;&#x1F892;&#x1F892;&#x1F892;";
             break;
         case 3:
             speed = 10;
             speedSelect = 4;
             steps = 10;
-            speedButton.innerHTML = "Mach";
+            speedButton.innerHTML = "&#x1F892;&#x1F892;&#x1F892;&#x1F892;&#x1F892;";
             break;
         case 4:
             speed = 500;
             steps = 1;
             speedSelect = 0;
-            speedButton.innerHTML = "Slow"
+            speedButton.innerHTML = "&#x1F892;"
     }
     timer = setTimeout(step, speed);
 });
