@@ -10,6 +10,8 @@ li {
 
 ol {
     padding-left: 0px;
+    max-height: 10em;
+    overflow-y: scroll;
 }
 
 #is>li{
