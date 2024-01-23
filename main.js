@@ -293,7 +293,8 @@ function doInstruction() {
                 } else if (values[0] instanceof Matrix && values[1] instanceof Matrix) {
                     let A = values[1].clone();
                     let B = values[0].clone();
-                    values.splice(0, 2, A.add(B));
+                    A.add(B)
+                    values.splice(0, 2, A.clone());
                 } else {
                     alert("invalid arguments");
                     current = -2;
