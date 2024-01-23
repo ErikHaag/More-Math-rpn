@@ -245,7 +245,7 @@ function step() {
         doInstruction();
     }
     updateUI();
-    if (allowRunning) {
+    if (allowRunning && current != -1) {
         timer = setTimeout(step, speed);
     }
 }
