@@ -159,7 +159,7 @@ function matrixToTable(M) {
             h += "\n<td>⎢ </td>";
         }
         for (let j = 0; j < M.columns; j++) {
-            h += "\n<td class=\"matrixIndex\">" + rationalToTable(M.indices[i][j].clone()) + "</td>";
+            h += "\n<td class=\"matrixIndex\">" + rationalAppearence(M.indices[i][j].clone()) + "</td>";
         }
         if (M.rows == 1) {
             h += "\n<td>]</td>";
@@ -175,18 +175,65 @@ function matrixToTable(M) {
     return h + "\n</table>";
 }
 
-function rationalToTable(R) {
+function rationalAppearence(R) {
+    let str;
+    switch (appearence) {
+        case "default":
+            str = rationalToTable(R, false);
+            break;
+        case "commas":
+            str = rationalToTable(R, true);
+            break;
+        case "decimal":
+            str = rationalToDecimal(R, 3n, false);
+            break;
+        case "decimalcommas":
+            str = rationalToDecimal(R, 3n, true);
+            break;
+        default:
+            str = "Huh?";
+    }
+    return str;
+}
+
+function rationalToTable(R, commas = false) {
     if (R.denominator == 1n) {
-        return BigIntToString(R.numerator);
+        return BigIntToString(R.numerator, commas);
     } else {
-        return "<table>\n<tr>\n<td class=\"numerator\">" + BigIntToString(R.numerator) + "</td>\n</tr>\n<tr>\n<td class=\"denominator\">" + BigIntToString(R.denominator) + "</td>\n</tr>\n</table>";
+        return "<table>\n<tr>\n<td class=\"numerator\">" + BigIntToString(R.numerator, appearence == "commas") + "</td>\n</tr>\n<tr>\n<td class=\"denominator\">" + BigIntToString(R.denominator, appearence == "commas") + "</td>\n</tr>\n</table>";
     }
 }
 
-function BigIntToString(I) {
+function rationalToDecimal(R, p, commas = false) {
+    let RClone = R.clone();
+    let neg = RClone.numerator < 0
+    if (neg) {
+        RClone.mult(new Rational(-1n));
+    }
+    let I = RClone.numerator / RClone.denominator;
+    RClone.sub(new Rational(I));
+    let POT = new Rational(10n);
+    POT.pow(p);
+    RClone.mult(POT);
+    let d = RClone.numerator / RClone.denominator;
+    let int = BigIntToString(I, commas);
+    let dec = BigIntToString(d);
+    let rep = p - BigInt(dec.length);
+    for (let i = 0; i < rep; i++) {
+        dec = "0" + dec;
+    }
+    for (let i = 0; i < p; i++) {
+        if (dec.endsWith("0")) {
+            dec = dec.substring(0, dec.length - 1);
+        }
+    }
+    return (neg ? "-" + int : int) + (dec == "" ? "" : "." + dec);
+}
+
+function BigIntToString(I, commas = false) {
     let s = I.toString();
     let digits = s.length;
-    if (appearence == "commas") {
+    if (commas) {
         let digitsArray = [];
         for (var i = 1; 3 * i <= digits - 1; i++) {
             digitsArray.unshift(s.substring(digits - 3 * i, digits - 3 * i + 3));
@@ -204,7 +251,7 @@ function updateUI() {
             list += "<li><img src=\"https://latex.codecogs.com/svg.image?" + values[i].toLatex() + "\"></li>";
         } else {
             if (values[i] instanceof Rational) {
-                list += "<li>" + rationalToTable(values[i].clone()) + "</li>\n";
+                list += "<li>" + rationalAppearence(values[i].clone()) + "</li>\n";
             } else if (values[i] instanceof Matrix) {
                 list += "<li>" + matrixToTable(values[i].clone()) + "</li>\n";
             }
@@ -241,7 +288,7 @@ function step() {
         for (let i = 0; i < steps; i++) {
             if (doInstruction()) break;
         }
-    }else{
+    } else {
         doInstruction();
     }
     updateUI();
