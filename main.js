@@ -1,5 +1,7 @@
 const input = document.getElementById("input");
 const appearenceSelect = document.getElementById("visual");
+const decimalDiv = document.getElementById("decimalDiv");
+const decimalLength = document.getElementById("decimal");
 const valueStack = document.getElementById("vs");
 const repeatPile = document.getElementById("rp");
 const instructionList = document.getElementById("is");
@@ -9,6 +11,7 @@ const stopButton = document.getElementById("stop");
 const speedButton = document.getElementById("speed");
 const link = document.getElementById("link");
 let appearence = "default";
+let decimals = 3n;
 let instructions = [];
 let comments = [];
 let repeats = [];
@@ -41,6 +44,18 @@ input.addEventListener("focusout", () => {
 
 appearenceSelect.addEventListener("change", () => {
     appearence = appearenceSelect.value;
+    decimalDiv.hidden = !(appearence == "decimal" || appearence == "decimalcommas");
+    updateUI();
+});
+
+decimalLength.addEventListener("change", () => {  
+    let d = decimalLength.value; 
+    if (d.includes(".") || d.includes("-") || d == "0" || d == "") {
+        decimals = 1n;
+        decimalLength.value = "1";
+    } else {
+        decimals = BigInt(d);
+    }
     updateUI();
 });
 
@@ -91,31 +106,31 @@ speedButton.addEventListener("click", () => {
             speed = 250;
             steps = 1;
             speedSelect = 1;
-            speedButton.innerHTML = "&#x1F892;&#x1F892;";
+            speedButton.innerHTML = "&gt;&gt;";
             break;
         case 1:
             speed = 10;
             speedSelect = 2;
             steps = 1;
-            speedButton.innerHTML = "&#x1F892;&#x1F892;&#x1F892;";
+            speedButton.innerHTML = "&gt;&gt;&gt;";
             break;
         case 2:
             speed = 10;
             speedSelect = 3;
             steps = 5;
-            speedButton.innerHTML = "&#x1F892;&#x1F892;&#x1F892;&#x1F892;";
+            speedButton.innerHTML = "&gt;&gt;&gt;&gt;";
             break;
         case 3:
             speed = 10;
             speedSelect = 4;
             steps = 10;
-            speedButton.innerHTML = "&#x1F892;&#x1F892;&#x1F892;&#x1F892;&#x1F892;";
+            speedButton.innerHTML = "&gt;&gt;&gt;&gt;&gt;";
             break;
         case 4:
             speed = 500;
             steps = 1;
             speedSelect = 0;
-            speedButton.innerHTML = "&#x1F892;"
+            speedButton.innerHTML = "&gt;"
     }
     timer = setTimeout(step, speed);
 });
@@ -185,10 +200,10 @@ function rationalAppearence(R) {
             str = rationalToTable(R, true);
             break;
         case "decimal":
-            str = rationalToDecimal(R, 3n, false);
+            str = rationalToDecimal(R, decimals, false);
             break;
         case "decimalcommas":
-            str = rationalToDecimal(R, 3n, true);
+            str = rationalToDecimal(R, decimals, true);
             break;
         default:
             str = "Huh?";
@@ -226,6 +241,17 @@ function rationalToDecimal(R, p, commas = false) {
         if (dec.endsWith("0")) {
             dec = dec.substring(0, dec.length - 1);
         }
+    }
+    if (commas && dec.length >= 4) {
+        let digitsArray = [];
+        let excess = dec.length % 3;
+        for (let i = 3; i - 1 <= dec.length - excess; i += 3) {
+            digitsArray.push(dec.substring(i - 3, i));
+        }
+        if (excess >= 1) {
+            digitsArray.push(dec.substring(dec.length - excess));
+        }
+        dec = digitsArray.join(",");
     }
     return (neg ? "-" + int : int) + (dec == "" ? "" : "." + dec);
 }
