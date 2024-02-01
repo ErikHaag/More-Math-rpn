@@ -313,6 +313,45 @@
             <td>distance to jump after break</td>
             <td>none</td>
         </tr>
+        <tr>
+            <th colspan="4" class="od">Auxillary Manipulation</th>
+        </tr>
+        <tr>
+            <th>operation</th>
+            <th>description</th>
+            <th>parameters required</th>
+            <th>arguments required</th>
+        </tr>
+        <tr>
+            <td>hold</td>
+            <td>remembers a rational or matrix for later, overriding any existing value</td>
+            <td>name of value</td>
+            <td>1 rational or matrix (stays)</td>
+        </tr>
+        <tr>
+            <td>lose</td>
+            <td>forgets a stored value, does nothing if it doesn't exist</td>
+            <td>name to forget</td>
+            <td>none</td>
+        </tr>
+        <tr>
+            <td>place</td>
+            <td>copies stored value to stack</td>
+            <td>name of value to place</td>
+            <td>none</td>
+        </tr>
+        <tr>
+            <td>exists</td>
+            <td>place 1 or 0 if a value exists</td>
+            <td>name to check</td>
+            <td>none</td>
+        </tr>
+        <tr>
+            <td>$</td>
+            <td>in parameters, prepend a $ to use an auxillary value</td>
+            <td>it is the parameter</td>
+            <td>none</td>
+        </tr>
     </table>
 </body>
 </html>

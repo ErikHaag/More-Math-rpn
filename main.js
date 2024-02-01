@@ -5,6 +5,7 @@ const britishCheck = document.getElementById("british");
 const decimalDiv = document.getElementById("decimalDiv");
 const decimalLength = document.getElementById("decimal");
 const valueStack = document.getElementById("vs");
+const auxillaryArray = document.getElementById("ax");
 const repeatPile = document.getElementById("rp");
 const instructionList = document.getElementById("is");
 const resetButton = document.getElementById("reset");
@@ -18,6 +19,7 @@ let instructions = [];
 let comments = [];
 let repeats = [];
 let values = [];
+let aux = new Map();
 let current = -1;
 let allowRunning = true;
 let timer;
@@ -28,9 +30,12 @@ let steps = 1;
 document.addEventListener("DOMContentLoaded", () => {
     let params = document.location.href.split("?instr=")
     if (params.length == 2) {
-        let instr = params[1].replaceAll("_", " ");
+        let instr = params[1];
+        instr = instr.replaceAll("_", " ");
         instr = instr.replaceAll("\\n", "\n");
         instr = instr.replaceAll("%22", "\"");
+        instr = instr.replaceAll("%24", "$");
+        instr = instr.replaceAll("%27", "\'");
         instr = instr.replaceAll("%3C", "<");
         instr = instr.replaceAll("%3E", ">");
         input.value = instr;
@@ -41,6 +46,9 @@ input.addEventListener("focusout", () => {
     let formatted = input.value;
     formatted = formatted.replaceAll("\n", "\\n");
     formatted = formatted.replaceAll(" ", "_");
+    formatted = formatted.replaceAll("\"", "%22");
+    formatted = formatted.replaceAll("$", "%24");
+    formatted = formatted.replaceAll("\'", "%27");
     link.textContent = "https://erikhaag.github.io/More-Math-rpn/?instr=" + formatted;
 });
 
@@ -147,6 +155,7 @@ function reset() {
     values = [];
     repeats = [];
     comments = [];
+    aux = new Map();
     let cpos = [];
     for (let i = 0; i < instructions.length; i++) {
         if (instructions[i].startsWith("\"")) {
@@ -291,6 +300,20 @@ function updateUI() {
         }
     }
     valueStack.innerHTML = list;
+    list = ""
+    for (let kv of aux.entries()) {
+        list += "<li><b>" + kv[0] + "</b><br>";
+        if (appearence == "latex") {
+            list += "<img src=\"https://latex.codecogs.com/svg.image?" + kv[1].toLatex() + "\"></li>";
+        } else {
+            if (kv[1] instanceof Rational) {
+                list += rationalAppearence(kv[1].clone()) + "</li>\n";
+            } else if (kv[1] instanceof Matrix) {
+                list += matrixToTable(kv[1].clone()) + "</li>\n";
+            }
+        }
+    }
+    auxillaryArray.innerHTML = list;
     list = "";
     for (let i = 0; i < repeats.length; i++) {
         list += "<li>" + repeats[i][0].toString() + ", " + repeats[i][1].toString() + ", " + repeats[i][2].toString() + "</li>\n";
@@ -357,6 +380,22 @@ function doInstruction() {
                 I.splice(i, 1, (parameter.numerator / parameter.denominator).toString());
             } else {
                 alert("parameter must be Rational");
+                current = -1;
+                return true;
+            }
+        } else if (I[i].startsWith("$")) {
+            let key = I[i].substring(1);
+            if (aux.has(key)) {
+                let parameter = aux.get(key).clone();
+                if (parameter instanceof Rational) {
+                    I.splice(i, 1, (parameter.numerator / parameter.denominator).toString());
+                } else {
+                    alert("parameter must be Rational.\nTry place");
+                    current = -1;
+                    return true;
+                }
+            } else {
+                alert("\"" + I[1] + "\" doesn't exist!");
                 current = -1;
                 return true;
             }
@@ -727,6 +766,25 @@ function doInstruction() {
                 } else {
                     alert("invalid arguments");
                     current = -2;
+                }
+            } else if (I[0] == "hold") {
+                aux.set(I[1], values[0].clone());
+            } else if (I[0] == "lose") {
+                if (aux.has(I[1])) {
+                    aux.delete(I[1]);
+                }
+            } else if (I[0] == "place") {
+                if (aux.has(I[1])) {
+                    values.unshift(aux.get(I[1]).clone());
+                } else {
+                    alert("\"" + I[1] + "\" doesn't exist!");
+                    current = -2;
+                }
+            } else if (I[0] == "exists") {
+                if (aux.has(I[1])) {
+                    values.unshift(new Rational(1n));
+                } else {
+                    values.unshift(new Rational(0n));
                 }
             } else {
                 alert("invalid command");

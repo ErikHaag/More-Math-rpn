@@ -11,24 +11,30 @@
 </head>
 
 <body>
-    <label for="visual">Stack Appearence</label>
-    <select id="visual">
-        <option value="default">Default</option>
-        <option value="commas">Commas</option>
-        <option value="decimal">Decimal</option>
-        <option value="decimalcommas">Decimal & Commas</option>
-        <option value="latex">LaTeX</option>
-    </select>
-    <div id="britishDiv" hidden>
-        <label for="british">British Mode</label>
-        <input id="british" type="checkbox">
-    </div>
-    <div id="decimalDiv" hidden>
-        <label for="decimal">Decimal Length</label>
-        <input id="decimal" type="number" min="1" max="12" step="1" value="3">
-    </div>
+    <fieldset>
+        <legend>Controls</legend>
+        <label for="visual">Stack Appearence</label>
+        <select id="visual">
+            <option value="default">Default</option>
+            <option value="commas">Commas</option>
+            <option value="decimal">Decimal</option>
+            <option value="decimalcommas">Decimal & Commas</option>
+            <option value="latex">LaTeX</option>
+        </select>
+        <div id="britishDiv" hidden>
+            <label for="british">British Mode</label>
+            <input id="british" type="checkbox">
+        </div>
+        <div id="decimalDiv" hidden>
+            <label for="decimal">Decimal Length</label>
+            <input id="decimal" type="number" min="1" max="12" step="1" value="3">
+        </div>
+    </fieldset>
     <p>Value stack</p>
     <ol id="vs">
+    </ol>
+    <p>Auxillary Array</p>
+    <ol id="ax">
     </ol>
     <p>Repeat pile</p>
     <ol id="rp">
