@@ -1,5 +1,7 @@
 const input = document.getElementById("input");
 const appearenceSelect = document.getElementById("visual");
+const britishModeDiv = document.getElementById("britishDiv");
+const britishCheck = document.getElementById("british");
 const decimalDiv = document.getElementById("decimalDiv");
 const decimalLength = document.getElementById("decimal");
 const valueStack = document.getElementById("vs");
@@ -45,6 +47,11 @@ input.addEventListener("focusout", () => {
 appearenceSelect.addEventListener("change", () => {
     appearence = appearenceSelect.value;
     decimalDiv.hidden = !(appearence == "decimal" || appearence == "decimalcommas");
+    britishModeDiv.hidden = !(appearence == "commas" || appearence == "decimalcommas");
+    updateUI();
+});
+
+britishCheck.addEventListener("change", () => {
     updateUI();
 });
 
@@ -251,9 +258,9 @@ function rationalToDecimal(R, p, commas = false) {
         if (excess >= 1) {
             digitsArray.push(dec.substring(dec.length - excess));
         }
-        dec = digitsArray.join(",");
+        dec = digitsArray.join(britishCheck.checked ? "." : ",");
     }
-    return (neg ? "-" + int : int) + (dec == "" ? "" : "." + dec);
+    return (neg ? "-" + int : int) + (dec == "" ? "" : (britishCheck.checked ? "," : ".") + dec);
 }
 
 function BigIntToString(I, commas = false) {
@@ -265,7 +272,7 @@ function BigIntToString(I, commas = false) {
             digitsArray.unshift(s.substring(digits - 3 * i, digits - 3 * i + 3));
         }
         digitsArray.unshift(s.substring(0, digits - 3 * i + 3));
-        s = digitsArray.join(",");
+        s = digitsArray.join(britishCheck.checked ? "." : ",");
     }
     return s
 }
