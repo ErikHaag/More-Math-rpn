@@ -47,7 +47,7 @@ input.addEventListener("focusout", () => {
 appearenceSelect.addEventListener("change", () => {
     appearence = appearenceSelect.value;
     decimalDiv.hidden = !(appearence == "decimal" || appearence == "decimalcommas");
-    britishModeDiv.hidden = !(appearence == "commas" || appearence == "decimalcommas");
+    britishModeDiv.hidden = !(appearence == "commas" || appearence == "decimal" || appearence == "decimalcommas");
     updateUI();
 });
 
