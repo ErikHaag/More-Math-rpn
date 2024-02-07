@@ -27,5 +27,13 @@
         <li><a href="https://erikhaag.github.io/More-Math-rpn/?instr=%22click_the_speed_button_to_run_faster\n27\n>>_0\n%22jmp_to_end_if_<=_1\n1\n>>_1\n1\n-\nstep\n-\n19\n*\njmp_]0\n%22otherwise\ndel_0\n%22check_if_divisible_by_2\n>>_0\n2\n%\nstep\n5\n*\njmp_]0\n%22even\ndel_0\n2\n/\n%22return_to_top\njmp_-21\n%22odd\ndel_0\n3\n*\n1\n+\n%22return_to_top\njmp_-27\n%22clean_up_when_1\ndel_0\ndel_0">Collatz</a></li>
         <li><a href="https://erikhaag.github.io/More-Math-rpn/?instr=1\n2\n3\n4\n5\n#\n%22Store_value_as_%27size%27\nhold_size\ndel_0\n%22Use_%27size%27_as_parameter\nm_1_%24size">hold, and $</a></li>
     </ul>
+    <h1>Sequences</h1>
+    <ul>
+        <li><a href="https://erikhaag.github.io/More-Math-rpn/?instr=%22OEIS_A5\n1\nrepeat_50\n>>>_0\n1\n+\n2\n/\nceil\n1\nrepeat_]1\n1\n>>>_1\n1\n+\n>>>_0\n%\nstep\n-\n+\nnext\ndel_1\nnext">A5</a></li>
+        <li><a href="https://erikhaag.github.io/More-Math-rpn/?instr=%22OEIS_A46901\n0\nrepeat_50\n>>_0\n>>>_0\n-\nstep\n6\n*\njmp_]0\ndel_0\n>>_0\n>>>_0\n+\njmp_5\ndel_0\n>>_0\n>>>_0\n-\nnext">A46901</a></li>
+        <li><a href="https://erikhaag.github.io/More-Math-rpn/?instr=%22OEIS_A61418\n2\nrepeat_50\n>>_0\n3\n2\n/\n*\nfloor\nnext">A61418</a></li>
+        <li><a href="https://erikhaag.github.io/More-Math-rpn/?instr=%22OEIS_A76039\n1\nrepeat_50\n%3E%3E%3E_0\n%3E%3E_1\n-\nstep\n7\n*\njmp_]0\ndel_0\n%3E%3E_0\n%3E%3E%3E_0\n/\nfloor\njmp_5\ndel_0\n%3E%3E_0\n%3E%3E%3E_0\n*\nnext">A76039</a></li> 
+        <li><a href="https://erikhaag.github.io/More-Math-rpn/?instr=%22OEIS_A76042\n0\nrepeat_50\n>>>_0\n>>_0\n*\n>>_1\n-\nstep\n8\n*\njmp_]0\ndel_0\n>>_0\n>>>_0\n>>_0\n*\n-\njmp_7\ndel_0\n>>_0\n>>>_0\n>>_0\n*\n+\nnext">A76042</a></li>
+    </ul>
 </body>
 </html>
