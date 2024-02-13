@@ -1,3 +1,23 @@
+body.light {
+    background-color: white;
+    color: black;
+}
+
+body.dark {
+    background-color: hsl(260deg 100 10);
+    color: white;
+}
+
+body.light #darkModeButton {
+    background-color: skyblue;
+    color: yellow;
+}
+
+body.dark #darkModeButton {
+    background-color: blue;
+    color: lightgray;
+}
+
 #start {
     background-color: lime;
 }    
@@ -30,12 +50,20 @@ td {
     text-align: center;
 }
 
-td.numerator {
+body.light td.numerator {
     border-bottom: 2px solid black;
 }
 
-td.denominator {
+body.dark td.numerator {
+    border-bottom: 2px solid white;
+}
+
+body.light td.denominator {
     border-top: 2px solid black;
+}
+
+body.dark td.denominator {
+    border-top: 2px solid white;
 }
 
 td.matrixIndex {

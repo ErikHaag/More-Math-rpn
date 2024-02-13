@@ -1,4 +1,5 @@
 const input = document.getElementById("input");
+const darkButton = document.getElementById("darkModeButton");
 const appearenceSelect = document.getElementById("visual");
 const britishModeDiv = document.getElementById("britishDiv");
 const britishCheck = document.getElementById("british");
@@ -13,6 +14,8 @@ const startButton = document.getElementById("start");
 const stopButton = document.getElementById("stop");
 const speedButton = document.getElementById("speed");
 const link = document.getElementById("link");
+
+let dark = false;
 let appearence = "default";
 let decimals = 3n;
 let instructions = [];
@@ -28,21 +31,31 @@ let speed = 500;
 let steps = 1;
 
 document.addEventListener("DOMContentLoaded", () => {
-    let params = document.location.href.split("?instr=")
-    if (params.length == 2) {
-        let instr = params[1];
-        instr = instr.replaceAll("_", " ");
-        instr = instr.replaceAll("\\n", "\n");
-        instr = instr.replaceAll("%22", "\"");
-        instr = instr.replaceAll("%24", "$");
-        instr = instr.replaceAll("%27", "\'");
-        instr = instr.replaceAll("%3C", "<");
-        instr = instr.replaceAll("%3E", ">");
-        input.value = instr;
+    let url = new URL(document.location);
+    let params = url.search;
+    params = params.substring(1).split("&");
+    for (let parameter of params) {
+        let p = parameter.split("=");
+        switch (p[0]) {
+            case "instr":
+                let instr = p[1];
+                instr = instr.replaceAll(" ", "");
+                instr = instr.replaceAll("_", " ");
+                instr = instr.replaceAll("\\n", "\n");
+                instr = instr.replaceAll("%22", "\"");
+                instr = instr.replaceAll("%24", "$");
+                instr = instr.replaceAll("%27", "\'");
+                instr = instr.replaceAll("%3C", "<");
+                instr = instr.replaceAll("%3E", ">");
+                input.value = instr;
+                break;
+            default:
+                break;
+        }
     }
 });
 
-input.addEventListener("focusout", () => {
+input.addEventListener("change", () => {
     let formatted = input.value;
     formatted = formatted.replaceAll("\n", "\\n");
     formatted = formatted.replaceAll(" ", "_");
@@ -50,6 +63,13 @@ input.addEventListener("focusout", () => {
     formatted = formatted.replaceAll("$", "%24");
     formatted = formatted.replaceAll("\'", "%27");
     link.textContent = "https://erikhaag.github.io/More-Math-rpn/?instr=" + formatted;
+});
+
+darkButton.addEventListener("click", () => {
+    dark = !dark;
+    darkButton.innerHTML = dark ? "&#x263D" : "&#x2609";
+    document.getElementsByTagName("body")[0].className = dark ? "dark" : "light";
+    updateUI()
 });
 
 appearenceSelect.addEventListener("change", () => {
@@ -63,8 +83,8 @@ britishCheck.addEventListener("change", () => {
     updateUI();
 });
 
-decimalLength.addEventListener("change", () => {  
-    let d = decimalLength.value; 
+decimalLength.addEventListener("change", () => {
+    let d = decimalLength.value;
     if (d.includes(".") || d.includes("-") || d == "0" || d == "") {
         decimals = 1n;
         decimalLength.value = "1";
@@ -290,7 +310,7 @@ function updateUI() {
     let list = "";
     for (let i = (values.length - 1); i >= 0; i--) {
         if (appearence == "latex") {
-            list += "<li><img src=\"https://latex.codecogs.com/svg.image?" + values[i].toLatex() + "\"></li>";
+            list += "<li><img src=\"https://latex.codecogs.com/svg.image?" + (dark ? "%5Ccolor%7BWhite%7D" : "") + values[i].toLatex() + "\"></li>";
         } else {
             if (values[i] instanceof Rational) {
                 list += "<li>" + rationalAppearence(values[i].clone()) + "</li>\n";
