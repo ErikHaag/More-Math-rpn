@@ -324,7 +324,7 @@ function updateUI() {
     for (let kv of aux.entries()) {
         list += "<li><b>" + kv[0] + "</b><br>";
         if (appearence == "latex") {
-            list += "<img src=\"https://latex.codecogs.com/svg.image?" + kv[1].toLatex() + "\"></li>";
+            list += "<img src=\"https://latex.codecogs.com/svg.image?" + (dark ? "%5Ccolor%7BWhite%7D" : "") + kv[1].toLatex() + "\"></li>";
         } else {
             if (kv[1] instanceof Rational) {
                 list += rationalAppearence(kv[1].clone()) + "</li>\n";
