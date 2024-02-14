@@ -38,8 +38,12 @@ ol {
     font-family: 'Source Code Pro', monospace;
 }
 
-li.curr {
+body.light li.curr {
     background-color: palegreen;
+}
+
+body.dark li.curr {
+    background-color: forestgreen;
 }
 
 table {
