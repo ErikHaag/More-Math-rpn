@@ -46,6 +46,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 instr = instr.replaceAll("%24", "$");
                 instr = instr.replaceAll("%27", "\'");
                 instr = instr.replaceAll("%3C", "<");
+                instr = instr.replaceAll("%3D", "=");
                 instr = instr.replaceAll("%3E", ">");
                 input.value = instr;
                 break;
@@ -62,6 +63,7 @@ input.addEventListener("change", () => {
     formatted = formatted.replaceAll("\"", "%22");
     formatted = formatted.replaceAll("$", "%24");
     formatted = formatted.replaceAll("\'", "%27");
+    formatted = formatted.replaceAll("=", "%3D");
     link.textContent = "https://erikhaag.github.io/More-Math-rpn/?instr=" + formatted;
 });
 
