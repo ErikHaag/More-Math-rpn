@@ -43,6 +43,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 instr = instr.replaceAll("_", " ");
                 instr = instr.replaceAll("\\n", "\n");
                 instr = instr.replaceAll("%22", "\"");
+                instr = instr.replaceAll("%23", "#");
                 instr = instr.replaceAll("%24", "$");
                 instr = instr.replaceAll("%27", "\'");
                 instr = instr.replaceAll("%3C", "<");
@@ -61,6 +62,7 @@ input.addEventListener("change", () => {
     formatted = formatted.replaceAll("\n", "\\n");
     formatted = formatted.replaceAll(" ", "_");
     formatted = formatted.replaceAll("\"", "%22");
+    formatted = formatted.replaceAll("#", "%23");
     formatted = formatted.replaceAll("$", "%24");
     formatted = formatted.replaceAll("\'", "%27");
     formatted = formatted.replaceAll("=", "%3D");
