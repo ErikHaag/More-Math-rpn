@@ -167,7 +167,9 @@ speedButton.addEventListener("click", () => {
             speedSelect = 0;
             speedButton.innerHTML = "&gt;"
     }
-    timer = setTimeout(step, speed);
+    if (allowRunning) {
+        timer = setTimeout(step, speed);
+    }
 });
 
 function reset() {
