@@ -29,6 +29,7 @@ let timer;
 let speedSelect = 0;
 let speed = 500;
 let steps = 1;
+let rnList = [];
 
 document.addEventListener("DOMContentLoaded", () => {
     let url = new URL(document.location);
@@ -200,6 +201,14 @@ function reset() {
     for (let i = cpos.length - 1; i >= 0; i--) {
         instructions.splice(cpos[i], 1);
     }
+    rnList = instructions.map((s) => {
+        if (s.startsWith("repeat")) {
+            return 1;
+        } else if (s == "next") {
+            return 2;
+        }
+        return 0;
+    });
 }
 
 function matrixToTable(M) {
@@ -611,7 +620,7 @@ function doInstruction() {
                     alert("not in a loop");
                 }
             } else if (I[0] == "break") {
-                let n = instructions.indexOf("next", current)
+                let n = repeats[repeats.length - 1][3];
                 if (repeats.length > 0) {
                     if (n > current) {
                         current = n;
@@ -751,7 +760,7 @@ function doInstruction() {
                 }
             } else if (I[0] == "leap") {
                 if (repeats.length > 0) {
-                    let n = instructions.indexOf("next", current);
+                    let n = repeats[repeats.length - 1][3];
                     if (n > current) {
                         let dist = Number.parseInt(I[1]);
                         if (dist <= 0) {
@@ -772,7 +781,29 @@ function doInstruction() {
             } else if (I[0] == "<-") {
                 values.splice(Number.parseInt(I[1]), 0, values.shift());
             } else if (I[0] == "repeat") {
-                repeats.unshift([1n, BigInt(I[1]), current]);
+                let depth = 1
+                let scan = current;
+                while (depth >= 1 && scan >= instructions.length) {
+                    let nextNext = rnList.indexOf(2,scan + 1);
+                    if (nextNext == -1) {
+                        // if no next statement...
+                        scan = instructions.length;
+                        break;
+                    }
+                    let nextRepeat = rnList.indexOf(1,scan + 1);
+                    if (nextRepeat < nextNext) {
+                        scan = nextRepeat;
+                        depth++;
+                    }else {
+                        scan = nextNext;
+                        depth--;
+                    }
+                }
+                if (BigInt(I[1]) <= 0n) {
+                    current = scan;
+                } else {
+                    repeats.unshift([1n, BigInt(I[1]), current, scan]);
+                }
             } else if (I[0] == ">>>") {
                 if (repeats.length >= Number.parseInt(I[1])) {
                     values.unshift(new Rational(repeats[Number.parseInt(I[1])][0]));
