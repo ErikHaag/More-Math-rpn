@@ -351,7 +351,7 @@ function updateUI() {
     auxillaryArray.innerHTML = list;
     list = "";
     for (let i = 0; i < repeats.length; i++) {
-        list += "<li>" + repeats[i][0].toString() + ", " + repeats[i][1].toString() + ", " + repeats[i][2].toString() + "</li>\n";
+        list += "<li>" + repeats[i][0].toString() + ", " + repeats[i][1].toString() + ", " + repeats[i][2].toString() + ", " + repeats[i][3].toString() + "</li>\n";
     }
     repeatPile.innerHTML = list;
     list = "";
@@ -781,20 +781,20 @@ function doInstruction() {
             } else if (I[0] == "<-") {
                 values.splice(Number.parseInt(I[1]), 0, values.shift());
             } else if (I[0] == "repeat") {
-                let depth = 1
+                let depth = 1;
                 let scan = current;
-                while (depth >= 1 && scan >= instructions.length) {
-                    let nextNext = rnList.indexOf(2,scan + 1);
+                while (depth >= 1 && scan + 1 < instructions.length) {
+                    let nextNext = rnList.indexOf(2, scan + 1);
                     if (nextNext == -1) {
                         // if no next statement...
                         scan = instructions.length;
                         break;
                     }
-                    let nextRepeat = rnList.indexOf(1,scan + 1);
-                    if (nextRepeat < nextNext) {
+                    let nextRepeat = rnList.indexOf(1, scan + 1);
+                    if (nextRepeat != -1 && nextRepeat < nextNext) {
                         scan = nextRepeat;
                         depth++;
-                    }else {
+                    } else {
                         scan = nextNext;
                         depth--;
                     }
