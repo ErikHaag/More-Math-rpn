@@ -401,6 +401,11 @@ function doInstruction() {
         if (I[i].startsWith("]")) {
             let refer = Number.parseInt(I[i].substring(1));
             let parameter = values[refer];
+            if (!parameter) {
+                alert("out of bounds");
+                current = -1;
+                return true;
+            }
             if (parameter instanceof Rational) {
                 I.splice(i, 1, (parameter.numerator / parameter.denominator).toString());
             } else {
@@ -411,6 +416,11 @@ function doInstruction() {
         } else if (I[i].startsWith("[")) {
             let refer = values.length - Number.parseInt(I[i].substring(1)) - 1;
             let parameter = values[refer];
+            if (!parameter) {
+                alert("out of bounds");
+                current = -1;
+                return true;
+            }
             if (parameter instanceof Rational) {
                 I.splice(i, 1, (parameter.numerator / parameter.denominator).toString());
             } else {
@@ -616,8 +626,8 @@ function doInstruction() {
                         repeats.shift();
                     }
                 } else {
-                    current = -2;
                     alert("not in a loop");
+                    current = -2;
                 }
             } else if (I[0] == "break") {
                 let n = repeats[repeats.length - 1][3];
@@ -626,17 +636,22 @@ function doInstruction() {
                         current = n;
                         repeats.shift();
                     } else {
-                        current = -2;
                         alert("loop isn't closed!");
+                        current = -2;
                     }
                 } else {
-                    current = -2;
                     alert("not in a loop");
+                    current = -2;
                 }
             } else if (I[0] == "inv") {
                 if (values[0] instanceof Matrix) {
                     let A = values[0].clone();
-                    values.splice(0, 1, A.inverse());
+                    let inverse = A.inverse();
+                    if (inverse instanceof Error) {
+                        alert("matrix has determinate of 0 (zero)");
+                        current = -2;
+                    }
+                    values.splice(0, 1, );
                 } else {
                     alert("invalid arguments");
                     current = -2;
@@ -750,9 +765,21 @@ function doInstruction() {
             break;
         case 2:
             if (I[0] == ">>") {
-                values.unshift(values[strToBigInt(I[1])]);
+                let copiedVal = values[strToBigInt(I[1])];
+                if (copiedVal) {
+                    values.unshift(copiedVal);
+                } else {
+                    alert("out of bounds");
+                    current = -2;
+                }
             } else if (I[0] == "del") {
-                values.splice(Number.parseInt(I[1]), 1);
+                let index = Number.parseInt(I[1]);
+                if (values[index]) {
+                    values.splice(index, 1);
+                } else {
+                    alert("out of bounds");
+                    current = -2;
+                }
             } else if (I[0] == "jmp") {
                 let dist = Number.parseInt(I[1]);
                 if (dist != 0) {
@@ -769,17 +796,29 @@ function doInstruction() {
                         current = n + dist - 1;
                         repeats.shift();
                     } else {
-                        current = -2;
                         alert("loop isn't closed!");
+                        current = -2;
                     }
                 } else {
-                    current = -2;
                     alert("not in a loop");
+                    current = -2;
                 }
             } else if (I[0] == "->") {
-                values.unshift(values.splice(Number.parseInt(I[1]), 1)[0]);
+                let index = Number.parseInt(I[1]);
+                if (values[index]) {
+                    values.unshift(values.splice(index, 1)[0]);
+                } else {
+                    alert("out of bounds");
+                    current = -2;
+                }
             } else if (I[0] == "<-") {
-                values.splice(Number.parseInt(I[1]), 0, values.shift());
+                let index = Number.parseInt(I[1]);
+                if (values[index]) {
+                    values.splice(index, 0, values.shift());
+                } else {
+                    alert("out of bounds");
+                    current = -2;
+                }
             } else if (I[0] == "repeat") {
                 let depth = 1;
                 let scan = current;
@@ -808,8 +847,8 @@ function doInstruction() {
                 if (repeats.length >= Number.parseInt(I[1])) {
                     values.unshift(new Rational(repeats[Number.parseInt(I[1])][0]));
                 } else {
-                    current = -2;
                     alert("not deep enough");
+                    current = -2;
                 }
             } else if (I[0] == "scaleRow") {
                 if (values[0] instanceof Rational && values[1] instanceof Matrix) {
