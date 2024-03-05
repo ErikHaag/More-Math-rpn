@@ -651,7 +651,7 @@ function doInstruction() {
                         alert("matrix has determinate of 0 (zero)");
                         current = -2;
                     }
-                    values.splice(0, 1, );
+                    values.splice(0, 1, inverse);
                 } else {
                     alert("invalid arguments");
                     current = -2;
