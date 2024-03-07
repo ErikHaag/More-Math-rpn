@@ -20,7 +20,16 @@ body.dark #darkModeButton {
 
 #start {
     background-color: lime;
-}    
+}
+
+button {
+    border: 1px black solid;
+    border-radius: 3px;
+}
+
+button:hover, button:focus {
+    border: 3px black solid;
+}
 
 li {
     padding: 10px;
