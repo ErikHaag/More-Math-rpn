@@ -274,7 +274,7 @@ function rationalToTable(R, commas = false) {
 
 function rationalToDecimal(R, p, commas = false) {
     let RClone = R.clone();
-    let neg = RClone.numerator < 0
+    let neg = RClone.numerator < 0;
     if (neg) {
         RClone.mult(new Rational(-1n));
     }
@@ -310,6 +310,8 @@ function rationalToDecimal(R, p, commas = false) {
 }
 
 function BigIntToString(I, commas = false) {
+    let neg = I < 0;
+    I = MathJS.abs(I);
     let s = I.toString();
     let digits = s.length;
     if (commas) {
@@ -319,6 +321,9 @@ function BigIntToString(I, commas = false) {
         }
         digitsArray.unshift(s.substring(0, digits - 3 * i + 3));
         s = digitsArray.join(britishCheck.checked ? "." : ",");
+    }
+    if (neg) {
+        s = "-" + s;
     }
     return s
 }
