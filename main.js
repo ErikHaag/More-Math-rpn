@@ -708,7 +708,7 @@ function doInstruction() {
                             }
                             col.push(A.indices[i][A.columns - 1].clone());
                         }
-                        values.splice(0, 1, new Matrix(1, ...col), new Matrix(A.columns - 1, ...B));
+                        values.splice(0, 1, new Matrix(1, col.flat()), new Matrix(A.columns - 1, B.flat()));
                     }
                 } else {
                     alert("invalid arguments");
@@ -724,7 +724,7 @@ function doInstruction() {
                                 B.push(A.indices[i][j].clone())
                             }
                         }
-                        values.splice(0, 1, new Matrix(A.columns, ...B));
+                        values.splice(0, 1, new Matrix(A.columns, B.flat()));
                     }
                 }
             } else if (I[0] == "dim") {
@@ -899,8 +899,7 @@ function doInstruction() {
                 if (!values.slice(0, Number.parseInt(I[1]) * Number.parseInt(I[2])).map((e) => e instanceof Rational).includes(false)) {
                     let arg = values.splice(0, Number.parseInt(I[1]) * Number.parseInt(I[2]));
                     arg.reverse();
-                    arg.unshift(Number.parseInt(I[1]));
-                    values.unshift(new Matrix(...arg));
+                    values.unshift(new Matrix(Number.parseInt(I[1]), arg));
                 } else {
                     alert("invalid arguments");
                     current = -2;
