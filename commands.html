@@ -13,6 +13,7 @@
     <p>
         Operations are seperated by newlines (hitting the enter key), and parameters go after the operator seperated by
         spaces.<br>
+        Whitespace before and after a command will be ignored.<br>
         Create comments with ".
     </p>
     <table>
@@ -28,6 +29,18 @@
         <tr>
             <td>10</td>
             <td>places 10/1 on top of the stack</td>
+            <td>none</td>
+            <td>none</td>
+        </tr>
+        <tr>
+            <td>0.2</td>
+            <td>places 1/5 on top of the stack</td>
+            <td>none</td>
+            <td>none</td>
+        </tr>
+        <tr>
+            <td>0.1[6]</td>
+            <td>places 1/6 on top of the stack</td>
             <td>none</td>
             <td>none</td>
         </tr>
@@ -210,10 +223,15 @@
             <td>1 matrix</td>
         </tr>
         <tr>
-            <td>inv</td>
+            <td rowspan="2">inv</td>
             <td>inverses a matrix</td>
             <td>none</td>
             <td>1 matrix</td>
+        </tr>
+        <tr>
+            <td class="override">inverses a rational</td>
+            <td>none</td>
+            <td>1 rational</td>
         </tr>
         <tr>
             <td>ref</td>

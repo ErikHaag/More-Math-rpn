@@ -83,3 +83,11 @@ td.matrixIndex {
     padding-left: 5px;
     padding-right: 5px;
 }
+
+body.dark a {
+    color: darkturquoise;
+}
+
+body.dark a:visited {
+    color: darkcyan;
+}

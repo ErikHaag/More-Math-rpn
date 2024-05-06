@@ -403,7 +403,7 @@ function doInstruction() {
         current = -1;
         return true;
     }
-    let I = instructions[current].split(" ");
+    let I = instructions[current].trim().split(" ");
     for (let i = 1; i < I.length; i++) {
         if (I[i].startsWith("]")) {
             let refer = Number.parseInt(I[i].substring(1));
@@ -508,7 +508,7 @@ function doInstruction() {
                 if (values[0] instanceof Rational && values[1] instanceof Rational) {
                     let A = values[1].clone();
                     if (values[0].numerator == 0) {
-                        alert("Division by zero!");
+                        alert("division by zero!");
                         current = -2;
                         break;
                     }
@@ -651,12 +651,23 @@ function doInstruction() {
                     current = -2;
                 }
             } else if (I[0] == "inv") {
-                if (values[0] instanceof Matrix) {
+                if (values[0] instanceof Rational) {
+                    let A = values[0].clone();
+                    if (A.numerator == 0n) {
+                        alert("division by zero!");
+                        current = -2;
+                        break;
+                    }
+                    let inverse = new Rational(1n);
+                    inverse.div(A);
+                    values.splice(0, 1, inverse);
+                } else if (values[0] instanceof Matrix) {
                     let A = values[0].clone();
                     let inverse = A.inverse();
                     if (inverse instanceof Error) {
                         alert("matrix has determinate of 0 (zero)");
                         current = -2;
+                        break;
                     }
                     values.splice(0, 1, inverse);
                 } else {
@@ -763,6 +774,28 @@ function doInstruction() {
                     alert("invalid arguments");
                     current = -2;
                 }
+            } else if (/-?\d+[\.,]\d*\[\d+\]/.test(I[0])) {
+                let numComponents = I[0].split(/[,\.\[]/);
+                let int = new Rational(BigInt(numComponents[0]));
+                let frac = new Rational(BigInt(numComponents[1]), 10n ** BigInt(numComponents[1].length));
+                let rep = new Rational(BigInt(numComponents[2].slice(0, -1)), 10n ** BigInt(numComponents[1].length) * (10n ** (BigInt(numComponents[2].length) - 1n) - 1n));
+                frac.add(rep);
+                if (int.numerator >= 0n) {
+                    int.add(frac);
+                } else {
+                    int.sub(frac);
+                }
+                values.unshift(int);
+            } else if (/-?\d+[\.,]\d+/.test(I[0])) {
+                let numComponents = I[0].split(/[,\.]/);
+                let int = new Rational(BigInt(numComponents[0]));
+                let frac = new Rational(BigInt(numComponents[1]), 10n ** BigInt(numComponents[1].length));
+                if (int.numerator >= 0n) {
+                    int.add(frac);
+                } else {
+                    int.sub(frac);
+                }
+                values.unshift(int);
             } else if (/-?\d+/.test(I[0])) {
                 values.unshift(new Rational(strToBigInt(I[0])));
             } else {
