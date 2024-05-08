@@ -266,7 +266,7 @@ function rationalAppearence(R) {
 
 function rationalToTable(R, commas = false) {
     if (R.denominator == 1n) {
-        return BigIntToString(R.numerator, commas);
+        return "<p>" + BigIntToString(R.numerator, commas) + "</p>";
     } else {
         return "<table>\n<tr>\n<td class=\"numerator\">" + BigIntToString(R.numerator, appearence == "commas") + "</td>\n</tr>\n<tr>\n<td class=\"denominator\">" + BigIntToString(R.denominator, appearence == "commas") + "</td>\n</tr>\n</table>";
     }
@@ -330,50 +330,75 @@ function BigIntToString(I, commas = false) {
 
 function updateUI() {
     let list = "";
+    let indexRow = "";
     for (let i = (values.length - 1); i >= 0; i--) {
+        if (!allowRunning) {
+            indexRow += "<td>" + BigInt(i) + "</td>"
+        }
         if (appearence == "latex") {
-            list += "<li><img src=\"https://latex.codecogs.com/svg.image?" + (dark ? "%5Ccolor%7BWhite%7D" : "") + values[i].toLatex() + "\"></li>";
+            valElem = "<img src=\"https://latex.codecogs.com/svg.image?" + (dark ? "%5Ccolor%7BWhite%7D" : "") + values[i].toLatex() + "\">";
         } else {
             if (values[i] instanceof Rational) {
-                list += "<li>" + rationalAppearence(values[i].clone()) + "</li>\n";
+                valElem = rationalAppearence(values[i].clone());
             } else if (values[i] instanceof Matrix) {
-                list += "<li>" + matrixToTable(values[i].clone()) + "</li>\n";
+                valElem = matrixToTable(values[i].clone());
             }
         }
-    }
-    valueStack.innerHTML = list;
-    list = ""
-    for (let kv of aux.entries()) {
-        list += "<li><b>" + kv[0] + "</b><br>";
-        if (appearence == "latex") {
-            list += "<img src=\"https://latex.codecogs.com/svg.image?" + (dark ? "%5Ccolor%7BWhite%7D" : "") + kv[1].toLatex() + "\"></li>";
+        if (allowRunning) {
+            list += "<li>" + valElem + "</li>\n"
         } else {
-            if (kv[1] instanceof Rational) {
-                list += rationalAppearence(kv[1].clone()) + "</li>\n";
-            } else if (kv[1] instanceof Matrix) {
-                list += matrixToTable(kv[1].clone()) + "</li>\n";
-            }
+            list += "<td>" + valElem + "</td>"
         }
     }
-    auxillaryArray.innerHTML = list;
-    list = "";
-    for (let i = 0; i < repeats.length; i++) {
-        list += "<li>" + repeats[i][0].toString() + ", " + repeats[i][1].toString() + ", " + repeats[i][2].toString() + ", " + repeats[i][3].toString() + "</li>\n";
+    if (allowRunning) {
+        valueStack.innerHTML = list;
+    } else {
+        valueStack.innerHTML = "<li><table><tr class=\"index\">" + indexRow + "</tr><tr class=\"valRow\">" + list + "</tr></table></li>"
     }
-    repeatPile.innerHTML = list;
+    if (aux.keys().next().done) {
+        // hide if empty
+        auxillaryArray.parentElement.hidden = true;
+    } else {
+        list = ""
+        for (let kv of aux.entries()) {
+            list += "<li><b>" + kv[0] + "</b><br>";
+            if (appearence == "latex") {
+                list += "<img src=\"https://latex.codecogs.com/svg.image?" + (dark ? "%5Ccolor%7BWhite%7D" : "") + kv[1].toLatex() + "\"></li>";
+            } else {
+                if (kv[1] instanceof Rational) {
+                    list += rationalAppearence(kv[1].clone()) + "</li>\n";
+                } else if (kv[1] instanceof Matrix) {
+                    list += matrixToTable(kv[1].clone()) + "</li>\n";
+                }
+            }
+        }
+        auxillaryArray.innerHTML = list;
+        auxillaryArray.parentElement.hidden = false;
+    }
+    if (repeats.length == 0) {
+        //hide if empty
+        repeatPile.parentElement.hidden = true;
+    } else {
+        list = "";
+        for (let i = 0; i < repeats.length; i++) {
+            list += "<li>" + repeats[i][0].toString() + ", " + repeats[i][1].toString() + ", " + repeats[i][2].toString() + ", " + repeats[i][3].toString() + "</li>\n";
+        }
+        repeatPile.innerHTML = list;
+        repeatPile.parentElement.hidden = false;
+    }
     list = "";
     let c = comments.findIndex((e) => { return e[0] == 0; });
     if (c >= 0) {
         for (let j = 1; j < comments[c].length; j++) {
-            list += "<li><p title=\"" + comments[c][j] + "\">\"</p></li>\n";
+            list += "<li><p class=\"comment\">" + comments[c][j] + "</p></li>\n";
         }
     }
     for (let i = 0; i < instructions.length; i++) {
-        list += "<li " + (i == current ? "class=\"curr\" >" : ">") + instructions[i] + "</li>\n";
+        list += "<li " + (i == current ? "class=\"curr\" >" : ">") + (allowRunning || current == -2 || current == -1 ? "" : "<p class=\"index\">" + BigInt(i - current) + "</p><br>") + instructions[i] + "</li>\n";
         let c = comments.findIndex((e) => { return e[0] == i + 1; });
         if (c >= 0) {
             for (let j = 1; j < comments[c].length; j++) {
-                list += "<li><p title=\"" + comments[c][j] + "\">\"</p></li>\n";
+                list += "<li><p class=\"comment\">\"" + comments[c][j] + "\"</p></li>\n";
             }
         }
     }
@@ -797,7 +822,7 @@ function doInstruction() {
                 }
                 values.unshift(int);
             } else if (/-?\d+/.test(I[0])) {
-                values.unshift(new Rational(strToBigInt(I[0])));
+                values.unshift(new Rational(BigInt(I[0])));
             } else {
                 alert("invalid command");
                 current = -2;
@@ -805,7 +830,7 @@ function doInstruction() {
             break;
         case 2:
             if (I[0] == ">>") {
-                let copiedVal = values[strToBigInt(I[1])];
+                let copiedVal = values[BigInt(I[1])];
                 if (copiedVal) {
                     values.unshift(copiedVal);
                 } else {
@@ -966,46 +991,4 @@ function doInstruction() {
     }
     current++;
     return false;
-}
-
-function strToBigInt(s) {
-    let int = 0n;
-    let neg = s.startsWith("-");
-    for (let i = neg ? 1 : 0; i < s.length; i++) {
-        int *= 10n;
-        switch (s.substring(i, i + 1)) {
-            case "0":
-                break;
-            case "1":
-                int += 1n;
-                break;
-            case "2":
-                int += 2n;
-                break;
-            case "3":
-                int += 3n;
-                break;
-            case "4":
-                int += 4n;
-                break;
-            case "5":
-                int += 5n;
-                break;
-            case "6":
-                int += 6n;
-                break;
-            case "7":
-                int += 7n;
-                break;
-            case "8":
-                int += 8n;
-                break;
-            case "9":
-                int += 9n;
-                break;
-            default:
-                return (neg ? -1n : 1n) * int / 10n;
-        }
-    }
-    return (neg ? -1n : 1n) * int;
 }

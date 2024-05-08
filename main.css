@@ -33,14 +33,25 @@ button:hover, button:focus {
 
 li {
     padding: 10px;
-    display: inline-block;
-    vertical-align: middle;
+    display: flex;
+    align-content: middle;
 }
 
 ol {
+    display: flex;
+    flex-flow: row nowrap;
     padding-left: 0px;
+    height: min-content;
     max-height: 10em;
-    overflow-y: scroll;
+    overflow-x: scroll;
+}
+
+p {
+    margin: 0px;
+}
+
+p.comment {
+    font-style: italic;
 }
 
 #is>li{
@@ -61,6 +72,16 @@ table {
 
 td {
     text-align: center;
+}
+
+tr.valRow>td, tr.index>td {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+p.index, tr.index {
+    font-size: small;
+    height: min-content;
 }
 
 body.light td.numerator {
