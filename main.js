@@ -361,7 +361,7 @@ function updateUI() {
     } else {
         list = ""
         for (let kv of aux.entries()) {
-            list += "<li><b>" + kv[0] + "</b><br>";
+            list += "<li><p class=\"auxKey\">" + kv[0] + "</p><br>";
             if (appearence == "latex") {
                 list += "<img src=\"https://latex.codecogs.com/svg.image?" + (dark ? "%5Ccolor%7BWhite%7D" : "") + kv[1].toLatex() + "\"></li>";
             } else {
@@ -390,7 +390,7 @@ function updateUI() {
     let c = comments.findIndex((e) => { return e[0] == 0; });
     if (c >= 0) {
         for (let j = 1; j < comments[c].length; j++) {
-            list += "<li><p class=\"comment\">" + comments[c][j] + "</p></li>\n";
+            list += "<li><p class=\"comment\">\"" + comments[c][j] + "\"</p></li>\n";
         }
     }
     for (let i = 0; i < instructions.length; i++) {
