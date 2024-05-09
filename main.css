@@ -33,8 +33,7 @@ button:hover, button:focus {
 
 li {
     padding: 10px;
-    display: flex;
-    align-content: middle;
+    display: block;
 }
 
 ol {
