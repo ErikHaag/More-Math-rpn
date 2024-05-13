@@ -34,6 +34,7 @@ button:hover, button:focus {
 li {
     padding: 10px;
     display: block;
+    align-content: center;
 }
 
 ol {
