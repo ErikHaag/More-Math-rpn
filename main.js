@@ -181,6 +181,7 @@ speedButton.addEventListener("click", () => {
 
 function reset() {
     instructions = input.value.split("\n");
+    instructions = instructions.map((s) => s.trim());
     values = [];
     repeats = [];
     comments = [];
@@ -428,7 +429,7 @@ function doInstruction() {
         current = -1;
         return true;
     }
-    let I = instructions[current].trim().split(" ");
+    let I = instructions[current].split(" ");
     for (let i = 1; i < I.length; i++) {
         if (I[i].startsWith("]")) {
             let refer = Number.parseInt(I[i].substring(1));
