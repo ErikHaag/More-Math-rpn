@@ -1,3 +1,4 @@
+// the important elements ordered by position
 const input = document.getElementById("input");
 const darkButton = document.getElementById("darkModeButton");
 const appearenceSelect = document.getElementById("visual");
@@ -15,23 +16,40 @@ const stopButton = document.getElementById("stop");
 const speedButton = document.getElementById("speed");
 const link = document.getElementById("link");
 
+// whether it's black on white or white on black
 let dark = false;
+// the display mode of the value stack, default is fraction without commas
 let appearence = "default";
+// the amount of precision after the decimal point in associated display modes
 let decimals = 3n;
+// the list of instructions in a JS friendly format
 let instructions = [];
+// the comments and locations
 let comments = [];
+// any repeats currently being dealt with
 let repeats = [];
+// the values shuffled on a stack
 let values = [];
+// the named variables
 let aux = new Map();
+// where we are in the instructions
 let current = -1;
+// whether the program is stepping manually or automatical
 let allowRunning = true;
+// the beating heart of this magnum opus
 let timer;
+// how fast are we going? 
 let speedSelect = 0;
+// the time between update bursts
 let speed = 500;
+// the amount of updates per burst
 let steps = 1;
+// where the repeats and next instructions are
 let rnList = [];
 
+// when everything loaded properly use the URL parameters
 document.addEventListener("DOMContentLoaded", () => {
+    // hang on, where are we again?
     let url = new URL(document.location);
     let params = url.search;
     params = params.substring(1).split("&");
@@ -39,6 +57,7 @@ document.addEventListener("DOMContentLoaded", () => {
         let p = parameter.split("=");
         switch (p[0]) {
             case "instr":
+                // translate the ASCII encoding into characters
                 let instr = p[1];
                 instr = instr.replaceAll(" ", "");
                 instr = instr.replaceAll("_", " ");
@@ -53,6 +72,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 instr = instr.replaceAll("%3E", ">");
                 input.value = instr;
                 break;
+            // TODO: add more parameters like setting the speed
             default:
                 break;
         }
@@ -73,20 +93,27 @@ input.addEventListener("change", () => {
 });
 
 darkButton.addEventListener("click", () => {
+    // flip that boolean
     dark = !dark;
+    // change the darkMode button to a sun or moon
     darkButton.innerHTML = dark ? "&#x263D" : "&#x2609";
+    // change the body's class (CSS changes all the colors based on this)
     document.getElementsByTagName("body")[0].className = dark ? "dark" : "light";
+    // update the UI (really only matters if appearence is LaTeX, but it doesn't hurt)
     updateUI()
 });
 
 appearenceSelect.addEventListener("change", () => {
+    // modify appraence based on dropdown
     appearence = appearenceSelect.value;
+    // show the appropriate extra options
     decimalDiv.hidden = !(appearence == "decimal" || appearence == "decimalcommas");
     britishModeDiv.hidden = !(appearence == "commas" || appearence == "decimal" || appearence == "decimalcommas");
     updateUI();
 });
 
 britishCheck.addEventListener("change", () => {
+    // ensure that the . and , get swapped
     updateUI();
 });
 
@@ -115,6 +142,7 @@ startButton.addEventListener("click", () => {
         reset()
         current = 0;
         updateUI();
+        // sit back and watch the magic happen
         timer = setTimeout(step, speed);
     } else {
         if (current == -1) {
@@ -409,6 +437,7 @@ function updateUI() {
 function step() {
     clearTimeout(timer);
     if (allowRunning) {
+        // a burst of instructions
         for (let i = 0; i < steps; i++) {
             if (doInstruction()) break;
         }
