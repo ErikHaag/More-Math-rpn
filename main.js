@@ -44,7 +44,7 @@ let speedSelect = 0;
 let speed = 500;
 // the amount of updates per burst
 let steps = 1;
-// where the repeats and next instructions are
+// where the repeat and next instructions are
 let rnList = [];
 
 // when everything loaded properly use the URL parameters
