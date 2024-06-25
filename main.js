@@ -70,6 +70,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 instr = instr.replaceAll("%3C", "<");
                 instr = instr.replaceAll("%3D", "=");
                 instr = instr.replaceAll("%3E", ">");
+                instr = instr.replaceAll("%5B", "[");
+                instr = instr.replaceAll("%5D", "]");
+                //decode percentaged last
+                instr = instr.replaceAll("%25", "%");
                 input.value = instr;
                 break;
             // TODO: add more parameters like setting the speed
@@ -81,6 +85,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
 input.addEventListener("change", () => {
     let formatted = input.value;
+    //encode percentage first
+    formatted = formatted.replaceAll("%", "%25");
     formatted = formatted.replaceAll("\n", "\\n");
     formatted = formatted.replaceAll(" ", "_");
     formatted = formatted.replaceAll("\"", "%22");
@@ -89,6 +95,8 @@ input.addEventListener("change", () => {
     formatted = formatted.replaceAll("&", "%26");
     formatted = formatted.replaceAll("\'", "%27");
     formatted = formatted.replaceAll("=", "%3D");
+    formatted = formatted.replaceAll("[", "%5B");
+    formatted = formatted.replaceAll("]", "%5D");
     link.textContent = "https://erikhaag.github.io/More-Math-rpn/?instr=" + formatted;
 });
 
