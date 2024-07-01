@@ -12,6 +12,11 @@
 </head>
 
 <body id="body" class="light">
+    <div id="helpBox" hidden>
+        <p></p>
+        <button id="closeHelp">Close</button>
+        <button id="nextHelp">Next</button>
+    </div>
     <fieldset>
         <legend>Controls</legend>
         <div style="display: flex;">
@@ -34,38 +39,40 @@
                 </div>
             </div>
             <div>
-                <button id="darkModeButton">&#x2609;</button><br>
+                <button id="darkModeButton">&#x2609;</button>
+                <button id="help">Help!</button>
             </div>
-
         </div>
     </fieldset>
-    <p>Value stack</p>
-    <ol id="vs">
-    </ol>
-    <div hidden>
-        <p>Auxillary Array</p>
-        <ol id="ax">
+    <div id="stateDisplay">
+        <p>Value stack</p>
+        <ol id="vs">
+        </ol>
+        <div hidden>
+            <p>Auxillary Array</p>
+            <ol id="ax">
+            </ol>
+        </div>
+        <div hidden>
+            <p>Repeat pile</p>
+            <ol id="rp">
+            </ol>
+        </div>
+        <p>Instructions</p>
+        <ol id="is">
         </ol>
     </div>
-    <div hidden>
-        <p>Repeat pile</p>
-        <ol id="rp">
-        </ol>
-    </div>
-    <p>Instructions</p>
-    <ol id="is">
-    </ol><br>
-    <textarea id="input" style="height: 15rem; width: 500px;" spellcheck="false"></textarea><br>
+    <textarea id="input" style="height: 15rem; width:200px;" spellcheck="false"></textarea><br>
     <button id="reset" hidden>Reset</button>
     <button id="start">Start</button>
     <button id="stop">Stop</button>
     <button id="speed">&gt;</button><br>
     <p>share this program with:</p>
-    <p id="link"></p>
+    <p id="link"></p><br>
     <a href="./commands.html" target="_blank">Commands</a><br>
     <a href="./examples.html" target="_blank">Examples</a><br>
     <a href="https://github.com/ErikHaag/More-Math-rpn" target="_blank">Check out the code!</a>
 </body>
 <script src='main.js'></script>
-
+<script src='help.js'></script>
 </html>

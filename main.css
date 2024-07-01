@@ -18,6 +18,19 @@ body.dark #darkModeButton {
     color: lightgray;
 }
 
+#help {
+    font-size: large;
+    background-color: rgb(30, 117, 247);
+    color: white;
+}
+
+#helpBox {
+    background-color: inherit;
+    border: 2px lightblue solid;
+    position: absolute;
+    z-index: 1;
+}
+
 #start {
     background-color: lime;
 }
