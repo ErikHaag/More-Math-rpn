@@ -7,7 +7,7 @@ const helpList = [
     {
         id: "input",
         side: "adjacent",
-        text: "The list of commands the calculator will run throught.\nCheck out the links below for programming assistance"
+        text: "The list of commands the calculator will run through.\nCheck out the links below for programming assistance"
     },
     {
         id: "start",
