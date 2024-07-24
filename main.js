@@ -94,7 +94,7 @@ input.addEventListener("change", () => {
     formatted = formatted.replaceAll("$", "%24");
     formatted = formatted.replaceAll("&", "%26");
     formatted = formatted.replaceAll("\'", "%27");
-    formatted = formatted.repeatPile("<", "%3C")
+    formatted = formatted.replaceAll("<", "%3C")
     formatted = formatted.replaceAll("=", "%3D");
     formatted = formatted.replaceAll(">", "%3E")
     formatted = formatted.replaceAll("[", "%5B");
