@@ -94,7 +94,9 @@ input.addEventListener("change", () => {
     formatted = formatted.replaceAll("$", "%24");
     formatted = formatted.replaceAll("&", "%26");
     formatted = formatted.replaceAll("\'", "%27");
+    formatted = formatted.repeatPile("<", "%3C")
     formatted = formatted.replaceAll("=", "%3D");
+    formatted = formatted.replaceAll(">", "%3E")
     formatted = formatted.replaceAll("[", "%5B");
     formatted = formatted.replaceAll("]", "%5D");
     link.textContent = "https://erikhaag.github.io/More-Math-rpn/?instr=" + formatted;
@@ -112,7 +114,7 @@ darkButton.addEventListener("click", () => {
 });
 
 appearenceSelect.addEventListener("change", () => {
-    // modify appraence based on dropdown
+    // modify appearence based on dropdown
     appearence = appearenceSelect.value;
     // show the appropriate extra options
     decimalDiv.hidden = !(appearence == "decimal" || appearence == "decimalcommas");
