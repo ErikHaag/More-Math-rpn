@@ -61,7 +61,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 let instr = p[1];
                 instr = instr.replaceAll(" ", "");
                 instr = instr.replaceAll("_", " ");
-                instr = instr.replaceAll("\\n", "\n");
+                instr = instr.replaceAll("0A", "\n");
                 instr = instr.replaceAll("%22", "\"");
                 instr = instr.replaceAll("%23", "#");
                 instr = instr.replaceAll("%24", "$");
@@ -87,7 +87,7 @@ input.addEventListener("change", () => {
     let formatted = input.value;
     //encode percentage first
     formatted = formatted.replaceAll("%", "%25");
-    formatted = formatted.replaceAll("\n", "\\n");
+    formatted = formatted.replaceAll("\n", "%0A");
     formatted = formatted.replaceAll(" ", "_");
     formatted = formatted.replaceAll("\"", "%22");
     formatted = formatted.replaceAll("#", "%23");
