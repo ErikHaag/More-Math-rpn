@@ -11,38 +11,39 @@
 <body>
     <h1>Examples</h1>
     <ul>
-        <li><a href="https://erikhaag.github.io/More-Math-rpn/?instr=1\n40\n-13\n891">Placing Numbers</a></li>
-        <li><a href="https://erikhaag.github.io/More-Math-rpn/?instr=2\n14\n+\n13\n4\n-\n3\n9\n*\n5\n3\n/">+, -, *, /</a></li>
-        <li><a href="https://erikhaag.github.io/More-Math-rpn/?instr=6\n3\n/\n3\n/\n%22Order_matters,_compare_these_sequences\n6\n3\n3\n/\n/">Order Matters</a></li>
-        <li><a href="https://erikhaag.github.io/More-Math-rpn/?instr=1\n10\n/\n2\n10\n/\n%22simplifies">Simplify</a></li>
-        <li><a href="https://erikhaag.github.io/More-Math-rpn/?instr=2\n3\n/\n%22copy_top_element_(2/3)\n%3E%3E_0\n*">Squaring</a></li>
-        <li><a href="https://erikhaag.github.io/More-Math-rpn/?instr=1\n2\n3\nm_1_3\n1\n2\n3\n4\nm_2_2\n1\n2\n3\n4\n5\n6\nm_3_2\n1\n1\n2\n/\n1\n3\n/\n4\n7\n/\nm_2_2">Creating Matrices</a></li>
-        <li><a href="https://erikhaag.github.io/More-Math-rpn/?instr=2\n1\n5\n4\nm_2_2\nflip\n6\n3\nm_1_2\nT\nflip\nT\naug\nT\n7\n9\n8\nm_1_3\nT\nflip\nrip\n-%3E_1\naug\nT\naug\nT">Matrix Manipulation</a></li>
-        <li><a href="https://erikhaag.github.io/More-Math-rpn/?instr=%22Matrices\n1\n2\n4\n8\nm_2_2\n1\n3\n9\n27\nm_2_2\n%3E%3E_1\n%3E%3E_1\n%22standard_product\n*\n%3C-_2\n%3E%3E_1\n%3E%3E_1\n%22hadamard_(component-wise)_product\nhadamard\n%3C-_2\n%3E%3E_1\n%3E%3E_1\n%22kronecker_(tensor)_product\nkronecker\n%3C-_2\n%22Vectors\n1\n2\n4\nm_1_3\n1\n3\n9\nm_1_3\n%3E%3E_1\n%3E%3E_1\n%22dot_product\ndot\n%3C-_2\n%3E%3E_1\n%3E%3E_1\n%22outer_product\nouter\n%3C-_2">Matrix and Vector Products</a></li>
-        <li><a href="https://erikhaag.github.io/More-Math-rpn/?instr=%22int\n7\n3\n/\nint\n-7\n3\n/\nint\n%22floor\n7\n3\n/\nfloor\n-7\n3\n/\nfloor\n%22ceil\n7\n3\n/\nceil\n-7\n3\n/\nceil">int, floor, and ceil</a></li>
-        <li><a href="https://erikhaag.github.io/More-Math-rpn/?instr=5\n2\n4\n1\n3\n%3C-_2\n-%3E_4\n-%3E_1\n%3C-_4">&lt;- and -&gt;</a></li>
-        <li><a href="https://erikhaag.github.io/More-Math-rpn/?instr=1\n-1\n*\njmp_-2">Endless loop</a></li>
-        <li><a href="https://erikhaag.github.io/More-Math-rpn/?instr=%22Base\n9\n%22Power\n3\n1\nrepeat_%5D1\n%3E%3E_2\n*\nnext\ndel_1\ndel_1">Exponentiation</a></li>
-        <li><a href="https://erikhaag.github.io/More-Math-rpn/?instr=1\n1\nrepeat_10\n%3E%3E_1\n%3E%3E_1\n+\nnext">Fibonacci</a></li>
-        <li><a href="https://erikhaag.github.io/More-Math-rpn/?instr=%22radicand\n2\n1\nrepeat_5\n%3E%3E_1\n%3E%3E_1\n/\n+\n2\n/\nnext">Square Root</a></li>
-        <li><a href="https://erikhaag.github.io/More-Math-rpn/?instr=repeat_10\nrepeat_10\n>>>_1\n>>>_0\n-1\n%22when_outer_loop_is_5\n>>>_1\n5\ncompare\n>>_0\n*\n11\n*\njmp_%5D0\n%22and_inner_loop_is_7\n>>>_0\n7\ncompare\n>>_0\n*\n2\n*\njmp_%5D0\n%22exit_these_loops\nleap_2\ndel_0\ndel_0\nnext\njmp_2\nleap_2\nnext\njmp_3\ndel_0\ndel_0">Leaving repeats early</a></li>
-        <li><a href="https://erikhaag.github.io/More-Math-rpn/?instr=5\n1\nrepeat_%5D1\n%3E%3E%3E_0\n*\nnext">Factorial</a></li>
-        <li><a href="https://erikhaag.github.io/More-Math-rpn/?instr=%22click_the_speed_button_to_run_faster\n27\n%3E%3E_0\n%22jmp_to_end_if_%3C%3D_1\n1\n%3E%3E_1\n1\n-\nstep\n-\n19\n*\njmp_%5D0\n%22otherwise\ndel_0\n%22check_if_divisible_by_2\n%3E%3E_0\n2\n%\nstep\n5\n*\njmp_%5D0\n%22even\ndel_0\n2\n/\n%22return_to_top\njmp_-21\n%22odd\ndel_0\n3\n*\n1\n+\n%22return_to_top\njmp_-27\n%22clean_up_when_1\ndel_0\ndel_0">Collatz</a></li>
-        <li><a href="https://erikhaag.github.io/More-Math-rpn/?instr=1\n2\n3\n4\n5\n%23\n%22Store_value_as_%27size%27\nhold_size\ndel_0\n%22Use_%27size%27_as_parameter\nm_1_%24size">hold, and $</a></li>
-        <li><a href="https://erikhaag.github.io/More-Math-rpn/?instr=3\nrepeat_500\n4\n%3E%3E%3E_0\n2\n*\n%3E%3E_0\n1\n+\n%3E%3E_0\n1\n+\n*\n*\n/\n%3E%3E%3E_0\n2\n%\n4\n*\njmp_%5D0\ndel_0\n-\njmp_3\ndel_0\n+\nnext">Nilakantha's Series for Pi</a></li>
+        <li><a href="https://erikhaag.github.io/More-Math-rpn/?instr=1%0A40%0A-13%0A891">Placing Numbers</a></li>
+        <li><a href="https://erikhaag.github.io/More-Math-rpn/?instr=2%0A14%0A+%0A13%0A4%0A-%0A3%0A9%0A*%0A5%0A3%0A/">+, -, *, /</a></li>
+        <li><a href="https://erikhaag.github.io/More-Math-rpn/?instr=6%0A3%0A/%0A3%0A/%0A%22Order_matters,_compare_these_sequences%0A6%0A3%0A3%0A/%0A/">Order Matters</a></li>
+        <li><a href="https://erikhaag.github.io/More-Math-rpn/?instr=1%0A10%0A/%0A2%0A10%0A/%0A%22simplifies">Simplify</a></li>
+        <li><a href="https://erikhaag.github.io/More-Math-rpn/?instr=2%0A3%0A/%0A%22copy_top_element_(2/3)%0A%3E%3E_0%0A*">Squaring</a></li>
+        <li><a href="https://erikhaag.github.io/More-Math-rpn/?instr=1%0A2%0A3%0Am_1_3%0A1%0A2%0A3%0A4%0Am_2_2%0A1%0A2%0A3%0A4%0A5%0A6%0Am_3_2%0A1%0A1%0A2%0A/%0A1%0A3%0A/%0A4%0A7%0A/%0Am_2_2">Creating Matrices</a></li>
+        <li><a href="https://erikhaag.github.io/More-Math-rpn/?instr=2%0A1%0A5%0A4%0Am_2_2%0Aflip%0A6%0A3%0Am_1_2%0AT%0Aflip%0AT%0Aaug%0AT%0A7%0A9%0A8%0Am_1_3%0AT%0Aflip%0Arip%0A-%3E_1%0Aaug%0AT%0Aaug%0AT">Matrix Manipulation</a></li>
+        <li><a href="https://erikhaag.github.io/More-Math-rpn/?instr=%22Matrices%0A1%0A2%0A4%0A8%0Am_2_2%0A1%0A3%0A9%0A27%0Am_2_2%0A%3E%3E_1%0A%3E%3E_1%0A%22standard_product%0A*%0A%3C-_2%0A%3E%3E_1%0A%3E%3E_1%0A%22hadamard_(component-wise)_product%0Ahadamard%0A%3C-_2%0A%3E%3E_1%0A%3E%3E_1%0A%22kronecker_(tensor)_product%0Akronecker%0A%3C-_2%0A%22Vectors%0A1%0A2%0A4%0Am_1_3%0A1%0A3%0A9%0Am_1_3%0A%3E%3E_1%0A%3E%3E_1%0A%22dot_product%0Adot%0A%3C-_2%0A%3E%3E_1%0A%3E%3E_1%0A%22outer_product%0Aouter%0A%3C-_2">Matrix and Vector Products</a></li>
+        <li><a href="https://erikhaag.github.io/More-Math-rpn/?instr=%22int%0A7%0A3%0A/%0Aint%0A-7%0A3%0A/%0Aint%0A%22floor%0A7%0A3%0A/%0Afloor%0A-7%0A3%0A/%0Afloor%0A%22ceil%0A7%0A3%0A/%0Aceil%0A-7%0A3%0A/%0Aceil">int, floor, and ceil</a></li>
+        <li><a href="https://erikhaag.github.io/More-Math-rpn/?instr=5%0A2%0A4%0A1%0A3%0A%3C-_2%0A-%3E_4%0A-%3E_1%0A%3C-_4">&lt;- and -&gt;</a></li>
+        <li><a href="https://erikhaag.github.io/More-Math-rpn/?instr=1%0A-1%0A*%0Ajmp_-2">Endless loop</a></li>
+        <li><a href="https://erikhaag.github.io/More-Math-rpn/?instr=%22Base%0A9%0A%22Power%0A3%0A1%0Arepeat_%5D1%0A%3E%3E_2%0A*%0Anext%0Adel_1%0Adel_1">Exponentiation</a></li>
+        <li><a href="https://erikhaag.github.io/More-Math-rpn/?instr=1%0A1%0Arepeat_10%0A%3E%3E_1%0A%3E%3E_1%0A+%0Anext">Fibonacci</a></li>
+        <li><a href="https://erikhaag.github.io/More-Math-rpn/?instr=%22radicand%0A2%0A1%0Arepeat_5%0A%3E%3E_1%0A%3E%3E_1%0A/%0A+%0A2%0A/%0Anext">Square Root</a></li>
+        <li><a href="https://erikhaag.github.io/More-Math-rpn/?instr=repeat_10%0Arepeat_10%0A>>>_1%0A>>>_0%0A-1%0A%22when_outer_loop_is_5%0A>>>_1%0A5%0Acompare%0A>>_0%0A*%0A11%0A*%0Ajmp_%5D0%0A%22and_inner_loop_is_7%0A>>>_0%0A7%0Acompare%0A>>_0%0A*%0A2%0A*%0Ajmp_%5D0%0A%22exit_these_loops%0Aleap_2%0Adel_0%0Adel_0%0Anext%0Ajmp_2%0Aleap_2%0Anext%0Ajmp_3%0Adel_0%0Adel_0">Leaving repeats early</a></li>
+        <li><a href="https://erikhaag.github.io/More-Math-rpn/?instr=5%0A1%0Arepeat_%5D1%0A%3E%3E%3E_0%0A*%0Anext">Factorial</a></li>
+        <li><a href="https://erikhaag.github.io/More-Math-rpn/?instr=%22click_the_speed_button_to_run_faster%0A27%0A%3E%3E_0%0A%22jmp_to_end_if_%3C%3D_1%0A1%0A%3E%3E_1%0A1%0A-%0Astep%0A-%0A19%0A*%0Ajmp_%5D0%0A%22otherwise%0Adel_0%0A%22check_if_divisible_by_2%0A%3E%3E_0%0A2%0A%%0Astep%0A5%0A*%0Ajmp_%5D0%0A%22even%0Adel_0%0A2%0A/%0A%22return_to_top%0Ajmp_-21%0A%22odd%0Adel_0%0A3%0A*%0A1%0A+%0A%22return_to_top%0Ajmp_-27%0A%22clean_up_when_1%0Adel_0%0Adel_0">Collatz</a></li>
+        <li><a href="https://erikhaag.github.io/More-Math-rpn/?instr=1%0A2%0A3%0A4%0A5%0A%23%0A%22Store_value_as_%27size%27%0Ahold_size%0Adel_0%0A%22Use_%27size%27_as_parameter%0Am_1_%24size">hold, and $</a></li>
+        <li><a href="https://erikhaag.github.io/More-Math-rpn/?instr=3%0Arepeat_500%0A4%0A%3E%3E%3E_0%0A2%0A*%0A%3E%3E_0%0A1%0A+%0A%3E%3E_0%0A1%0A+%0A*%0A*%0A/%0A%3E%3E%3E_0%0A2%0A%%0A4%0A*%0Ajmp_%5D0%0Adel_0%0A-%0Ajmp_3%0Adel_0%0A+%0Anext">Nilakantha's Series for Pi</a></li>
     </ul>
     <h1>OEIS Sequences</h1>
     <ul>
-        <li><a href="https://erikhaag.github.io/More-Math-rpn/?instr=%22A5\n1\nrepeat_50\n%3E%3E%3E_0\n1\n+\n2\n/\nceil\n1\nrepeat_%5D1\n1\n%3E%3E%3E_1\n1\n+\n%3E%3E%3E_0\n%\nstep\n-\n+\nnext\ndel_1\nnext">A5</a></li>
-        <li><a href="https://erikhaag.github.io/More-Math-rpn/?instr=%22A3215\n1\nrepeat_50\n>>_0\n>>>_0\n6\n*\n+\nnext">A3215</a></li>
-        <li><a href="https://erikhaag.github.io/More-Math-rpn/?instr=%22A5185\n1\n1\nrepeat_50\n>>_1\n>>_%5D0\ndel_1\n>>_1\n1\n+\n>>_%5D0\ndel_1\n+\nnext">A5185</a></li>
-        <li><a href="https://erikhaag.github.io/More-Math-rpn/?instr=%22A8793\nrepeat_50\n>>>_0\n1\nrepeat_%5D1\nrepeat_%5D1\nrepeat_%5D1\n>>>_2\n>>>_1\n+\n>>>_0\n+\n1\n-\n>>_0\n1\n-\n/\n*\nnext\nnext\nnext\ndel_1\nnext">A8793</a></li>
-        <li><a href="https://erikhaag.github.io/More-Math-rpn/?instr=%22A33540\n1\nrepeat_50\n>>_0\n1\n+\n>>>_0\n*\nnext">A33540</a></li>
-        <li><a href="https://erikhaag.github.io/More-Math-rpn/?instr=%22A46901\n0\nrepeat_50\n%3E%3E_0\n%3E%3E%3E_0\n-\nstep\n6\n*\njmp_%5D0\ndel_0\n%3E%3E_0\n%3E%3E%3E_0\n+\njmp_5\ndel_0\n%3E%3E_0\n%3E%3E%3E_0\n-\nnext">A46901</a></li>
-        <li><a href="https://erikhaag.github.io/More-Math-rpn/?instr=%22A61418\n2\nrepeat_50\n%3E%3E_0\n3\n2\n/\n*\nfloor\nnext">A61418</a></li>
-        <li><a href="https://erikhaag.github.io/More-Math-rpn/?instr=%22A76039\n1\nrepeat_50\n%3E%3E%3E_0\n%3E%3E_1\n-\nstep\n7\n*\njmp_%5D0\ndel_0\n%3E%3E_0\n%3E%3E%3E_0\n/\nfloor\njmp_5\ndel_0\n%3E%3E_0\n%3E%3E%3E_0\n*\nnext">A76039</a></li> 
-        <li><a href="https://erikhaag.github.io/More-Math-rpn/?instr=%22A76042\n0\nrepeat_50\n%3E%3E%3E_0\n%3E%3E_0\n*\n%3E%3E_1\n-\nstep\n8\n*\njmp_%5D0\ndel_0\n%3E%3E_0\n%3E%3E%3E_0\n%3E%3E_0\n*\n-\njmp_7\ndel_0\n%3E%3E_0\n%3E%3E%3E_0\n%3E%3E_0\n*\n+\nnext">A76042</a></li>
-        <li><a href="https://erikhaag.github.io/More-Math-rpn/?instr=%22A133058\n1\n1\nrepeat_50\n>>>_0\n1\n+\n>>_1\ngcd\n1\n-\nstep\n8\n*\njmp_%5D0\ndel_0\n>>_0\n>>>_0\n+\n2\n+\njmp_9\ndel_0\n>>_0\n>>_0\n>>>_0\n1\n+\ngcd\n/\nnext">A133058</a></li>
+        <li><a href="https://erikhaag.github.io/More-Math-rpn/?instr=%22A5%0A1%0Arepeat_50%0A%3E%3E%3E_0%0A1%0A+%0A2%0A/%0Aceil%0A1%0Arepeat_%5D1%0A1%0A%3E%3E%3E_1%0A1%0A+%0A%3E%3E%3E_0%0A%%0Astep%0A-%0A+%0Anext%0Adel_1%0Anext">A5</a></li>
+        <li><a href="https://erikhaag.github.io/More-Math-rpn/?instr=%22A10%0Arepeat_50%0A%3E%3E%3E_0%0A0%0Arepeat_%5D1%0A%3E%3E_1%0A%3E%3E%3E_0%0Agcd%0A1%0A-%0Astep%0A1%0A-%3E_1%0A-%0A+%0Anext%0Adel_1%0Anext">A10</a></li>
+        <li><a href="https://erikhaag.github.io/More-Math-rpn/?instr=%22A3215%0A1%0Arepeat_50%0A>>_0%0A>>>_0%0A6%0A*%0A+%0Anext">A3215</a></li>
+        <li><a href="https://erikhaag.github.io/More-Math-rpn/?instr=%22A5185%0A1%0A1%0Arepeat_50%0A>>_1%0A>>_%5D0%0Adel_1%0A>>_1%0A1%0A+%0A>>_%5D0%0Adel_1%0A+%0Anext">A5185</a></li>
+        <li><a href="https://erikhaag.github.io/More-Math-rpn/?instr=%22A8793%0Arepeat_50%0A>>>_0%0A1%0Arepeat_%5D1%0Arepeat_%5D1%0Arepeat_%5D1%0A>>>_2%0A>>>_1%0A+%0A>>>_0%0A+%0A1%0A-%0A>>_0%0A1%0A-%0A/%0A*%0Anext%0Anext%0Anext%0Adel_1%0Anext">A8793</a></li>
+        <li><a href="https://erikhaag.github.io/More-Math-rpn/?instr=%22A33540%0A1%0Arepeat_50%0A>>_0%0A1%0A+%0A>>>_0%0A*%0Anext">A33540</a></li>
+        <li><a href="https://erikhaag.github.io/More-Math-rpn/?instr=%22A46901%0A0%0Arepeat_50%0A%3E%3E_0%0A%3E%3E%3E_0%0A-%0Astep%0A6%0A*%0Ajmp_%5D0%0Adel_0%0A%3E%3E_0%0A%3E%3E%3E_0%0A+%0Ajmp_5%0Adel_0%0A%3E%3E_0%0A%3E%3E%3E_0%0A-%0Anext">A46901</a></li>
+        <li><a href="https://erikhaag.github.io/More-Math-rpn/?instr=%22A61418%0A2%0Arepeat_50%0A%3E%3E_0%0A3%0A2%0A/%0A*%0Afloor%0Anext">A61418</a></li>
+        <li><a href="https://erikhaag.github.io/More-Math-rpn/?instr=%22A76039%0A1%0Arepeat_50%0A%3E%3E%3E_0%0A%3E%3E_1%0A-%0Astep%0A7%0A*%0Ajmp_%5D0%0Adel_0%0A%3E%3E_0%0A%3E%3E%3E_0%0A/%0Afloor%0Ajmp_5%0Adel_0%0A%3E%3E_0%0A%3E%3E%3E_0%0A*%0Anext">A76039</a></li> 
+        <li><a href="https://erikhaag.github.io/More-Math-rpn/?instr=%22A76042%0A0%0Arepeat_50%0A%3E%3E%3E_0%0A%3E%3E_0%0A*%0A%3E%3E_1%0A-%0Astep%0A8%0A*%0Ajmp_%5D0%0Adel_0%0A%3E%3E_0%0A%3E%3E%3E_0%0A%3E%3E_0%0A*%0A-%0Ajmp_7%0Adel_0%0A%3E%3E_0%0A%3E%3E%3E_0%0A%3E%3E_0%0A*%0A+%0Anext">A76042</a></li>
+        <li><a href="https://erikhaag.github.io/More-Math-rpn/?instr=%22A133058%0A1%0A1%0Arepeat_50%0A>>>_0%0A1%0A+%0A>>_1%0Agcd%0A1%0A-%0Astep%0A8%0A*%0Ajmp_%5D0%0Adel_0%0A>>_0%0A>>>_0%0A+%0A2%0A+%0Ajmp_9%0Adel_0%0A>>_0%0A>>_0%0A>>>_0%0A1%0A+%0Agcd%0A/%0Anext">A133058</a></li>
     </ul>
 </body>
 </html>
