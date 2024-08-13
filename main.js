@@ -702,8 +702,8 @@ function doInstruction() {
                     current = -2;
                 }
             } else if (I[0] == "break") {
-                let n = repeats[repeats.length - 1][3];
                 if (repeats.length > 0) {
+                    let n = repeats[0][3];
                     if (n > current) {
                         current = n;
                         repeats.shift();
@@ -892,7 +892,7 @@ function doInstruction() {
                 }
             } else if (I[0] == "leap") {
                 if (repeats.length > 0) {
-                    let n = repeats[repeats.length - 1][3];
+                    let n = repeats[0][3];
                     if (n > current) {
                         let dist = Number.parseInt(I[1]);
                         if (dist <= 0) {
