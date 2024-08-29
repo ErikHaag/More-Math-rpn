@@ -28,7 +28,7 @@ let steps = 1;
 let rnList = [];
 
 function reset() {
-    instructions = input.value.split("\n");
+    instructions = instructionInput.value.split("\n");
     instructions = instructions.map((s) => s.trim());
     values = [];
     repeats = [];

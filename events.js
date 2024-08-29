@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 instr = instr.replaceAll("%5D", "]");
                 //decode percentaged last
                 instr = instr.replaceAll("%25", "%");
-                input.value = instr;
+                instructionInput.value = instr;
                 break;
             // TODO: add more parameters like setting the speed
             default:
@@ -34,7 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
-input.addEventListener("change", () => {
+instructionInput.addEventListener("change", () => {
     let formatted = input.value;
     //encode percentage first
     formatted = formatted.replaceAll("%", "%25");

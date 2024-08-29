@@ -1,5 +1,5 @@
 // the important elements ordered by position
-const input = document.getElementById("input");
+const instructionInput = document.getElementById("input");
 const darkButton = document.getElementById("darkModeButton");
 const appearenceSelect = document.getElementById("visual");
 const britishModeDiv = document.getElementById("britishDiv");
