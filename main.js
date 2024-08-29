@@ -658,7 +658,7 @@ function doInstruction() {
                 case ">>":
                     let copiedVal = values[BigInt(I[1])];
                     if (copiedVal) {
-                        values.unshift(copiedVal);
+                        values.unshift(copiedVal.clone());
                     } else {
                         alert("out of bounds");
                         current = -2;
