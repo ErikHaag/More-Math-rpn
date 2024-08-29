@@ -8,7 +8,9 @@
     <link rel="icon" type="image/png" href="icon.png">
     <meta name='viewport' content='width=device-width, initial-scale=1'>
     <link rel='stylesheet' type='text/css' media='screen' href='main.css'>
-    <script src="https://cdn.jsdelivr.net/gh/ErikHaag/More-Math/moremath.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/ErikHaag/More-Math@Version2/moreMathCore.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/ErikHaag/More-Math@Version2/rational.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/ErikHaag/More-Math@Version2/matrix.js"></script>
 </head>
 
 <body id="body" class="light">
@@ -21,12 +23,12 @@
         <legend>Controls</legend>
         <div style="display: flex;">
             <div style="width: 90%;">
-                <label for="visual">Stack Appearence</label>
+                <label for="visual">Stack Appearence</label>    
                 <select id="visual">
-                    <option value="default">Default</option>
-                    <option value="commas">Commas</option>
+                    <option value="fraction">Fraction</option>
+                    <option value="fractioncommas">Fraction with commas</option>
                     <option value="decimal">Decimal</option>
-                    <option value="decimalcommas">Decimal & Commas</option>
+                    <option value="decimalcommas">Decimal with Commas</option>
                     <option value="latex">LaTeX</option>
                 </select>
                 <div id="britishDiv" hidden>
@@ -73,6 +75,8 @@
     <a href="./examples.html" target="_blank">Examples</a><br>
     <a href="https://github.com/ErikHaag/More-Math-rpn" target="_blank">Check out the code!</a>
 </body>
+<script src='elements.js'></script>
 <script src='main.js'></script>
 <script src='help.js'></script>
+<script src='events.js'></script>
 </html>

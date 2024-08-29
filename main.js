@@ -1,25 +1,5 @@
-// the important elements ordered by position
-const input = document.getElementById("input");
-const darkButton = document.getElementById("darkModeButton");
-const appearenceSelect = document.getElementById("visual");
-const britishModeDiv = document.getElementById("britishDiv");
-const britishCheck = document.getElementById("british");
-const decimalDiv = document.getElementById("decimalDiv");
-const decimalLength = document.getElementById("decimal");
-const valueStack = document.getElementById("vs");
-const auxillaryArray = document.getElementById("ax");
-const repeatPile = document.getElementById("rp");
-const instructionList = document.getElementById("is");
-const resetButton = document.getElementById("reset");
-const startButton = document.getElementById("start");
-const stopButton = document.getElementById("stop");
-const speedButton = document.getElementById("speed");
-const link = document.getElementById("link");
-
 // whether it's black on white or white on black
 let dark = false;
-// the display mode of the value stack, default is fraction without commas
-let appearence = "default";
 // the amount of precision after the decimal point in associated display modes
 let decimals = 3n;
 // the list of instructions in a JS friendly format
@@ -46,176 +26,6 @@ let speed = 500;
 let steps = 1;
 // where the repeat and next instructions are
 let rnList = [];
-
-// when everything loaded properly use the URL parameters
-document.addEventListener("DOMContentLoaded", () => {
-    // hang on, where are we again?
-    let url = new URL(document.location);
-    let params = url.search;
-    params = params.substring(1).split("&");
-    for (let parameter of params) {
-        let p = parameter.split("=");
-        switch (p[0]) {
-            case "instr":
-                // translate the ASCII encoding into characters
-                let instr = p[1];
-                instr = instr.replaceAll(" ", "");
-                instr = instr.replaceAll("_", " ");
-                instr = instr.replaceAll("%0A", "\n");
-                instr = instr.replaceAll("%22", "\"");
-                instr = instr.replaceAll("%23", "#");
-                instr = instr.replaceAll("%24", "$");
-                instr = instr.replaceAll("%26", "&");
-                instr = instr.replaceAll("%27", "\'");
-                instr = instr.replaceAll("%3C", "<");
-                instr = instr.replaceAll("%3D", "=");
-                instr = instr.replaceAll("%3E", ">");
-                instr = instr.replaceAll("%5B", "[");
-                instr = instr.replaceAll("%5D", "]");
-                //decode percentaged last
-                instr = instr.replaceAll("%25", "%");
-                input.value = instr;
-                break;
-            // TODO: add more parameters like setting the speed
-            default:
-                break;
-        }
-    }
-});
-
-input.addEventListener("change", () => {
-    let formatted = input.value;
-    //encode percentage first
-    formatted = formatted.replaceAll("%", "%25");
-    formatted = formatted.replaceAll("\n", "%0A");
-    formatted = formatted.replaceAll(" ", "_");
-    formatted = formatted.replaceAll("\"", "%22");
-    formatted = formatted.replaceAll("#", "%23");
-    formatted = formatted.replaceAll("$", "%24");
-    formatted = formatted.replaceAll("&", "%26");
-    formatted = formatted.replaceAll("\'", "%27");
-    formatted = formatted.replaceAll("<", "%3C")
-    formatted = formatted.replaceAll("=", "%3D");
-    formatted = formatted.replaceAll(">", "%3E")
-    formatted = formatted.replaceAll("[", "%5B");
-    formatted = formatted.replaceAll("]", "%5D");
-    link.textContent = "https://erikhaag.github.io/More-Math-rpn/?instr=" + formatted;
-});
-
-darkButton.addEventListener("click", () => {
-    // flip that boolean
-    dark = !dark;
-    // change the darkMode button to a sun or moon
-    darkButton.innerHTML = dark ? "&#x263D" : "&#x2609";
-    // change the body's class (CSS changes all the colors based on this)
-    document.getElementsByTagName("body")[0].className = dark ? "dark" : "light";
-    // update the UI (really only matters if appearence is LaTeX, but it doesn't hurt)
-    updateUI()
-});
-
-appearenceSelect.addEventListener("change", () => {
-    // modify appearence based on dropdown
-    appearence = appearenceSelect.value;
-    // show the appropriate extra options
-    decimalDiv.hidden = !(appearence == "decimal" || appearence == "decimalcommas");
-    britishModeDiv.hidden = !(appearence == "commas" || appearence == "decimal" || appearence == "decimalcommas");
-    updateUI();
-});
-
-britishCheck.addEventListener("change", () => {
-    // ensure that the . and , get swapped
-    updateUI();
-});
-
-decimalLength.addEventListener("change", () => {
-    let d = decimalLength.value;
-    if (d.includes(".") || d.includes("-") || d == "0" || d == "") {
-        decimals = 1n;
-        decimalLength.value = "1";
-    } else {
-        decimals = BigInt(d);
-    }
-    updateUI();
-});
-
-resetButton.addEventListener("click", () => {
-    reset();
-    current = -1;
-    updateUI();
-});
-
-startButton.addEventListener("click", () => {
-    if (allowRunning) {
-        if (current >= 0) {
-            clearTimeout(timer);
-        }
-        reset()
-        current = 0;
-        updateUI();
-        // sit back and watch the magic happen
-        timer = setTimeout(step, speed);
-    } else {
-        if (current == -1) {
-            reset();
-            current = 0;
-            updateUI();
-        } else {
-            step();
-        }
-    }
-});
-
-stopButton.addEventListener("click", () => {
-    allowRunning = !allowRunning;
-    if (allowRunning) {
-        startButton.innerHTML = "Start";
-        stopButton.innerHTML = "Stop";
-        resetButton.hidden = true;
-        step();
-    } else {
-        startButton.innerHTML = "Step"
-        stopButton.innerHTML = "Continue";
-        resetButton.hidden = false;
-    }
-});
-
-speedButton.addEventListener("click", () => {
-    clearTimeout(timer);
-    switch (speedSelect) {
-        case 0:
-            speed = 250;
-            steps = 1;
-            speedSelect = 1;
-            speedButton.innerHTML = "&gt;&gt;";
-            break;
-        case 1:
-            speed = 10;
-            speedSelect = 2;
-            steps = 1;
-            speedButton.innerHTML = "&gt;&gt;&gt;";
-            break;
-        case 2:
-            speed = 10;
-            speedSelect = 3;
-            steps = 5;
-            speedButton.innerHTML = "&gt;&gt;&gt;&gt;";
-            break;
-        case 3:
-            speed = 10;
-            speedSelect = 4;
-            steps = 10;
-            speedButton.innerHTML = "&gt;&gt;&gt;&gt;&gt;";
-            break;
-        case 4:
-            speed = 500;
-            steps = 1;
-            speedSelect = 0;
-            speedButton.innerHTML = "&gt;"
-    }
-    if (allowRunning) {
-        timer = setTimeout(step, speed);
-    }
-});
 
 function reset() {
     instructions = input.value.split("\n");
@@ -254,25 +64,25 @@ function reset() {
 
 function matrixToTable(M) {
     let h = "<table>"
-    for (let i = 0; i < M.rows; i++) {
+    for (let i = 0n; i < M.rows; i++) {
         h += "\n<tr>";
-        if (M.rows == 1) {
+        if (M.rows == 1n) {
             h += "\n<td>[</td>";
-        } else if (i == 0) {
+        } else if (i == 0n) {
             h += "\n<td>⎡</td>";
-        } else if (i == M.rows - 1) {
+        } else if (i == M.rows - 1n) {
             h += "\n<td>⎣</td>";
         } else {
             h += "\n<td>⎢ </td>";
         }
-        for (let j = 0; j < M.columns; j++) {
+        for (let j = 0n; j < M.columns; j++) {
             h += "\n<td class=\"matrixIndex\">" + rationalAppearence(M.indices[i][j].clone()) + "</td>";
         }
-        if (M.rows == 1) {
+        if (M.rows == 1n) {
             h += "\n<td>]</td>";
-        } else if (i == 0) {
+        } else if (i == 0n) {
             h += "\n<td>⎤</td>";
-        } else if (i == M.rows - 1) {
+        } else if (i == M.rows - 1n) {
             h += "\n<td>⎦</td>";
         } else {
             h += "\n<td>⎥</td>";
@@ -284,11 +94,11 @@ function matrixToTable(M) {
 
 function rationalAppearence(R) {
     let str;
-    switch (appearence) {
-        case "default":
+    switch (appearenceSelect.value) {
+        case "fraction":
             str = rationalToTable(R, false);
             break;
-        case "commas":
+        case "fractioncommas":
             str = rationalToTable(R, true);
             break;
         case "decimal":
@@ -307,7 +117,7 @@ function rationalToTable(R, commas = false) {
     if (R.denominator == 1n) {
         return "<p>" + BigIntToString(R.numerator, commas) + "</p>";
     } else {
-        return "<table>\n<tr>\n<td class=\"numerator\">" + BigIntToString(R.numerator, appearence == "commas") + "</td>\n</tr>\n<tr>\n<td class=\"denominator\">" + BigIntToString(R.denominator, appearence == "commas") + "</td>\n</tr>\n</table>";
+        return "<table>\n<tr>\n<td class=\"numerator\">" + BigIntToString(R.numerator, appearenceSelect.value == "fractioncommas") + "</td>\n</tr>\n<tr>\n<td class=\"denominator\">" + BigIntToString(R.denominator, appearenceSelect.value == "fractioncommas") + "</td>\n</tr>\n</table>";
     }
 }
 
@@ -317,40 +127,34 @@ function rationalToDecimal(R, p, commas = false) {
     if (neg) {
         RClone.mult(new Rational(-1n));
     }
-    let I = RClone.numerator / RClone.denominator;
-    RClone.sub(new Rational(I));
-    let POT = new Rational(10n);
-    POT.pow(p);
-    RClone.mult(POT);
-    let d = RClone.numerator / RClone.denominator;
-    let int = BigIntToString(I, commas);
-    let dec = BigIntToString(d);
-    let rep = p - BigInt(dec.length);
-    for (let i = 0; i < rep; i++) {
-        dec = "0" + dec;
+    let s = RClone.toDecimal(p, 10n, ":");
+    if (s.endsWith("[0]")) {
+        s = s.substring(0, s.length - 3);
     }
-    for (let i = 0; i < p; i++) {
-        if (dec.endsWith("0")) {
-            dec = dec.substring(0, dec.length - 1);
+    if (s.endsWith(":")) {
+        s = s.substring(0, s.length - 1);
+    } else if (commas) {
+        let int, decimal;
+        let bracketIndex = s.indexOf("[");
+        [int, decimal] = s.split(":");
+        for (let i = int.length - 3; i > 0; i -= 3) {
+            int = int.substring(0, i) + ";" + int.substring(i);
         }
+        for (let i = 3; i < decimal.length - 2 * (bracketIndex != -1); i += 4) {
+            let j = i;
+            if (bracketIndex != -1 && i > bracketIndex) {
+                j++;
+            }
+            decimal = decimal.substring(0, j) + ";" + decimal.substring(j);
+        }
+        s = int + ":" + decimal;
     }
-    if (commas && dec.length >= 4) {
-        let digitsArray = [];
-        let excess = dec.length % 3;
-        for (let i = 3; i - 1 <= dec.length - excess; i += 3) {
-            digitsArray.push(dec.substring(i - 3, i));
-        }
-        if (excess >= 1) {
-            digitsArray.push(dec.substring(dec.length - excess));
-        }
-        dec = digitsArray.join(britishCheck.checked ? "." : ",");
-    }
-    return (neg ? "-" + int : int) + (dec == "" ? "" : (britishCheck.checked ? "," : ".") + dec);
+    return s.replaceAll(":", britishCheck.checked ? "," : ".").replaceAll(";", britishCheck.checked ? "." : ",");
 }
 
 function BigIntToString(I, commas = false) {
     let neg = I < 0;
-    I = MathJS.abs(I);
+    I = BigMathJS.abs(I);
     let s = I.toString();
     let digits = s.length;
     if (commas) {
@@ -374,7 +178,7 @@ function updateUI() {
         if (!allowRunning) {
             indexRow += "<td>" + BigInt(i) + "</td>"
         }
-        if (appearence == "latex") {
+        if (appearenceSelect.value == "latex") {
             valElem = "<img src=\"https://latex.codecogs.com/svg.image?" + (dark ? "%5Ccolor%7BWhite%7D" : "") + values[i].toLatex() + "\">";
         } else {
             if (values[i] instanceof Rational) {
@@ -401,7 +205,7 @@ function updateUI() {
         list = ""
         for (let kv of aux.entries()) {
             list += "<li><p class=\"auxKey\">" + kv[0] + "</p><br>";
-            if (appearence == "latex") {
+            if (appearenceSelect.value == "latex") {
                 list += "<img src=\"https://latex.codecogs.com/svg.image?" + (dark ? "%5Ccolor%7BWhite%7D" : "") + kv[1].toLatex() + "\"></li>";
             } else {
                 if (kv[1] instanceof Rational) {
@@ -471,7 +275,7 @@ function doInstruction() {
     let I = instructions[current].split(" ");
     for (let i = 1; i < I.length; i++) {
         if (I[i].startsWith("]")) {
-            let refer = Number.parseInt(I[i].substring(1));
+            let refer = BigInt(I[i].substring(1));
             let parameter = values[refer];
             if (!parameter) {
                 alert("out of bounds");
@@ -518,514 +322,514 @@ function doInstruction() {
             }
         }
     }
+    let index = 0n;
     switch (I.length) {
         case 1:
-            if (I[0] == "+") {
-                if (values[0] instanceof Rational && values[1] instanceof Rational) {
-                    let A = values[1].clone();
-                    let B = values[0].clone();
-                    A.add(B);
-                    values.splice(0, 2, A.clone());
-                } else if (values[0] instanceof Matrix && values[1] instanceof Matrix) {
-                    let A = values[1].clone();
-                    let B = values[0].clone();
-                    A.add(B)
-                    values.splice(0, 2, A.clone());
-                } else {
-                    alert("invalid arguments");
-                    current = -2;
-                }
-            } else if (I[0] == "-") {
-                if (values[0] instanceof Rational && values[1] instanceof Rational) {
-                    let A = values[1].clone();
-                    let B = values[0].clone();
-                    A.sub(B);
-                    values.splice(0, 2, A.clone());
-                } else {
-                    alert("invalid arguments");
-                    current = -2;
-                }
-            } else if (I[0] == "*") {
-                if (values[0] instanceof Rational && values[1] instanceof Rational) {
-                    let A = values[1].clone();
-                    let B = values[0].clone();
-                    A.mult(B);
-                    values.splice(0, 2, A.clone());
-                } else if (values[0] instanceof Matrix && values[1] instanceof Rational) {
-                    let A = values[0].clone();
-                    let B = values[1].clone();
-                    A.scale(B)
-                    values.splice(0, 2, A.clone());
-                } else if (values[0] instanceof Rational && values[1] instanceof Matrix) {
-                    let A = values[1].clone();
-                    let B = values[0].clone();
-                    A.scale(B)
-                    values.splice(0, 2, A.clone());
-                } else if (values[0] instanceof Matrix && values[1] instanceof Matrix && values[1].columns == values[0].rows) {
-                    let A = values[1].clone();
-                    let B = values[0].clone();
-                    values.splice(0, 2, A.product(B));
-                } else {
-                    alert("invalid arguments");
-                    current = -2;
-                }
-            } else if (I[0] == "/") {
-                if (values[0] instanceof Rational && values[1] instanceof Rational) {
-                    let A = values[1].clone();
-                    if (values[0].numerator == 0) {
-                        alert("division by zero!");
-                        current = -2;
-                        break;
-                    }
-                    let B = values[0].cloneInverse();
-                    A.mult(B);
-                    values.splice(0, 2, A.clone());
-                } else {
-                    alert("invalid arguments");
-                    current = -2;
-                }
-            } else if (I[0] == "gcd") {
-                if (values[0] instanceof Rational && values[0].denominator == 1n && values[0] instanceof Rational && values[0].denominator == 1n) {
-                    values.splice(0, 2, new Rational(MathJS.gcd(values[0].numerator, values[1].numerator)));
-                } else {
-                    alert("invalid arguments");
-                    current = -2;
-                }
-            } else if (I[0] == "lcm") {
-                if (values[0] instanceof Rational && values[0].denominator == 1n && values[0] instanceof Rational && values[0].denominator == 1n) {
-                    if (values[0].numerator == 0n || values[1].numerator == 0n) {
-                        values.splice(0, 2, new Rational(0n));
+            switch (I[0]) {
+                case "+":
+                    if (values[0] instanceof Rational && values[1] instanceof Rational || values[0] instanceof Matrix && values[1] instanceof Matrix) {
+                        values[1].add(values[0]);
+                        values.shift();
                     } else {
-                        let A = MathJS.abs(values[0].numerator);
-                        let B = MathJS.abs(values[1].numerator);
-                        let C = MathJS.gcd(A, B);
-                        A = A * B / C;
-                        values.splice(0, 2, new Rational(A));
-                    }
-                } else {
-                    alert("invalid arguments");
-                    current = -2;
-                }
-            } else if (I[0] == "int") {
-                if (values[0] instanceof Rational) {
-                    let A = values[0].clone();
-                    values.splice(0, 1, new Rational(A.numerator / A.denominator));
-                } else {
-                    alert("invalid arguments");
-                    current = -2;
-                }
-            } else if (I[0] == "#") {
-                values.unshift(new Rational(BigInt(values.length)));
-            } else if (I[0] == "floor") {
-                if (values[0] instanceof Rational) {
-                    let A = values[0].clone();
-                    let B = new Rational(A.numerator / A.denominator);
-                    if (A.compare(B) == -1) {
-                        B.sub(new Rational(1n));
-                    }
-                    values.splice(0, 1, B);
-                } else {
-                    alert("invalid arguments");
-                    current = -2;
-                }
-            } else if (I[0] == "ceil") {
-                if (values[0] instanceof Rational) {
-                    let A = values[0].clone();
-                    let B = new Rational(A.numerator / A.denominator);
-                    if (A.compare(B) == 1) {
-                        B.add(new Rational(1n));
-                    }
-                    values.splice(0, 1, B);
-                } else {
-                    alert("invalid arguments");
-                    current = -2;
-                }
-            } else if (I[0] == "%") {
-                if (values[0] instanceof Rational && values[1] instanceof Rational) {
-                    let A = values[1].clone();
-                    let B = values[0].clone();
-                    if (values[0].numerator == 0) {
-                        alert("Division by zero!");
+                        alert("invalid arguments");
                         current = -2;
-                        break;
                     }
-                    let C = A.clone();
-                    C.div(B);
-                    let D = new Rational(C.numerator / C.denominator);
-                    if (C.compare(D) == -1) {
-                        D.sub(new Rational(1n));
-                    }
-                    D.mult(B);
-                    A.sub(D);
-                    values.splice(0, 2, A.clone());
-                } else {
-                    alert("invalid arguments");
-                    current = -2;
-                }
-            } else if (I[0] == "den") {
-                if (values[0] instanceof Rational) {
-                    values.splice(0, 1, new Rational(values[0].denominator));
-                } else {
-                    alert("invalid arguments");
-                    current = -2;
-                }
-            } else if (I[0] == "step") {
-                if (values[0] instanceof Rational) {
-                    let A = 0n;
-                    if (values[0].numerator >= 1n) {
-                        A = 1n;
-                    }
-                    values.splice(0, 1, new Rational(A));
-                } else {
-                    alert("invalid arguments");
-                    current = -2;
-                }
-            } else if (I[0] == "compare") {
-                if (values[0] instanceof Rational && values[1] instanceof Rational) {
-                    let A = values[1].clone();
-                    let B = values[0].clone();
-                    values.splice(0, 2, new Rational(BigInt(A.compare(B))));
-                } else {
-                    alert("invalid arguments");
-                    current = -2;
-                }
-            } else if (I[0] == "next") {
-                if (repeats.length >= 1) {
-                    if (repeats[0][0] < repeats[0][1]) {
-                        repeats[0][0]++;
-                        current = repeats[0][2];
+                    break;
+                case "-":
+                    if (values[0] instanceof Rational && values[1] instanceof Rational) {
+                        values[1].sub(values[0]);
+                        values.shift();
                     } else {
-                        repeats.shift();
+                        alert("invalid arguments");
+                        current = -2;
                     }
-                } else {
-                    alert("not in a loop");
-                    current = -2;
-                }
-            } else if (I[0] == "break") {
-                if (repeats.length > 0) {
-                    let n = repeats[0][3];
-                    if (n > current) {
-                        current = n;
-                        repeats.shift();
+                    break;
+                case "*":
+                    if (values[0] instanceof Rational && values[1] instanceof Rational) {
+                        values[1].mult(values[0]);
+                        values.shift();
+                    } else if (values[0] instanceof Matrix && values[1] instanceof Rational) {
+                        values[0].scale(values[1]);
+                        values.splice(1, 1);
+                    } else if (values[0] instanceof Rational && values[1] instanceof Matrix) {
+                        values[1].scale(values[0]);
+                        values.shift();
+                    } else if (values[0] instanceof Matrix && values[1] instanceof Matrix && values[1].columns == values[0].rows) {
+                        values[1].product(values[0]);
+                        values.shift();
                     } else {
-                        alert("loop isn't closed!");
+                        alert("invalid arguments");
                         current = -2;
                     }
-                } else {
-                    alert("not in a loop");
-                    current = -2;
-                }
-            } else if (I[0] == "inv") {
-                if (values[0] instanceof Rational) {
-                    let A = values[0].clone();
-                    if (A.numerator == 0n) {
-                        alert("division by zero!");
-                        current = -2;
-                        break;
-                    }
-                    let inverse = new Rational(1n);
-                    inverse.div(A);
-                    values.splice(0, 1, inverse);
-                } else if (values[0] instanceof Matrix) {
-                    let A = values[0].clone();
-                    let inverse = A.inverse();
-                    if (inverse instanceof Error) {
-                        alert("matrix has determinate of 0 (zero)");
-                        current = -2;
-                        break;
-                    }
-                    values.splice(0, 1, inverse);
-                } else {
-                    alert("invalid arguments");
-                    current = -2;
-                }
-            } else if (I[0] == "T") {
-                if (values[0] instanceof Matrix) {
-                    let A = values[0].clone();
-                    values.splice(0, 1, A.transpose());
-                } else {
-                    alert("invalid arguments");
-                    current = -2;
-                }
-            } else if (I[0] == "ref") {
-                if (values[0] instanceof Matrix) {
-                    let A = values[0].clone();
-                    A.gaussianElimination();
-                    values.splice(0, 1, A);
-                } else {
-                    alert("invalid arguments");
-                    current = -2;
-                }
-            } else if (I[0] == "det") {
-                if (values[0] instanceof Matrix) {
-                    let A = values[0].clone();
-                    values.splice(0, 1, A.determinate());
-                } else {
-                    alert("invalid arguments");
-                    current = -2;
-                }
-            } else if (I[0] == "aug") {
-                if (values[0] instanceof Matrix && values[1] instanceof Matrix && values[0].rows == values[1].rows) {
-                    let A = values[1].clone();
-                    values.splice(0, 2, A.augment(values[0]));
-                } else {
-                    alert("invalid arguments");
-                    current = -2;
-                }
-            } else if (I[0] == "rip") {
-                if (values[0] instanceof Matrix) {
-                    let A = values[0].clone();
-                    if (A.columns >= 2) {
-                        let col = [];
-                        let B = []
-                        for (let i = 0; i < A.rows; i++) {
-                            for (let j = 0; j < A.columns - 1; j++) {
-                                B.push(A.indices[i][j].clone());
-                            }
-                            col.push(A.indices[i][A.columns - 1].clone());
+                    break;
+                case "/":
+                    if (values[0] instanceof Rational && values[1] instanceof Rational) {
+                        if (values[0].numerator == 0) {
+                            alert("division by zero!");
+                            current = -2;
+                            break;
                         }
-                        values.splice(0, 1, new Matrix(1, col.flat()), new Matrix(A.columns - 1, B.flat()));
+                        values[1].div(values[0]);
+                        values.shift();
+                    } else {
+                        alert("invalid arguments");
+                        current = -2;
                     }
-                } else {
-                    alert("invalid arguments");
-                    current = -2;
-                }
-            } else if (I[0] == "flip") {
-                if (values[0] instanceof Matrix) {
-                    let A = values[0].clone();
-                    if (A.columns >= 2) {
-                        let B = [];
-                        for (let i = 0; i < A.rows; i++) {
-                            for (let j = A.columns - 1; j >= 0; j--) {
-                                B.push(A.indices[i][j].clone())
-                            }
+                    break;
+                case "gcd":
+                    if (values[0] instanceof Rational && values[0].denominator == 1n && values[0] instanceof Rational && values[0].denominator == 1n) {
+                        let A = BigMathJS.abs(values[0].numerator);
+                        let B = BigMathJS.abs(values[1].numerator);
+                        values.splice(0, 2, new Rational(BigMathJS.gcd(A, B)));
+                    } else {
+                        alert("invalid arguments");
+                        current = -2;
+                    }
+                    break;
+                case "lcm":
+                    if (values[0] instanceof Rational && values[0].denominator == 1n && values[0] instanceof Rational && values[0].denominator == 1n) {
+                        if (values[0].numerator == 0n || values[1].numerator == 0n) {
+                            values.splice(0, 2, new Rational(0n));
+                        } else {
+                            let A = BigMathJS.abs(values[0].numerator);
+                            let B = BigMathJS.abs(values[1].numerator);
+                            values.splice(0, 2, new Rational(BigMathJS.lcm(A, B)));
                         }
-                        values.splice(0, 1, new Matrix(A.columns, B.flat()));
+                    } else {
+                        alert("invalid arguments");
+                        current = -2;
                     }
-                }
-            } else if (I[0] == "dim") {
-                if (values[0] instanceof Matrix) {
-                    values.unshift(new Rational(BigInt(values[0].rows)), new Rational(BigInt(values[0].columns)));
-                }
-            } else if (I[0] == "dot") {
-                if (values[0] instanceof Matrix && values[0].columns == 1 && values[1] instanceof Matrix && values[1].columns == 1) {
-                    let A = values[1].clone();
-                    values.splice(0, 2, A.dotProduct(values[0]));
-                } else {
-                    alert("invalid arguments");
-                    current = -2;
-                }
-            } else if (I[0] == "hadamard") {
-                if (values[0] instanceof Matrix && values[1] instanceof Matrix && values[0].rows == values[1].rows && values[0].cs == values[1].cs) {
-                    let A = values[1].clone();
-                    values.splice(0, 2, A.hadamardProduct(values[0]));
-                } else {
-                    alert("invalid arguments");
-                    current = -2;
-                }
-            } else if (I[0] == "kronecker") {
-                if (values[0] instanceof Matrix && values[1] instanceof Matrix) {
-                    let A = values[1].clone();
-                    values.splice(0, 2, A.kroneckerProduct(values[0]));
-                } else {
-                    alert("invalid arguments");
-                    current = -2;
-                }
-            } else if (I[0] == "outer") {
-                if (values[0] instanceof Matrix && values[0].columns == 1 && values[1] instanceof Matrix && values[1].columns == 1) {
-                    let A = values[1].clone();
-                    values.splice(0, 2, A.outerProduct(values[0]));
-                } else {
-                    alert("invalid arguments");
-                    current = -2;
-                }
-            } else if (/-?\d+[\.,]\d*\[\d+\]/.test(I[0])) {
-                let numComponents = I[0].split(/[,\.\[]/);
-                let int = new Rational(BigInt(numComponents[0]));
-                let frac = new Rational(BigInt(numComponents[1]), 10n ** BigInt(numComponents[1].length));
-                let rep = new Rational(BigInt(numComponents[2].slice(0, -1)), 10n ** BigInt(numComponents[1].length) * (10n ** (BigInt(numComponents[2].length) - 1n) - 1n));
-                frac.add(rep);
-                if (int.numerator >= 0n) {
-                    int.add(frac);
-                } else {
-                    int.sub(frac);
-                }
-                values.unshift(int);
-            } else if (/-?\d+[\.,]\d+/.test(I[0])) {
-                let numComponents = I[0].split(/[,\.]/);
-                let int = new Rational(BigInt(numComponents[0]));
-                let frac = new Rational(BigInt(numComponents[1]), 10n ** BigInt(numComponents[1].length));
-                if (int.numerator >= 0n) {
-                    int.add(frac);
-                } else {
-                    int.sub(frac);
-                }
-                values.unshift(int);
-            } else if (/-?\d+/.test(I[0])) {
-                values.unshift(new Rational(BigInt(I[0])));
-            } else {
-                alert("invalid command");
-                current = -2;
+                    break;
+                case "int":
+                    if (values[0] instanceof Rational) {
+                        values[0].integer();
+                    } else {
+                        alert("invalid arguments");
+                        current = -2;
+                    }
+                    break;
+                case "#":
+                    values.unshift(new Rational(BigInt(values.length)));
+                    break;
+                case "floor":
+                    if (values[0] instanceof Rational) {
+                        values[0].floor();
+                    } else {
+                        alert("invalid arguments");
+                        current = -2;
+                    }
+                    break;
+                case "ceil":
+                    if (values[0] instanceof Rational) {
+                        values[0].ceiling();
+                    } else {
+                        alert("invalid arguments");
+                        current = -2;
+                    }
+                    break;
+                case "%":
+                    if (values[0] instanceof Rational && values[1] instanceof Rational) {
+                        if (values[0].numerator == 0n) {
+                            alert("Division by zero!");
+                            current = -2;
+                            break;
+                        }
+                        let C = values[1].clone();
+                        C.div(values[0]);
+                        let D = C.clone();
+                        D.integer();
+                        if (C.compare(D) == -1n) {
+                            D.sub(1n);
+                        }
+                        D.mult(values[0]);
+                        values[1].sub(D);
+                        values.shift();
+                    } else {
+                        alert("invalid arguments");
+                        current = -2;
+                    }
+                    break;
+                case "den":
+                    if (values[0] instanceof Rational) {
+                        values.splice(0, 1, new Rational(values[0].denominator));
+                    } else {
+                        alert("invalid arguments");
+                        current = -2;
+                    }
+                    break;
+                case "step":
+                    if (values[0] instanceof Rational) {
+                        values.splice(0, 1, new Rational(BigInt(values[0].numerator >= 1n)));
+                    } else {
+                        alert("invalid arguments");
+                        current = -2;
+                    }
+                    break;
+                case "compare":
+                    if (values[0] instanceof Rational && values[1] instanceof Rational) {
+                        values.splice(0, 2, new Rational(BigInt(values[1].compare(values[0]))));
+                    } else {
+                        alert("invalid arguments");
+                        current = -2;
+                    }
+                    break;
+                case "next":
+                    if (repeats.length >= 1) {
+                        if (repeats[0][0] < repeats[0][1]) {
+                            repeats[0][0]++;
+                            current = repeats[0][2];
+                        } else {
+                            repeats.shift();
+                        }
+                    } else {
+                        alert("not in a loop");
+                        current = -2;
+                    }
+                    break;
+                case "break":
+                    if (repeats.length > 0) {
+                        let n = repeats[0][3];
+                        if (n > current) {
+                            current = n;
+                            repeats.shift();
+                        } else {
+                            alert("loop isn't closed!");
+                            current = -2;
+                        }
+                    } else {
+                        alert("not in a loop");
+                        current = -2;
+                    }
+                    break;
+                case "inv":
+                    if (values[0] instanceof Rational) {
+                        if (values[0].inverse() instanceof Error) {
+                            alert("division by zero!");
+                        }
+                    } else if (values[0] instanceof Matrix) {
+                        let e = values[0].inverse();
+                        if (e instanceof Error) {
+                            alert("matrix has determinate of 0");
+                            current = -2;
+                        }
+                    }
+                    break;
+                case "T":
+                    if (values[0] instanceof Matrix) {
+                        values[0].transpose();
+                    } else {
+                        alert("invalid arguments");
+                        current = -2;
+                    }
+                    break;
+                case "ref":
+                    if (values[0] instanceof Matrix) {
+                        values[0].gaussianElimination();
+                    } else {
+                        alert("invalid arguments");
+                        current = -2;
+                    }
+                    break;
+                case "det":
+                    if (values[0] instanceof Matrix) {
+                        values.splice(0, 1, values[0].determinate());
+                    } else {
+                        alert("invalid arguments");
+                        current = -2;
+                    }
+                    break;
+                case "aug":
+                    if (values[0] instanceof Matrix && values[1] instanceof Matrix && values[0].rows == values[1].rows) {
+                        values[1].augment(values[0]);
+                        values.shift();
+                    } else {
+                        alert("invalid arguments");
+                        current = -2;
+                    }
+                    break;
+                case "rip":
+                    if (values[0] instanceof Matrix) {
+                        let A = values[0].clone();
+                        if (A.columns >= 2n) {
+                            let col = [];
+                            let B = []
+                            for (let i = 0n; i < A.rows; i++) {
+                                for (let j = 0n; j < A.columns - 1n; j++) {
+                                    B.push(A.indices[i][j].clone());
+                                }
+                                col.push(A.indices[i][A.columns - 1n].clone());
+                            }
+                            values.splice(0, 1, new Matrix(1n, col.flat()), new Matrix(A.columns - 1n, B.flat()));
+                        }
+                    } else {
+                        alert("invalid arguments");
+                        current = -2;
+                    }
+                    break;
+                case "flip":
+                    if (values[0] instanceof Matrix) {
+                        let A = values[0].clone();
+                        if (A.columns >= 2n) {
+                            let B = [];
+                            for (let i = 0n; i < A.rows; i++) {
+                                for (let j = A.columns - 1n; j >= 0n; j--) {
+                                    B.push(A.indices[i][j].clone())
+                                }
+                            }
+                            values.splice(0, 1, new Matrix(A.columns, B.flat()));
+                        }
+                    }
+                    break;
+                case "dim":
+                    if (values[0] instanceof Matrix) {
+                        values.unshift(new Rational(values[0]), new Rational(values[0].columns));
+                    }
+                    break;
+                case "dot":
+                    if (values[0] instanceof Matrix && values[0].columns == 1 && values[1] instanceof Matrix && values[1].columns == 1) {
+                        let A = values[1].clone();
+                        values.splice(0, 2, A.dotProduct(values[0]));
+                    } else {
+                        alert("invalid arguments");
+                        current = -2;
+                    }
+                    break;
+                case "hadamard":
+                    if (values[0] instanceof Matrix && values[1] instanceof Matrix && values[0].rows == values[1].rows && values[0].cs == values[1].cs) {
+                        values[1].hadamardProduct(values[0]);
+                        values.shift();
+                    } else {
+                        alert("invalid arguments");
+                        current = -2;
+                    }
+                    break;
+                case "kronecker":
+                    if (values[0] instanceof Matrix && values[1] instanceof Matrix) {
+                        values[1].kroneckerProduct(values[0]);
+                        values.shift();
+                    } else {
+                        alert("invalid arguments");
+                        current = -2;
+                    }
+                    break;
+                case "outer":
+                    if (values[0] instanceof Matrix && values[0].columns == 1 && values[1] instanceof Matrix && values[1].columns == 1) {
+                        values[1].outerProduct(values[0]);
+                        values.shift();
+                    } else {
+                        alert("invalid arguments");
+                        current = -2;
+                    }
+                    break;
+                default:
+                    if (/-?\d+[\.,]\d*\[\d+\]/.test(I[0])) {
+                        let numComponents = I[0].split(/[,\.\[]/);
+                        let int = new Rational(BigInt(numComponents[0]));
+                        let frac = new Rational(BigInt(numComponents[1]), 10n ** BigInt(numComponents[1].length));
+                        let rep = new Rational(BigInt(numComponents[2].slice(0, -1)), 10n ** BigInt(numComponents[1].length) * (10n ** (BigInt(numComponents[2].length) - 1n) - 1n));
+                        frac.add(rep);
+                        if (int.numerator >= 0n) {
+                            int.add(frac);
+                        } else {
+                            int.sub(frac);
+                        }
+                        values.unshift(int);
+                    } else if (/-?\d+[\.,]\d+/.test(I[0])) {
+                        let numComponents = I[0].split(/[,\.]/);
+                        let int = new Rational(BigInt(numComponents[0]));
+                        let frac = new Rational(BigInt(numComponents[1]), 10n ** BigInt(numComponents[1].length));
+                        if (int.numerator >= 0n) {
+                            int.add(frac);
+                        } else {
+                            int.sub(frac);
+                        }
+                        values.unshift(int);
+                    } else if (/-?\d+/.test(I[0])) {
+                        values.unshift(new Rational(BigInt(I[0])));
+                    } else {
+                        alert("invalid command");
+                        current = -2;
+                    }
+                    break;
             }
             break;
         case 2:
-            if (I[0] == ">>") {
-                let copiedVal = values[BigInt(I[1])];
-                if (copiedVal) {
-                    values.unshift(copiedVal);
-                } else {
-                    alert("out of bounds");
-                    current = -2;
-                }
-            } else if (I[0] == "del") {
-                let index = Number.parseInt(I[1]);
-                if (values[index]) {
-                    values.splice(index, 1);
-                } else {
-                    alert("out of bounds");
-                    current = -2;
-                }
-            } else if (I[0] == "jmp") {
-                let dist = Number.parseInt(I[1]);
-                if (dist != 0) {
-                    current += dist - 1;
-                }
-            } else if (I[0] == "leap") {
-                if (repeats.length > 0) {
-                    let n = repeats[0][3];
-                    if (n > current) {
-                        let dist = Number.parseInt(I[1]);
-                        if (dist <= 0) {
-                            dist = 1;
-                        }
-                        current = n + dist - 1;
-                        repeats.shift();
+            switch (I[0]) {
+                case ">>":
+                    let copiedVal = values[BigInt(I[1])];
+                    if (copiedVal) {
+                        values.unshift(copiedVal);
                     } else {
-                        alert("loop isn't closed!");
+                        alert("out of bounds");
                         current = -2;
                     }
-                } else {
-                    alert("not in a loop");
-                    current = -2;
-                }
-            } else if (I[0] == "->") {
-                let index = Number.parseInt(I[1]);
-                if (values[index]) {
-                    values.unshift(values.splice(index, 1)[0]);
-                } else {
-                    alert("out of bounds");
-                    current = -2;
-                }
-            } else if (I[0] == "<-") {
-                let index = Number.parseInt(I[1]);
-                if (values[index]) {
-                    values.splice(index, 0, values.shift());
-                } else {
-                    alert("out of bounds");
-                    current = -2;
-                }
-            } else if (I[0] == "repeat") {
-                let depth = 1;
-                let scan = current;
-                while (depth >= 1 && scan + 1 < instructions.length) {
-                    let nextNext = rnList.indexOf(2, scan + 1);
-                    if (nextNext == -1) {
-                        // if no next statement...
-                        scan = instructions.length;
-                        break;
-                    }
-                    let nextRepeat = rnList.indexOf(1, scan + 1);
-                    if (nextRepeat != -1 && nextRepeat < nextNext) {
-                        scan = nextRepeat;
-                        depth++;
+                    break;
+                case "del":
+                    index = Number.parseInt(I[1]);
+                    if (values[index]) {
+                        values.splice(index, 1);
                     } else {
-                        scan = nextNext;
-                        depth--;
+                        alert("out of bounds");
+                        current = -2;
                     }
-                }
-                if (BigInt(I[1]) <= 0n) {
-                    current = scan;
-                } else {
-                    repeats.unshift([1n, BigInt(I[1]), current, scan]);
-                }
-            } else if (I[0] == ">>>") {
-                if (repeats.length >= Number.parseInt(I[1])) {
-                    values.unshift(new Rational(repeats[Number.parseInt(I[1])][0]));
-                } else {
-                    alert("not deep enough");
+                    break;
+                case "jmp":
+                    let dist = Number.parseInt(I[1]);
+                    if (dist != 0) {
+                        current += dist - 1;
+                    }
+                    break;
+                case "leap":
+                    if (repeats.length > 0) {
+                        let n = repeats[0][3];
+                        if (n > current) {
+                            let dist = Number.parseInt(I[1]);
+                            if (dist <= 0) {
+                                dist = 1;
+                            }
+                            current = n + dist - 1;
+                            repeats.shift();
+                        } else {
+                            alert("loop isn't closed!");
+                            current = -2;
+                        }
+                    } else {
+                        alert("not in a loop");
+                        current = -2;
+                    }
+                    break;
+                case "->":
+                    index = Number.parseInt(I[1]);
+                    if (values[index]) {
+                        values.unshift(values.splice(index, 1)[0]);
+                    } else {
+                        alert("out of bounds");
+                        current = -2;
+                    }
+                    break;
+                case "<-":
+                    index = Number.parseInt(I[1]);
+                    if (values[index]) {
+                        values.splice(index, 0, values.shift());
+                    } else {
+                        alert("out of bounds");
+                        current = -2;
+                    }
+                    break;
+                case "repeat":
+                    let depth = 1;
+                    let scan = current;
+                    while (depth >= 1 && scan + 1 < instructions.length) {
+                        let nextNext = rnList.indexOf(2, scan + 1);
+                        if (nextNext == -1) {
+                            // if no next statement...
+                            scan = instructions.length;
+                            break;
+                        }
+                        let nextRepeat = rnList.indexOf(1, scan + 1);
+                        if (nextRepeat != -1 && nextRepeat < nextNext) {
+                            scan = nextRepeat;
+                            depth++;
+                        } else {
+                            scan = nextNext;
+                            depth--;
+                        }
+                    }
+                    if (BigInt(I[1]) <= 0n) {
+                        current = scan;
+                    } else {
+                        repeats.unshift([1n, BigInt(I[1]), current, scan]);
+                    }
+                    break;
+                case ">>>":
+                    if (repeats.length >= Number.parseInt(I[1])) {
+                        values.unshift(new Rational(repeats[Number.parseInt(I[1])][0]));
+                    } else {
+                        alert("not deep enough");
+                        current = -2;
+                    }
+                    break;
+                case "scaleRow":
+                    if (values[0] instanceof Rational && values[1] instanceof Matrix) {
+                        values[1].scaleRow(Number.parseInt(I[1]), values[0]);
+                        values.shift();
+                    } else if (values[1] instanceof Rational && values[0] instanceof Matrix) {        
+                        values[0].scaleRow(Number.parseInt(I[1]), values[1]);
+                        values.splice(1, 1);
+                    } else {
+                        alert("invalid arguments");
+                        current = -2;
+                    }
+                    break;
+                case "hold":
+                    if (values[0]) {
+                        aux.set(I[1], values[0].clone());
+                    } else {
+                        alert("add something to the stack");
+                    }
+                    break;
+                case "lose":
+                    if (aux.has(I[1])) {
+                        aux.delete(I[1]);
+                    }
+                    break;
+                case "place":
+                    if (aux.has(I[1])) {
+                        values.unshift(aux.get(I[1]).clone());
+                    } else {
+                        alert("\"" + I[1] + "\" doesn't exist!");
+                        current = -2;
+                    }
+                    break;
+                case "exists":
+                    if (aux.has(I[1])) {
+                        values.unshift(new Rational(1n));
+                    } else {
+                        values.unshift(new Rational(0n));
+                    }
+                    break;
+                default:
+                    alert("invalid command");
                     current = -2;
-                }
-            } else if (I[0] == "scaleRow") {
-                if (values[0] instanceof Rational && values[1] instanceof Matrix) {
-                    let A = values[1].clone();
-                    A.scaleRow(Number.parseInt(I[1]), values[0]);
-                    values.splice(0, 2, A.clone());
-                } else if (values[1] instanceof Rational && values[0] instanceof Matrix) {
-                    let A = values[0].clone();
-                    A.scaleRow(Number.parseInt(I[1]), values[1]);
-                    values.splice(0, 2, A.clone);
-                } else {
-                    alert("invalid arguments");
-                    current = -2;
-                }
-            } else if (I[0] == "hold") {
-                aux.set(I[1], values[0].clone());
-            } else if (I[0] == "lose") {
-                if (aux.has(I[1])) {
-                    aux.delete(I[1]);
-                }
-            } else if (I[0] == "place") {
-                if (aux.has(I[1])) {
-                    values.unshift(aux.get(I[1]).clone());
-                } else {
-                    alert("\"" + I[1] + "\" doesn't exist!");
-                    current = -2;
-                }
-            } else if (I[0] == "exists") {
-                if (aux.has(I[1])) {
-                    values.unshift(new Rational(1n));
-                } else {
-                    values.unshift(new Rational(0n));
-                }
-            } else {
-                alert("invalid command");
-                current = -2;
+                    break;
             }
             break;
         case 3:
-            if (I[0] == "m") {
-                if (!values.slice(0, Number.parseInt(I[1]) * Number.parseInt(I[2])).map((e) => e instanceof Rational).includes(false)) {
-                    let arg = values.splice(0, Number.parseInt(I[1]) * Number.parseInt(I[2]));
-                    arg.reverse();
-                    values.unshift(new Matrix(Number.parseInt(I[1]), arg));
-                } else {
-                    alert("invalid arguments");
+            switch (I[0]) {
+                case "m":
+                    if (!values.slice(0, Number.parseInt(I[1]) * Number.parseInt(I[2])).map((e) => e instanceof Rational).includes(false)) {
+                        let arg = values.splice(0, Number.parseInt(I[1]) * Number.parseInt(I[2]));
+                        arg.reverse();
+                        values.unshift(new Matrix(BigInt(I[1]), arg));
+                    } else {
+                        alert("invalid arguments");
+                        current = -2;
+                    }
+                    break;
+                case "ind":
+                    if (values[0] instanceof Matrix) {
+                        let A = values[0].clone();
+                        values.unshift(A.indices[Number.parseInt(I[2])][Number.parseInt(I[1])].clone());
+                    } else {
+                        alert("invalid arguments");
+                        current = -2;
+                    }
+                    break;
+                case "addRow":
+                    if (values[0] instanceof Rational && values[1] instanceof Matrix) {
+                        values[1].addRow(Number.parseInt(I[1]), Number.parseInt(I[2]), values[0].clone());
+                        values.shift();
+                    } else if (values[1] instanceof Rational && values[0] instanceof Matrix) {
+                        values[0].addRow(Number.parseInt(I[1]), Number.parseInt(I[2]), values[1].clone());
+                        values.splice(1, 1);
+                    } else {
+                        alert("invalid arguments");
+                        current = -2;
+                    }
+                    break;
+                default:
+                    alert("invalid command");
                     current = -2;
-                }
-            } else if (I[0] == "ind") {
-                if (values[0] instanceof Matrix) {
-                    let A = values[0].clone();
-                    values.unshift(A.indices[Number.parseInt(I[2])][Number.parseInt(I[1])].clone());
-                } else {
-                    alert("invalid arguments");
-                    current = -2;
-                }
-            } else if (I[0] = "addRow") {
-                if (values[0] instanceof Rational && values[1] instanceof Matrix) {
-                    let A = values[1].clone();
-                    A.addRow(Number.parseInt(I[1]), Number.parseInt(I[2]), values[0].clone());
-                    values.splice(0, 2, A);
-                } else if (values[1] instanceof Rational && values[0] instanceof Matrix) {
-                    let A = values[0].clone();
-                    A.addRow(Number.parseInt(I[1]), Number.parseInt(I[2]), values[1].clone());
-                    values.splice(0, 2, A);
-                } else {
-                    alert("invalid arguments");
-                    current = -2;
-                }
-            } else {
-                alert("invalid command");
-                current = -2;
             }
             break;
     }
