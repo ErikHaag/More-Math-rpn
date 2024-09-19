@@ -19,7 +19,7 @@ let allowRunning = true;
 // the beating heart of this magnum opus
 let timer;
 // how fast are we going? 
-let speedSelect = 0;
+let speedSelect = 0n;
 // the time between update bursts
 let speed = 500;
 // the amount of updates per burst
@@ -249,7 +249,6 @@ function updateUI() {
 }
 
 function step() {
-    clearTimeout(timer);
     if (allowRunning) {
         // a burst of instructions
         for (let i = 0; i < steps; i++) {

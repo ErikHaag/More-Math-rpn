@@ -4,33 +4,44 @@ document.addEventListener("DOMContentLoaded", () => {
     let url = new URL(document.location);
     let params = url.search;
     params = params.substring(1).split("&");
+    let instr = "";
+    let linkFrom = ""
     for (let parameter of params) {
         let p = parameter.split("=");
         switch (p[0]) {
+            case "from":
+                linkFrom = p[1];
             case "instr":
-                // translate the ASCII encoding into characters
-                let instr = p[1];
-                instr = instr.replaceAll(" ", "");
-                instr = instr.replaceAll("_", " ");
-                instr = instr.replaceAll("%0A", "\n");
-                instr = instr.replaceAll("%22", "\"");
-                instr = instr.replaceAll("%23", "#");
-                instr = instr.replaceAll("%24", "$");
-                instr = instr.replaceAll("%26", "&");
-                instr = instr.replaceAll("%27", "\'");
-                instr = instr.replaceAll("%3C", "<");
-                instr = instr.replaceAll("%3D", "=");
-                instr = instr.replaceAll("%3E", ">");
-                instr = instr.replaceAll("%5B", "[");
-                instr = instr.replaceAll("%5D", "]");
-                //decode percentaged last
-                instr = instr.replaceAll("%25", "%");
-                instructionInput.value = instr;
+                instr = p[1];
                 break;
-            // TODO: add more parameters like setting the speed
+            case "speed":
+                speedSelect = BigInt(p[1]);
+                if (speedSelect < 0n) speedSelect = 0n;
+                if (speedSelect > 4n) speedSelect = 4n;
+                updateSpeed();
             default:
                 break;
         }
+    }
+    if (instr != "") {
+        //TODO: figure out how Youtube screws up links
+        // translate the ASCII encoding into characters
+        instr = instr.replaceAll(" ", "");
+        instr = instr.replaceAll("_", " ");
+        instr = instr.replaceAll("%0A", "\n");
+        instr = instr.replaceAll("%22", "\"");
+        instr = instr.replaceAll("%23", "#");
+        instr = instr.replaceAll("%24", "$");
+        instr = instr.replaceAll("%26", "&");
+        instr = instr.replaceAll("%27", "\'");
+        instr = instr.replaceAll("%3C", "<");
+        instr = instr.replaceAll("%3D", "=");
+        instr = instr.replaceAll("%3E", ">");
+        instr = instr.replaceAll("%5B", "[");
+        instr = instr.replaceAll("%5D", "]");
+        //decode percentaged last
+        instr = instr.replaceAll("%25", "%");
+        instructionInput.value = instr;
     }
 });
 
@@ -132,38 +143,45 @@ stopButton.addEventListener("click", () => {
 
 speedButton.addEventListener("click", () => {
     clearTimeout(timer);
+    speedSelect = (speedSelect + 1n) % 5n
+    updateSpeed();
+});
+
+function updateSpeed() {
     switch (speedSelect) {
-        case 0:
+        case 0n:
+            speed = 500;
+            steps = 1;
+            speedSelect = 0;
+            speedButton.innerHTML = "&gt;"
+            break;
+        case 1n:
             speed = 250;
             steps = 1;
             speedSelect = 1;
             speedButton.innerHTML = "&gt;&gt;";
             break;
-        case 1:
+        case 2n:
             speed = 10;
             speedSelect = 2;
             steps = 1;
             speedButton.innerHTML = "&gt;&gt;&gt;";
             break;
-        case 2:
+        case 3n:
             speed = 10;
             speedSelect = 3;
             steps = 5;
             speedButton.innerHTML = "&gt;&gt;&gt;&gt;";
             break;
-        case 3:
+        case 4n:
             speed = 10;
             speedSelect = 4;
             steps = 10;
             speedButton.innerHTML = "&gt;&gt;&gt;&gt;&gt;";
             break;
-        case 4:
-            speed = 500;
-            steps = 1;
-            speedSelect = 0;
-            speedButton.innerHTML = "&gt;"
     }
     if (allowRunning) {
+        clearTimeout(timer);
         timer = setTimeout(step, speed);
     }
-});
+}
