@@ -152,30 +152,25 @@ function updateSpeed() {
         case 0n:
             speed = 500;
             steps = 1;
-            speedSelect = 0;
             speedButton.innerHTML = "&gt;"
             break;
         case 1n:
             speed = 250;
             steps = 1;
-            speedSelect = 1;
             speedButton.innerHTML = "&gt;&gt;";
             break;
         case 2n:
             speed = 10;
-            speedSelect = 2;
             steps = 1;
             speedButton.innerHTML = "&gt;&gt;&gt;";
             break;
         case 3n:
             speed = 10;
-            speedSelect = 3;
             steps = 5;
             speedButton.innerHTML = "&gt;&gt;&gt;&gt;";
             break;
         case 4n:
             speed = 10;
-            speedSelect = 4;
             steps = 10;
             speedButton.innerHTML = "&gt;&gt;&gt;&gt;&gt;";
             break;

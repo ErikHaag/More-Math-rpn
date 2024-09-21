@@ -44,6 +44,11 @@ button:hover, button:focus {
     border: 3px black solid;
 }
 
+#speed {
+    width: 8ch;
+    text-align: center;
+}
+
 li {
     padding: 10px;
     display: block;
