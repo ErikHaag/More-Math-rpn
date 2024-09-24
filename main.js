@@ -149,6 +149,9 @@ function rationalToDecimal(R, p, commas = false) {
         }
         s = int + ":" + decimal;
     }
+    if (neg) {
+        s = "-" + s;
+    }
     return s.replaceAll(":", britishCheck.checked ? "," : ".").replaceAll(";", britishCheck.checked ? "." : ",");
 }
 
@@ -643,6 +646,9 @@ function doInstruction() {
                             int.sub(frac);
                         }
                         values.unshift(int);
+                    } else if (/-?\d+\/\d+/.test(I[0])) {
+                        let numComponents = I[0].split("/");
+                        values.unshift(new Rational(BigInt(numComponents[0]), BigInt(numComponents[1])));
                     } else if (/-?\d+/.test(I[0])) {
                         values.unshift(new Rational(BigInt(I[0])));
                     } else {
@@ -752,7 +758,7 @@ function doInstruction() {
                     if (values[0] instanceof Rational && values[1] instanceof Matrix) {
                         values[1].scaleRow(Number.parseInt(I[1]), values[0]);
                         values.shift();
-                    } else if (values[1] instanceof Rational && values[0] instanceof Matrix) {        
+                    } else if (values[1] instanceof Rational && values[0] instanceof Matrix) {
                         values[0].scaleRow(Number.parseInt(I[1]), values[1]);
                         values.splice(1, 1);
                     } else {
