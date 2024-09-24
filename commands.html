@@ -28,19 +28,25 @@
         </tr>
         <tr>
             <td>10</td>
-            <td>places 10/1 on top of the stack</td>
+            <td>places 10/1 on top of the stack<br>-10 also works</td>
+            <td>none</td>
+            <td>none</td>
+        </tr>
+        <tr>
+            <td>3/5</td>
+            <td>places 3/5 on top of the stack<br>-3/5 also works</td>
             <td>none</td>
             <td>none</td>
         </tr>
         <tr>
             <td>0.2</td>
-            <td>places 1/5 on top of the stack</td>
+            <td>places 1/5 on top of the stack<br>-0.2 also works</td>
             <td>none</td>
             <td>none</td>
         </tr>
         <tr>
             <td>0.1[6]</td>
-            <td>places 1/6 on top of the stack</td>
+            <td>places 1/6 on top of the stack<br>-0.1[6] also works</td>
             <td>none</td>
             <td>none</td>
         </tr>
@@ -145,13 +151,13 @@
         </tr>
         <tr>
             <td>[</td>
-            <td>in parameters, prepend a [ to use a stack value from bottom</td>
+            <td>in parameters, prepend a [ to use a stack value from bottom (0 is bottom)</td>
             <td>it is the parameter</td>
             <td>none</td>
         </tr>
         <tr>
             <td>]</td>
-            <td>in parameters, prepend a ] to use a stack value from top</td>
+            <td>in parameters, prepend a ] to use a stack value from top (0 is top)</td>
             <td>it is the parameter</td>
             <td>none</td>
         </tr>
@@ -174,12 +180,12 @@
         <tr>
             <td>-&gt;</td>
             <td>moves value at depth to the top</td>
-            <td>depth to pull</td>
+            <td>depth to pull (0 is top)</td>
             <td>none</td>
         </tr>
         <tr>
             <td>&lt;-</td>
-            <td>moves top value to depth (inverse of -&gt;)</td>
+            <td>moves top value to depth (inverse of -&gt;) (0 is top)</td>
             <td>depth to push</td>
             <td>none</td>
         </tr>
@@ -218,7 +224,7 @@
         </tr>
         <tr>
             <td>T</td>
-            <td>transpose</td>
+            <td>transposes a matrix</td>
             <td>none</td>
             <td>1 matrix</td>
         </tr>
