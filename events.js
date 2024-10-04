@@ -5,12 +5,9 @@ document.addEventListener("DOMContentLoaded", () => {
     let params = url.search;
     params = params.substring(1).split("&");
     let instr = "";
-    let linkFrom = ""
     for (let parameter of params) {
         let p = parameter.split("=");
         switch (p[0]) {
-            case "from":
-                linkFrom = p[1];
             case "instr":
                 instr = p[1];
                 break;
@@ -19,12 +16,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (speedSelect < 0n) speedSelect = 0n;
                 if (speedSelect > 4n) speedSelect = 4n;
                 updateSpeed();
+                break;
             default:
                 break;
         }
     }
     if (instr != "") {
-        //TODO: figure out how Youtube screws up links
         // translate the ASCII encoding into characters
         instr = instr.replaceAll(" ", "");
         instr = instr.replaceAll("_", " ");
@@ -45,24 +42,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
-instructionInput.addEventListener("change", () => {
-    let formatted = input.value;
-    //encode percentage first
-    formatted = formatted.replaceAll("%", "%25");
-    formatted = formatted.replaceAll("\n", "%0A");
-    formatted = formatted.replaceAll(" ", "_");
-    formatted = formatted.replaceAll("\"", "%22");
-    formatted = formatted.replaceAll("#", "%23");
-    formatted = formatted.replaceAll("$", "%24");
-    formatted = formatted.replaceAll("&", "%26");
-    formatted = formatted.replaceAll("\'", "%27");
-    formatted = formatted.replaceAll("<", "%3C")
-    formatted = formatted.replaceAll("=", "%3D");
-    formatted = formatted.replaceAll(">", "%3E")
-    formatted = formatted.replaceAll("[", "%5B");
-    formatted = formatted.replaceAll("]", "%5D");
-    link.textContent = "https://erikhaag.github.io/More-Math-rpn/?instr=" + formatted;
-});
 
 darkButton.addEventListener("click", () => {
     // flip that boolean
@@ -99,6 +78,33 @@ decimalLength.addEventListener("change", () => {
     }
     updateUI();
 });
+
+instructionInput.addEventListener("change", () => {
+    updateLink();
+});
+
+function updateLink() {
+    let formatted = input.value;
+    //encode percentage first
+    formatted = formatted.replaceAll("%", "%25");
+    formatted = formatted.replaceAll("\n", "%0A");
+    formatted = formatted.replaceAll(" ", "_");
+    formatted = formatted.replaceAll("\"", "%22");
+    formatted = formatted.replaceAll("#", "%23");
+    formatted = formatted.replaceAll("$", "%24");
+    formatted = formatted.replaceAll("&", "%26");
+    formatted = formatted.replaceAll("\'", "%27");
+    formatted = formatted.replaceAll("<", "%3C")
+    formatted = formatted.replaceAll("=", "%3D");
+    formatted = formatted.replaceAll(">", "%3E")
+    formatted = formatted.replaceAll("[", "%5B");
+    formatted = formatted.replaceAll("]", "%5D");
+    let linkStr = "https://erikhaag.github.io/More-Math-rpn/?instr=" + formatted;
+    if (useSpeedCheck.checked) {
+        linkStr += "&speed=" + speedSelect;
+    }
+    link.textContent = linkStr;
+}
 
 resetButton.addEventListener("click", () => {
     reset();
@@ -145,6 +151,9 @@ speedButton.addEventListener("click", () => {
     clearTimeout(timer);
     speedSelect = (speedSelect + 1n) % 5n
     updateSpeed();
+    if (useSpeedCheck.checked) {
+        updateLink();
+    }
 });
 
 function updateSpeed() {
@@ -180,3 +189,13 @@ function updateSpeed() {
         timer = setTimeout(step, speed);
     }
 }
+
+linkOptionsToggle.addEventListener("click", () => {
+    linkOptionsVisible = !linkOptionsVisible;
+    linkOptionsToggle.innerHTML = linkOptionsVisible ? "&#x25BC;" : "&#x25B2;";
+    linkOptions.hidden = !linkOptionsVisible;
+});
+
+useSpeedCheck.addEventListener("change", () => {
+    updateLink();
+});

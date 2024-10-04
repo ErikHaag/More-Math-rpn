@@ -134,3 +134,7 @@ body.dark a {
 body.dark a:visited {
     color: darkcyan;
 }
+
+fieldset {
+    width: max-content;
+}

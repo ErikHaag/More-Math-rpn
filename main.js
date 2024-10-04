@@ -1,30 +1,32 @@
-// whether it's black on white or white on black
+//whether it's black on white or white on black
 let dark = false;
-// the amount of precision after the decimal point in associated display modes
+//whether the link options tray is hidden or shown
+let linkOptionsVisible = false;
+//the amount of precision after the decimal point in associated display modes
 let decimals = 3n;
-// the list of instructions in a JS friendly format
+//the list of instructions in a JS friendly format
 let instructions = [];
-// the comments and locations
+//the comments and locations
 let comments = [];
-// any repeats currently being dealt with
+//any repeats currently being dealt with
 let repeats = [];
-// the values shuffled on a stack
+//the values shuffled on a stack
 let values = [];
-// the named variables
+//the named variables
 let aux = new Map();
-// where we are in the instructions
+//where we are in the instructions
 let current = -1;
-// whether the program is stepping manually or automatical
+//whether the program is stepping manually or automatically
 let allowRunning = true;
-// the beating heart of this magnum opus
+//the beating heart of this magnum opus
 let timer;
-// how fast are we going? 
+//how fast are we going? 
 let speedSelect = 0n;
-// the time between update bursts
+//the time between update bursts
 let speed = 500;
-// the amount of updates per burst
+//the amount of updates per burst
 let steps = 1;
-// where the repeat and next instructions are
+//where "repeat" and "next" instructions are
 let rnList = [];
 
 function reset() {

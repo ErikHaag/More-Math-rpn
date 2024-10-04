@@ -15,3 +15,6 @@ const startButton = document.getElementById("start");
 const stopButton = document.getElementById("stop");
 const speedButton = document.getElementById("speed");
 const link = document.getElementById("link");
+const linkOptionsToggle = document.getElementById("linkOptionsToggle");
+const linkOptions = document.getElementById("linkOptions");
+const useSpeedCheck = document.getElementById("useSpeed");
