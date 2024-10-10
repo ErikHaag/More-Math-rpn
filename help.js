@@ -42,7 +42,7 @@ const helpList = [
     {
         id: "darkModeButton",
         side: "under",
-        text: "Dark Mode is availible to those who can't contract their pupils fully"
+        text: "Dark Mode is available to those who can't contract their pupils fully"
     },
     {
         id: "link",
