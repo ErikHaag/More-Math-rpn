@@ -59,7 +59,7 @@ appearenceSelect.addEventListener("change", () => {
     let appearence = appearenceSelect.value;
     // show the appropriate extra options
     decimalDiv.hidden = !(appearence == "decimal" || appearence == "decimalcommas");
-    britishModeDiv.hidden = !(appearence == "commas" || appearence == "decimal" || appearence == "decimalcommas");
+    britishModeDiv.hidden = !(appearence == "fractioncommas" || appearence == "decimal" || appearence == "decimalcommas");
     updateUI();
 });
 

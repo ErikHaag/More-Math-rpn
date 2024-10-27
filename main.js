@@ -135,6 +135,11 @@ function rationalToDecimal(R, p, commas = false) {
     }
     if (s.endsWith(":")) {
         s = s.substring(0, s.length - 1);
+        if (commas) {
+            for (let i = s.length - 3; i > 0; i -= 3) {
+                s = s.substring(0, i) + ";" + s.substring(i);
+            }
+        }
     } else if (commas) {
         let int, decimal;
         let bracketIndex = s.indexOf("[");
