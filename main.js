@@ -656,6 +656,7 @@ function doInstruction() {
                     } else if (/-?\d+\/\d+/.test(I[0])) {
                         let numComponents = I[0].split("/");
                         values.unshift(new Rational(BigInt(numComponents[0]), BigInt(numComponents[1])));
+                        values[0].add(new Rational(0n));
                     } else if (/-?\d+/.test(I[0])) {
                         values.unshift(new Rational(BigInt(I[0])));
                     } else {
@@ -834,6 +835,14 @@ function doInstruction() {
                     } else if (values[1] instanceof Rational && values[0] instanceof Matrix) {
                         values[0].addRow(Number.parseInt(I[1]), Number.parseInt(I[2]), values[1].clone());
                         values.splice(1, 1);
+                    } else {
+                        alert("invalid arguments");
+                        current = -2;
+                    }
+                    break;
+                case "swapRows":
+                    if (values[0] instanceof Matrix) {
+                        values[0].swapRows(Number.parseInt(I[1]), Number.parseInt(I[2]));
                     } else {
                         alert("invalid arguments");
                         current = -2;
