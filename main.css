@@ -60,8 +60,11 @@ ol {
     flex-flow: row nowrap;
     padding-left: 0px;
     height: min-content;
-    max-height: 10em;
     overflow-x: scroll;
+}
+
+ol.shrink {
+    max-height: 10em;
 }
 
 p {

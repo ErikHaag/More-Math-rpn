@@ -79,6 +79,18 @@ decimalLength.addEventListener("change", () => {
     updateUI();
 });
 
+valueStackShrinkButton.addEventListener("click", () => {
+    let shrunk = valueStack.className == "shrink";
+    valueStack.className = shrunk ? "" : "shrink";
+    valueStackShrinkButton.innerHTML = shrunk ? "&blacktriangledown;" : "&blacktriangle;";
+});
+
+auxillaryArrayShrinkButton.addEventListener("click", () => {
+    let shrunk = auxillaryArray.className == "shrink";
+    auxillaryArray.className = shrunk ? "" : "shrink";
+    auxillaryArrayShrinkButton.innerHTML = shrunk ? "&blacktriangledown;" : "&blacktriangle;";
+})
+
 instructionInput.addEventListener("change", () => {
     updateLink();
 });
