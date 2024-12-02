@@ -31,6 +31,7 @@ document.addEventListener("DOMContentLoaded", () => {
         instr = instr.replaceAll("%24", "$");
         instr = instr.replaceAll("%26", "&");
         instr = instr.replaceAll("%27", "\'");
+        instr = instr.replaceAll("%2F", "/");
         instr = instr.replaceAll("%3C", "<");
         instr = instr.replaceAll("%3D", "=");
         instr = instr.replaceAll("%3E", ">");
@@ -106,6 +107,7 @@ function updateLink() {
     formatted = formatted.replaceAll("$", "%24");
     formatted = formatted.replaceAll("&", "%26");
     formatted = formatted.replaceAll("\'", "%27");
+    formatted = formatted.replaceAll("/", "%2F");
     formatted = formatted.replaceAll("<", "%3C")
     formatted = formatted.replaceAll("=", "%3D");
     formatted = formatted.replaceAll(">", "%3E")
