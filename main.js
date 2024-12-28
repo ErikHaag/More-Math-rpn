@@ -142,14 +142,14 @@ function rationalToDecimal(R, p, commas = false) {
         }
     } else if (commas) {
         let int, decimal;
-        let bracketIndex = s.indexOf("[");
+        let bracketIndex = s.indexOf("[") - 1;
         [int, decimal] = s.split(":");
         for (let i = int.length - 3; i > 0; i -= 3) {
             int = int.substring(0, i) + ";" + int.substring(i);
         }
         for (let i = 3; i < decimal.length - 2 * (bracketIndex != -1); i += 4) {
             let j = i;
-            if (bracketIndex != -1 && i > bracketIndex) {
+            if (bracketIndex != -1 && i >= bracketIndex) {
                 j++;
             }
             decimal = decimal.substring(0, j) + ";" + decimal.substring(j);
