@@ -80,6 +80,12 @@ decimalLength.addEventListener("change", () => {
     updateUI();
 });
 
+stateDisplayHideButton.addEventListener("click", () => {
+    stateDisplay.hidden = !stateDisplay.hidden
+    stateDisplayHideButton.innerText = "State " + (stateDisplay.hidden ? "hidden" : "shown");
+    updateUI();
+})
+
 valueStackShrinkButton.addEventListener("click", () => {
     let shrunk = valueStack.className == "shrink";
     valueStack.className = shrunk ? "" : "shrink";
@@ -149,22 +155,26 @@ startButton.addEventListener("click", () => {
 
 stopButton.addEventListener("click", () => {
     allowRunning = !allowRunning;
+    updateControls();
     if (allowRunning) {
-        startButton.innerHTML = "Start";
-        stopButton.innerHTML = "Stop";
-        resetButton.hidden = true;
         step();
-    } else {
-        startButton.innerHTML = "Step"
-        stopButton.innerHTML = "Continue";
-        resetButton.hidden = false;
     }
 });
+
+function updateControls() {
+    resetButton.hidden = allowRunning;
+    startButton.innerHTML = allowRunning ? "Start" : "Step";
+    stopButton.innerHTML = allowRunning ? "Stop" : "Continue";
+}
 
 speedButton.addEventListener("click", () => {
     clearTimeout(timer);
     speedSelect = (speedSelect + 1n) % 5n
     updateSpeed();
+    if (allowRunning && current != 0) {
+        clearTimeout(timer);
+        timer = setTimeout(step, speed);
+    }
     if (useSpeedCheck.checked) {
         updateLink();
     }
@@ -197,10 +207,6 @@ function updateSpeed() {
             steps = 10;
             speedButton.innerHTML = "&gt;&gt;&gt;&gt;&gt;";
             break;
-    }
-    if (allowRunning) {
-        clearTimeout(timer);
-        timer = setTimeout(step, speed);
     }
 }
 

@@ -60,7 +60,7 @@ ol {
     flex-flow: row nowrap;
     padding-left: 0px;
     height: min-content;
-    overflow-x: scroll;
+    overflow: auto;
 }
 
 ol.shrink {
@@ -77,6 +77,25 @@ p.auxKey {
 
 p.comment {
     font-style: italic;
+}
+
+#output {
+    display: inline;
+    overflow: auto;
+}
+
+#output>ol {
+    margin: 0px;
+}
+
+#output>ol>li {
+    padding-top: 0px;
+    padding-bottom: 0px;
+}
+
+#output>span.error {
+    color: red;
+    font-weight: bold;
 }
 
 #is>li{

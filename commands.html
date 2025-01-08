@@ -383,6 +383,57 @@
             <td>it is the parameter</td>
             <td>none</td>
         </tr>
-    </table>
+        <tr>
+            <th colspan="4" class="od">IO & Strings</th>
+        </tr>
+        <tr>
+            <th>operation</th>
+            <th>description</th>
+            <th>parameters required</th>
+            <th>arguments required</th>
+        </tr>
+        <tr>
+            <td>"..."</td>
+            <td>In parameters, place double quotes around some characters to make a string, you can use most UTF-8 characters, along with spaces, \n, \" and \\</td>
+            <td>It is the parameter</td>
+            <td>none</td>
+        </tr>
+        <tr>
+            <td>inputS</td>
+            <td>Gives user a prompt for a string.<br>Pushes the code points of the string in reverse order, then the length on top</td>
+            <td>prompt (optional)</td>
+            <td>none</td>
+        </tr>
+        <tr>
+            <td>inputR</td>
+            <td>Gives user a prompt for a rational, If it is invalid, it tries again<br>Pushing the value</td>
+            <td>prompt (optional)</t/d>
+            <td>none</td>
+        </tr>
+        <tr>
+            <td>chars</td>
+            <td>Like inputS, but the parameter is read instead of the user</td>
+            <td>string</td>
+            <td>none</td>
+        </tr>
+        <tr>
+            <td>outputC</td>
+            <td>Outputs a single character according to the parameter</td>
+            <td>code point</td>
+            <td>none</td>
+        </tr>
+        <tr>
+            <td>outputS</td>
+            <td>Outputs a message</td>
+            <td>message</td>
+            <td>none</td>
+        </tr>
+        <tr>
+            <td>outputV</td>
+            <td>outputs the top of the stack</td>
+            <td>none</td>
+            <td>1 rational or matrix</td>
+        </tr>
+    </table>    
 </body>
 </html>

@@ -23,7 +23,7 @@
         <legend>Controls</legend>
         <div style="display: flex;">
             <div style="width: 90%;">
-                <label for="visual">Stack Appearence</label>    
+                <label for="visual">Stack Appearence</label>
                 <select id="visual">
                     <option value="fraction">Fraction</option>
                     <option value="fractioncommas">Fraction with commas</option>
@@ -46,6 +46,7 @@
             </div>
         </div>
     </fieldset>
+    <button id="hideStateDisplay">State shown</button>
     <div id="stateDisplay">
         <p>Value stack <button id="vsShrink">&blacktriangle;</button></p>
         <ol id="vs" class="shrink">
@@ -64,6 +65,10 @@
         <ol id="is">
         </ol>
     </div>
+    <p>Output & Errors</p>
+    <div id="output"></div>
+    <br>
+    <hr>
     <textarea id="input" style="height: 15rem; width:200px;" spellcheck="false"></textarea><br>
     <button id="reset" hidden>Reset</button>
     <button id="start">Start</button>
@@ -85,4 +90,5 @@
 <script src='main.js'></script>
 <script src='help.js'></script>
 <script src='events.js'></script>
+
 </html>
