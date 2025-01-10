@@ -43,6 +43,7 @@ const texts = {
         jumpedOutOfLoop: "Error: Outside of current loop.",
         matrixDim: "Error: Matrices have incompatible sizes.",
         missingVariable: ["Error: Variable \"", "\" doesn't exist."],
+        negative: "Error: Non-negative expected.",
         notInLoop: "Error: Not in a loop.",
         outOfBounds: "Error: Out of bounds.",
         parameterNotRational: "Error: A parameter wasn't a rational or integer.",
@@ -1004,15 +1005,22 @@ function doInstruction() {
                         break;
                     }
                 case ">>>":
-                    if (!intRegex.test(I[1])) {
-                        lastError = texts.errors.parameterNotRational;
-                        return false;
-                    }
-                    if (Number.parseInt(I[1]) < repeats.length) {
-                        values.unshift(new Rational(repeats[Number.parseInt(I[1])][0]));
-                    } else {
-                        lastError = texts.errors.tooDeep;
-                        return false;
+                    {
+                        if (!intRegex.test(I[1])) {
+                            lastError = texts.errors.parameterNotRational;
+                            return false;
+                        }
+                        let d = Number.parseInt(I[1]);
+                        if (d < 0) {
+                            lastError = texts.errors.negative;
+                            return false;
+                        }
+                        if (d < repeats.length) {
+                            values.unshift(new Rational(repeats[d][0]));
+                        } else {
+                            lastError = texts.errors.tooDeep;
+                            return false;
+                        }
                     }
                     break;
                 case "chars":
