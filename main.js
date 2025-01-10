@@ -615,7 +615,7 @@ function doInstruction() {
                     break;
                 case "break":
                     {
-                        if (repeats.length > 0) {
+                        if (repeats.length == 0) {
                             lastError = texts.errors.notInLoop;
                             return false;
                         }
@@ -1002,8 +1002,8 @@ function doInstruction() {
                             lastError = texts.errors.outOfBounds;
                             return false;
                         }
-                        break;
                     }
+                    break;
                 case ">>>":
                     {
                         if (!intRegex.test(I[1])) {
@@ -1035,8 +1035,8 @@ function doInstruction() {
                             values.unshift(new Rational(BigInt(s[i].charCodeAt(0))));
                         }
                         values.unshift(new Rational(BigInt(s.length)));
-                        break;
                     }
+                    break;
                 case "del":
                     if (values.length < 1) {
                         lastError = texts.errors.shortStack;
@@ -1100,8 +1100,8 @@ function doInstruction() {
                             values.unshift(new Rational(BigInt(s[i].charCodeAt(0))));
                         }
                         values.unshift(new Rational(BigInt(s.length)));
-                        break;
                     }
+                    break;
                 case "jmp":
                     {
                         if (!intRegex.test(I[1])) {
@@ -1112,8 +1112,8 @@ function doInstruction() {
                         if (dist != 0) {
                             current += dist - 1;
                         }
-                        break;
                     }
+                    break;
                 case "leap":
                     {
                         if (!intRegex.test(I[1])) {
@@ -1137,8 +1137,8 @@ function doInstruction() {
                             lastError = texts.errors.jumpedOutOfLoop;
                             return false;
                         }
-                        break;
                     }
+                    break;
                 case "lose":
                     if (I[1].startsWith("\"")) {
                         lastError = texts.errors.variableName;
@@ -1294,8 +1294,8 @@ function doInstruction() {
                             lastError = texts.errors.argument;
                             return false;
                         }
-                        break;
                     }
+                    break;
                 case "swapRows":
                     if (values.length < 1) {
                         lastError = texts.errors.shortStack;
