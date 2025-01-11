@@ -40,6 +40,11 @@ button {
     border-radius: 3px;
 }
 
+button.grayed {
+    background-color: lightgray;
+    color: gray;
+}
+
 button:hover, button:focus {
     border: 3px black solid;
 }
@@ -58,9 +63,10 @@ li {
 ol {
     display: flex;
     flex-flow: row nowrap;
-    padding-left: 0px;
     height: min-content;
     overflow: auto;
+    padding-left: 0px;
+    scroll-behavior: smooth;
 }
 
 ol.shrink {

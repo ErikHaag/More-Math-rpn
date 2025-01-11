@@ -70,6 +70,11 @@ auxillaryArrayShrinkButton.addEventListener("click", () => {
     auxillaryArrayShrinkButton.innerHTML = shrunk ? "&blacktriangledown;" : "&blacktriangle;";
 })
 
+followInstructionButton.addEventListener("click", () => {
+    followingCurrent = !followingCurrent;
+    followInstructionButton.innerHTML = followingCurrent ? "&leftrightarrow;" : "&Cross;";
+})
+
 instructionInput.addEventListener("change", () => {
     updateLink();
 });
@@ -165,6 +170,8 @@ function updateSpeed() {
             speedButton.innerHTML = "&gt;&gt;&gt;&gt;&gt;";
             break;
     }
+    //Elements that get disabled at high speed
+    followInstructionButton.className = speedSelect >= 2n ? "grayed" : "";
 }
 
 linkOptionsToggle.addEventListener("click", () => {

@@ -1,5 +1,8 @@
 //whether it's black on white or white on black
 let dark = false;
+// whether the instruction list auto-scrolls
+let followingCurrent = false;
+let followingOffset = 0;
 //whether the link options tray is hidden or shown
 let linkOptionsVisible = false;
 //the amount of precision after the decimal point in associated display modes
@@ -363,6 +366,28 @@ function updateUI() {
     instructionList.innerHTML = list;
 }
 
+function scrollInstructions(ending = false) {
+    if (speedSelect >= 2n) {
+        return;
+    }
+    // this is going to look weird
+    let c = instructionList.getElementsByClassName("curr")[0];
+    if (!c) {
+        if (!ending) {
+            return;
+        }
+        //scroll to end
+        c = instructionList.children[instructionList.children.length - 1];
+    }
+    let iLBR = instructionList.getBoundingClientRect();
+    let xOff = c.offsetLeft - followingOffset;
+    if (Math.abs(xOff / iLBR.width - 0.5) < 0.3) {
+        return;
+    }
+    followingOffset += xOff - iLBR.width / 4;
+    instructionList.scrollLeft = followingOffset;
+}
+
 function appendToOutput(message) {
     if (typeof outputList.at(-1) == "string" && typeof message == "string") {
         message = outputList.pop() + message;
@@ -393,27 +418,31 @@ function step() {
     } else {
         e = doInstruction();
     }
+    let end = false;
     if (current != -1) {
+        if (e !== false) {
+            if (current >= instructions.length) {
+                current = -1;
+                end = true;
+            } else if (allowRunning) {
+                timer = setTimeout(step, speed);
+            }
+        }
+        updateUI();
         if (e === false) {
-            updateUI();
             allowRunning = false;
             updateControls();
             output.innerHTML += (output.innerHTML.length == 0 ? "" : "<br>") + "<span class=error>" + lastError + "</span";
             current = -1;
-        } else if (current == instructions.length) {
-            current = -1;
-            updateUI();
-        } else if (allowRunning) {
-            updateUI();
-            timer = setTimeout(step, speed);
-        } else {
-            updateUI();
         }
+    }
+    if (followingCurrent) {
+        scrollInstructions(end);
     }
 }
 
 function doInstruction() {
-    if (current == -1 || current == instructions.length) {
+    if (current < 0 || current >= instructions.length) {
         return;
     }
     let I = instructions[current].split(" ");
