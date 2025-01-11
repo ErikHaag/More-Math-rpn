@@ -2,44 +2,16 @@
 document.addEventListener("DOMContentLoaded", () => {
     // hang on, where are we again?
     let url = new URL(document.location);
-    let params = url.search;
-    params = params.substring(1).split("&");
-    let instr = "";
-    for (let parameter of params) {
-        let p = parameter.split("=");
-        switch (p[0]) {
-            case "instr":
-                instr = p[1];
-                break;
-            case "speed":
-                speedSelect = BigInt(p[1]);
-                if (speedSelect < 0n) speedSelect = 0n;
-                if (speedSelect > 4n) speedSelect = 4n;
-                updateSpeed();
-                break;
-            default:
-                break;
-        }
+    let params = url.searchParams;
+    if (params.has("instr")) {
+        
+        instructionInput.value = params.get("instr");
     }
-    if (instr != "") {
-        // translate the ASCII encoding into characters
-        instr = instr.replaceAll(" ", "");
-        instr = instr.replaceAll("_", " ");
-        instr = instr.replaceAll("%0A", "\n");
-        instr = instr.replaceAll("%22", "\"");
-        instr = instr.replaceAll("%23", "#");
-        instr = instr.replaceAll("%24", "$");
-        instr = instr.replaceAll("%26", "&");
-        instr = instr.replaceAll("%27", "\'");
-        instr = instr.replaceAll("%2F", "/");
-        instr = instr.replaceAll("%3C", "<");
-        instr = instr.replaceAll("%3D", "=");
-        instr = instr.replaceAll("%3E", ">");
-        instr = instr.replaceAll("%5B", "[");
-        instr = instr.replaceAll("%5D", "]");
-        //decode percentaged last
-        instr = instr.replaceAll("%25", "%");
-        instructionInput.value = instr;
+    if (params.has("speed")) {
+        speedSelect = BigInt(params.get("speed"));
+        if (speedSelect < 0n) speedSelect = 0n;
+        if (speedSelect > 4n) speedSelect = 4n;
+        updateSpeed();
     }
 });
 
@@ -103,22 +75,7 @@ instructionInput.addEventListener("change", () => {
 });
 
 function updateLink() {
-    let formatted = input.value;
-    //encode percentage first
-    formatted = formatted.replaceAll("%", "%25");
-    formatted = formatted.replaceAll("\n", "%0A");
-    formatted = formatted.replaceAll(" ", "_");
-    formatted = formatted.replaceAll("\"", "%22");
-    formatted = formatted.replaceAll("#", "%23");
-    formatted = formatted.replaceAll("$", "%24");
-    formatted = formatted.replaceAll("&", "%26");
-    formatted = formatted.replaceAll("\'", "%27");
-    formatted = formatted.replaceAll("/", "%2F");
-    formatted = formatted.replaceAll("<", "%3C")
-    formatted = formatted.replaceAll("=", "%3D");
-    formatted = formatted.replaceAll(">", "%3E")
-    formatted = formatted.replaceAll("[", "%5B");
-    formatted = formatted.replaceAll("]", "%5D");
+    let formatted = encodeURIComponent(input.value);
     let linkStr = "https://erikhaag.github.io/More-Math-rpn/?instr=" + formatted;
     if (useSpeedCheck.checked) {
         linkStr += "&speed=" + speedSelect;

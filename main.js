@@ -207,7 +207,7 @@ function rationalToDecimal(R, p, commas = false) {
 }
 
 function interpretStringToRational(str, isInput = false) {
-    if (/-?\d+[\.,]\d*\[\d+\]/.test(str)) {
+    if (/^-?\d+[\.,]\d*\[\d+\]$/.test(str)) {
         let numComponents = str.split(/[,\.\[]/);
         let int = new Rational(BigInt(numComponents[0]));
         let frac = new Rational(BigInt(numComponents[1]), 10n ** BigInt(numComponents[1].length));
@@ -219,7 +219,7 @@ function interpretStringToRational(str, isInput = false) {
             int.sub(frac);
         }
         values.unshift(int);
-    } else if (/-?\d+[\.,]\d+/.test(str)) {
+    } else if (/^-?\d+[\.,]\d+$/.test(str)) {
         let numComponents = str.split(/[,\.]/);
         let int = new Rational(BigInt(numComponents[0]));
         let frac = new Rational(BigInt(numComponents[1]), 10n ** BigInt(numComponents[1].length));
@@ -229,11 +229,11 @@ function interpretStringToRational(str, isInput = false) {
             int.sub(frac);
         }
         values.unshift(int);
-    } else if (/-?\d+\/\d+/.test(str)) {
+    } else if (/^-?\d+\/\d+$/.test(str)) {
         let numComponents = str.split("/");
         values.unshift(new Rational(BigInt(numComponents[0]), BigInt(numComponents[1])));
         values[0].add(new Rational(0n));
-    } else if (/-?\d+/.test(str)) {
+    } else if (/^-?\d+$/.test(str)) {
         values.unshift(new Rational(BigInt(str)));
     } else if (isInput) {
         return false;
