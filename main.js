@@ -116,11 +116,11 @@ function matrixToTable(M) {
         if (M.rows == 1n) {
             h += "\n<td>[</td>";
         } else if (i == 0n) {
-            h += "\n<td>⎡</td>";
+            h += "\n<td class=\"shift\">⎡</td>";
         } else if (i == M.rows - 1n) {
-            h += "\n<td>⎣</td>";
+            h += "\n<td class=\"shift\">⎣</td>";
         } else {
-            h += "\n<td>⎢ </td>";
+            h += "\n<td class=\"shift\">⎢ </td>";
         }
         for (let j = 0n; j < M.columns; j++) {
             h += "\n<td class=\"matrixIndex\">" + rationalAppearence(M.indices[i][j].clone()) + "</td>";
@@ -128,11 +128,11 @@ function matrixToTable(M) {
         if (M.rows == 1n) {
             h += "\n<td>]</td>";
         } else if (i == 0n) {
-            h += "\n<td>⎤</td>";
+            h += "\n<td class=\"shift\">⎤</td>";
         } else if (i == M.rows - 1n) {
-            h += "\n<td>⎦</td>";
+            h += "\n<td class=\"shift\">⎦</td>";
         } else {
-            h += "\n<td>⎥</td>";
+            h += "\n<td class=\"shift\">⎥</td>";
         }
         h += "\n</tr>";
     }
