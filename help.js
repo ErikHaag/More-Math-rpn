@@ -138,5 +138,4 @@ function updateHelpBox() {
     helpBox.style.top = window.scrollY + y + "px";
     helpText.innerText = info.text;
     helpBox.hidden = false;
-    helpBox.scrollIntoView();
 }
