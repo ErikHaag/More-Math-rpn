@@ -7,42 +7,57 @@ const helpList = [
     {
         id: "input",
         side: "adjacent",
-        text: "The list of commands the calculator will run through.\nCheck out the links below for programming assistance"
+        text: "The list of commands the calculator will run through."
+    },
+    {
+        id: "links",
+        side: "adjacent",
+        text: "Check out these links for programming assistance."
     },
     {
         id: "start",
         side: "adjacent",
-        text: "When you want to run your program, hit \"Start\""
+        text: "When you want to run your program, hit \"Start\"."
     },
     {
         id: "stop",
         side: "adjacent",
-        text: "If you want to pause or debug your program, hit \"Stop\" to assist in error finding"
+        text: "If you want to pause or debug your program, hit \"Stop\" to assist in error finding."
     },
     {
         id: "speed",
         side: "adjacent",
-        text: "Click this multiple times to speed up execution"
+        text: "Click this multiple times to speed up execution."
+    },
+    {
+        id: "follow",
+        side: "adjacent",
+        text: "If you want to follow the current instruction, click this button."
     },
     {
         id: "stateDisplay",
         side: "under",
-        text: "This is the machine's display, you can see what the machine is doing step by step"
+        text: "This is the machine's display, you can see what the machine is doing step by step."
+    },
+    {
+        id: "output",
+        side: "under",
+        text: "And this is the output, you don't have to use it if you want."
     },
     {
         id: "vs",
         side: "under",
-        text: "All the computation occurs here, \"The Stack\" is what you'll mostly focus on"
+        text: "All the computation occurs here, \"The Stack\" is what you'll mostly focus on."
     },
     {
         id: "visual",
         side: "under",
-        text: "You can change the appearence of the stack here, Fractions, Decimals, and such"
+        text: "You can change the appearence of the stack here, Fractions, Decimals, and such."
     },
     {
         id: "darkModeButton",
         side: "under",
-        text: "Dark Mode is available to those who can't contract their pupils fully"
+        text: "Dark Mode is available if you like."
     },
     {
         id: "link",
@@ -123,4 +138,5 @@ function updateHelpBox() {
     helpBox.style.top = window.scrollY + y + "px";
     helpText.innerText = info.text;
     helpBox.hidden = false;
+    helpBox.scrollIntoView();
 }
