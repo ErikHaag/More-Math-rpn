@@ -95,7 +95,8 @@ p.comment {
 }
 
 #output>ol>li {
-    padding: 5px;
+    padding: 5px, 0px;
+    white-space: pre;
 }
 
 #output>span.error {
