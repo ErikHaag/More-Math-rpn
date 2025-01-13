@@ -268,13 +268,24 @@ function BigIntToString(I, commas = false) {
 
 function updateUI() {
     output.innerHTML = "";
-    let list = document.createElement("ol");
+    let list = [];
+    function appendList() {
+        if (list.length == 0) {
+            output.appendChild(document.createElement("br"));
+        } else {
+            let listEl = document.createElement("ol");
+            for (const i of list) {
+                listEl.appendChild(i);
+            }
+            output.appendChild(listEl);
+            list = [];
+        }
+    }
     for (const o of outputList) {
         let item = document.createElement("li");
         if (typeof o == "string") {
             if (o.startsWith("\n")) {
-                output.appendChild(list);
-                list = document.createElement("ol");
+                appendList();
                 if (o.length == 1) {
                     item.remove();
                     continue;
@@ -286,9 +297,9 @@ function updateUI() {
         } else {
             item.innerHTML = toHTML(o);
         }
-        list.appendChild(item);
+        list.push(item);
     }
-    output.appendChild(list);
+    appendList();
     if (stateDisplay.hidden) return;
     list = "";
     let indexRow = "";
