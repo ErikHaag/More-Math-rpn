@@ -46,8 +46,9 @@ const texts = {
         jumpedOutOfLoop: "Error: Outside of current loop.",
         matrixDim: "Error: Matrices have incompatible sizes.",
         missingVariable: ["Error: Variable \"", "\" doesn't exist."],
-        negative: "Error: Non-negative expected.",
+        negative: "Error: Non-negative number expected.",
         notInLoop: "Error: Not in a loop.",
+        notPositive: "Error: Positive number expected.",
         outOfBounds: "Error: Out of bounds.",
         parameterNotRational: "Error: A parameter wasn't a rational or integer.",
         parameterNotString: "Error: A parameter wasn't a string",
@@ -1294,17 +1295,23 @@ function doInstruction() {
                     break;
                 case "m":
                     {
-                        let r = Number.parseInt(I[1]) * Number.parseInt(I[2]);
-                        if (values.length < r) {
-                            lastError = texts.errors.shortStack;
-                            return false;
-                        }
                         if (!intRegex.test(I[1]) || !intRegex.test(I[2])) {
                             lastError = texts.errors.parameterNotRational;
                             return false;
                         }
-                        if (!values.slice(0, r).map((e) => e instanceof Rational).includes(false)) {
-                            let arg = values.splice(0, Number.parseInt(I[1]) * Number.parseInt(I[2]));
+                        let c = Number.parseInt(I[1]);
+                        let r = Number.parseInt(I[2]);
+                        if (c <= 0 || r <= 0) {
+                            lastError = texts.errors.notPositive;
+                            return false;
+                        }
+                        let indices = c * r;
+                        if (values.length < indices) {
+                            lastError = texts.errors.shortStack;
+                            return false;
+                        }
+                        if (!values.slice(0, indices).map((e) => e instanceof Rational).includes(false)) {
+                            let arg = values.splice(0, indices);
                             arg.reverse();
                             values.unshift(new Matrix(BigInt(I[1]), arg));
                         } else {
