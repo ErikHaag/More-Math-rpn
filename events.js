@@ -97,13 +97,13 @@ resetButton.addEventListener("click", () => {
 startButton.addEventListener("click", () => {
     if (allowRunning) {
         if (current >= 0) {
-            clearTimeout(timer);
+            clearInterval(clock);
         }
         reset()
         current = 0;
         updateUI();
         // sit back and watch the magic happen
-        timer = setTimeout(step, speed);
+        clock = setInterval(step, speed);
     } else {
         if (current == -1) {
             reset();
@@ -130,12 +130,11 @@ function updateControls() {
 }
 
 speedButton.addEventListener("click", () => {
-    clearTimeout(timer);
+    clearInterval(clock);
     speedSelect = (speedSelect + 1n) % 5n
     updateSpeed();
     if (allowRunning && current != 0) {
-        clearTimeout(timer);
-        timer = setTimeout(step, speed);
+        clock = setInterval(step, speed);
     }
     if (useSpeedCheck.checked) {
         updateLink();

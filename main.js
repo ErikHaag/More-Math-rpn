@@ -22,7 +22,7 @@ let current = -1;
 //whether the program is stepping manually or automatically
 let allowRunning = true;
 //the beating heart of this magnum opus
-let timer;
+let clock;
 //how fast are we going? 
 let speedSelect = 0n;
 //the time between update bursts
@@ -435,13 +435,14 @@ function step() {
     // true -> ok
     // false -> stop, yes error
     let end = false;
+    let halt = true;
     if (current >= instructions.length) {
         // end of program reached
         current = -1;
         end = true;
     } else if (e === true && allowRunning) {
         //continue to next iteration
-        timer = setTimeout(step, speed);
+        halt = false;
     }
     updateUI();
     if (e === false) {
@@ -453,6 +454,10 @@ function step() {
     }
     if (followingCurrent) {
         scrollInstructions(end);
+    }
+    if (halt) {
+        // if there's a problem, stop execution
+        clearInterval(clock);
     }
 }
 
