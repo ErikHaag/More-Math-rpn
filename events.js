@@ -100,9 +100,9 @@ startButton.addEventListener("click", () => {
             clearInterval(clock);
         }
         reset()
+        running = true;
         updateUI();
         // sit back and watch the magic happen
-        running = true;
         clock = setInterval(step, speed);
     } else {
         if (running) {
