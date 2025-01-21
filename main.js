@@ -430,23 +430,26 @@ function step() {
     } else {
         e = doInstruction();
     }
+    // e = undefined, true or false
+    // undef -> stop, no error
+    // true -> ok
+    // false -> stop, yes error
     let end = false;
-    if (current != -1) {
-        if (e !== false) {
-            if (current >= instructions.length) {
-                current = -1;
-                end = true;
-            } else if (allowRunning) {
-                timer = setTimeout(step, speed);
-            }
-        }
-        updateUI();
-        if (e === false) {
-            allowRunning = false;
-            updateControls();
-            output.innerHTML += (output.innerHTML.length == 0 ? "" : "<br>") + "<span class=error>" + lastError + "</span";
-            current = -1;
-        }
+    if (current >= instructions.length) {
+        // end of program reached
+        current = -1;
+        end = true;
+    } else if (e === true && allowRunning) {
+        //continue to next iteration
+        timer = setTimeout(step, speed);
+    }
+    updateUI();
+    if (e === false) {
+        // an error occurred :(
+        allowRunning = false;
+        updateControls();
+        output.innerHTML += (output.innerHTML.length == 0 ? "" : "<br>") + "<span class=error>" + lastError + "</span";
+        current = -1;
     }
     if (followingCurrent) {
         scrollInstructions(end);
@@ -460,7 +463,7 @@ function doInstruction() {
     let I = instructions[current].split(" ");
     for (let i = 1; i < I.length; i++) {
         if (I[i].startsWith("]")) {
-            let refer = BigInt(I[i].substring(1));
+            let refer = Number.parseInt(I[i].substring(1));
             let parameter = values[refer];
             if (!parameter) {
                 lastError = texts.errors.outOfBounds;
@@ -565,8 +568,8 @@ function doInstruction() {
                             lastError = texts.errors.argument;
                             return false;
                         }
-                        break;
                     }
+                    break;
                 case "*":
                     if (values.length < 2) {
                         lastError = texts.errors.shortStack;
@@ -669,8 +672,8 @@ function doInstruction() {
                             lastError = texts.errors.jumpedOutOfLoop;
                             return false;
                         }
-                        break;
                     }
+                    break;
                 case "ceil":
                     if (values.length < 1) {
                         lastError = texts.errors.shortStack;
@@ -752,8 +755,10 @@ function doInstruction() {
                             lastError = texts.errors.argument;
                             return false;
                         }
-                        break;
                     }
+                    break;
+                case "end":
+                    return; //stops without errors
                 case "floor":
                     if (values.length < 1) {
                         lastError = texts.errors.shortStack;
@@ -784,8 +789,8 @@ function doInstruction() {
                                 values.splice(0, 1, new Matrix(A.columns, B.flat()));
                             }
                         }
-                        break;
                     }
+                    break;
                 case "gcd":
                     if (values.length < 2) {
                         lastError = texts.errors.shortStack;
@@ -826,8 +831,8 @@ function doInstruction() {
                             values.unshift(new Rational(BigInt(s.charCodeAt(i))));
                         }
                         values.unshift(new Rational(BigInt(s.length)));
-                        break;
                     }
+                    break;
                 case "int":
                     if (values.length < 1) {
                         lastError = texts.errors.shortStack;
@@ -959,8 +964,8 @@ function doInstruction() {
                             lastError = texts.errors.argument;
                             return false;
                         }
-                        break;
                     }
+                    break;
                 case "step":
                     if (values.length < 1) {
                         lastError = texts.errors.shortStack;
@@ -983,6 +988,20 @@ function doInstruction() {
                     } else {
                         lastError = texts.errors.argument;
                         return false;
+                    }
+                    break;
+                case "unzip":
+                    {
+                        if (values.length < 1) {
+                            lastError = texts.errors.shortStack;
+                            return false;
+                        }
+                        if (values[0] instanceof Matrix) {
+                            let m = values.shift().indices.flat();
+                            for (let i = m.length; i >= 0; i--) {
+                                values.unshift(m[i]);
+                            }
+                        }
                     }
                     break;
                 default:
@@ -1244,8 +1263,8 @@ function doInstruction() {
                         } else {
                             repeats.unshift([1n, BigInt(I[1]), current, scan]);
                         }
-                        break;
                     }
+                    break;
                 case "scaleRow":
                     if (values.length < 2) {
                         lastError = texts.errors.shortStack;
@@ -1318,8 +1337,8 @@ function doInstruction() {
                             lastError = texts.errors.argument;
                             return false;
                         }
-                        break;
                     }
+                    break;
                 case "ind":
                     {
                         if (values.length < 1) {
