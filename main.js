@@ -66,7 +66,8 @@ const texts = {
     },
     input: {
         rational: "Input an integer, rational, decimal, or recurring decimal:",
-        text: "Input some text:"
+        text: "Input some text:",
+        textEscaping: "Input some text, use \\n for newlines and \\\\ for \\"
     }
 };
 
@@ -119,18 +120,6 @@ function parse(instr) {
     executingCurrent = 0;
 }
 
-function popState() {
-    if (instructions.length >= 2) {
-        instructions.pop();
-        comments.pop();
-        repeats.pop()
-        current.pop();
-        rnList.pop();
-        executingCurrent = current.at(-1);
-        return true;
-    }
-    return false;
-}
 
 function toHTML(o) {
     if (appearenceSelect.value == "latex") {
@@ -399,7 +388,7 @@ function updateUI() {
     }
     let instr = instructions.at(-1);
     for (let i = 0; i < instr.length; i++) {
-        list += "<li " + (i == executingCurrent ? "class=\"curr\" >" : ">") + (autoStepping || current.length == 0 ? "" : "<p class=\"index\">" + BigInt(i - executingCurrent) + "</p><br>") + instr[i] + "</li>\n";
+        list += "<li " + (running && i == executingCurrent ? "class=\"curr\" >" : ">") + (autoStepping || current.length == 0 ? "" : "<p class=\"index\">" + BigInt(i - executingCurrent) + "</p><br>") + instr[i] + "</li>\n";
         let cI = com.findIndex((e) => { return e[0] == i + 1; });
         if (cI >= 0) {
             for (let j = 1; j < com[cI].length; j++) {
@@ -471,10 +460,16 @@ function step() {
     let halt = true;
     if (e == "halt!") {
         running = false;
-        executingCurrent = instructions.at(-1).length
+        executingCurrent = instructions.at(-1).length;
     } else if (executingCurrent >= instructions.at(-1).length) {
         // end of program reached
-        if (popState()) {
+        if (instructions.length >= 2) {
+            instructions.pop();
+            comments.pop();
+            repeats.pop()
+            current.pop();
+            rnList.pop();
+            executingCurrent = current.at(-1);
             halt = false;
         } else {
             running = false;
@@ -499,6 +494,29 @@ function step() {
         // if there's a problem, stop execution
         clearInterval(clock);
     }
+}
+
+function handleEscapeCharacters(str) {
+    for (let i = 0; i < str.length; i++) {
+        if (str[i] == "\\") {
+            let replaced = "";
+            switch (str[i + 1]) {
+                case "n":
+                    replaced = "\n";
+                    break;
+                case "\\":
+                    replaced = "\\";
+                    break;
+                case "\"":
+                    replaced = "\"";
+                    break;
+                default:
+                    return false;
+            }
+            str = str.substring(0, i) + replaced + str.substring(i + 2);
+        }
+    }
+    return str;
 }
 
 function doInstruction() {
@@ -558,26 +576,12 @@ function doInstruction() {
                     return false;
                 }
             } else {
-                for (let j = 0; j < I[i].length; j++) {
-                    if (I[i][j] == "\\") {
-                        let replaced = "";
-                        switch (I[i][j + 1]) {
-                            case "n":
-                                replaced = "\n";
-                                break;
-                            case "\\":
-                                replaced = "\\";
-                                break;
-                            case "\"":
-                                replaced = "\"";
-                                break;
-                            default:
-                                lastError = texts.errors.invalidEscapeCharacter;
-                                return false;
-                        }
-                        I[i] = I[i].substring(0, j) + replaced + I[i].substring(j + 2);
-                    }
+                let s = handleEscapeCharacters(I[i])
+                if (s === false) {
+                    lastError = texts.errors.invalidEscapeCharacter;
+                    return false;
                 }
+                I[i] = s;
             }
         }
     }
@@ -880,6 +884,21 @@ function doInstruction() {
                             values.unshift(new Rational(BigInt(s.charCodeAt(i))));
                         }
                         values.unshift(new Rational(BigInt(s.length)));
+                    }
+                    break;
+                case "inputSE":
+                    {
+                        let input = "";
+                        let escaped;
+                        do {
+                            input = prompt(texts.input.textEscaping, input);
+                            escaped = input == null ? "" : handleEscapeCharacters(input);
+                        } while (escaped === false)
+                        if (escaped == null) escaped = "";
+                        for (let i = escaped.length - 1; i >= 0; i--) {
+                            values.unshift(new Rational(BigInt(escaped.charCodeAt(i))));
+                        }
+                        values.unshift(new Rational(BigInt(escaped.length)));
                     }
                     break;
                 case "int":
@@ -1225,6 +1244,25 @@ function doInstruction() {
                             values.unshift(new Rational(BigInt(s[i].charCodeAt(0))));
                         }
                         values.unshift(new Rational(BigInt(s.length)));
+                    }
+                    break;
+                case "inputSE":
+                    {
+                        if (!strRegex.test(I[1])) {
+                            lastError = texts.errors.parameterNotString;
+                            return false;
+                        }
+                        let input = "";
+                        let escaped;
+                        do {
+                            input = prompt(I[1].slice(1, -1), input);
+                            escaped = input == null ? "" : handleEscapeCharacters(input);
+                        } while (escaped === false)
+                        if (escaped == null) escaped = "";
+                        for (let i = escaped.length - 1; i >= 0; i--) {
+                            values.unshift(new Rational(BigInt(escaped.charCodeAt(i))));
+                        }
+                        values.unshift(new Rational(BigInt(escaped.length)));
                     }
                     break;
                 case "jmp":
