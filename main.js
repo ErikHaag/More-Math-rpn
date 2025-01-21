@@ -18,9 +18,12 @@ let values = [];
 //the named variables
 let aux = new Map();
 //where we are in the instructions
-let current = -1;
+let current = [];
+let executingCurrent = 0;
 //whether the program is stepping manually or automatically
-let allowRunning = true;
+let autoStepping = true;
+//whether the program is running
+let running = false;
 //the beating heart of this magnum opus
 let clock;
 //how fast are we going? 
@@ -39,6 +42,7 @@ let lastError = "";
 const texts = {
     errors: {
         argument: "Error: Invalid argument(s).",
+        beforeCode: "Error: Jumped beyond start of instructions.",
         command: "Error: Invalid command.",
         det0: "Error: Matrix has determinate of zero.",
         div0: "Error: Division by zero.",
@@ -51,14 +55,14 @@ const texts = {
         notPositive: "Error: Positive number expected.",
         outOfBounds: "Error: Out of bounds.",
         parameterNotRational: "Error: A parameter wasn't a rational or integer.",
-        parameterNotString: "Error: A parameter wasn't a string",
+        parameterNotString: "Error: A parameter wasn't a string.",
         parameterMatrix: "Error: Parameters are rationals or strings.",
         parameterNotVector: "Error: A parameter wasn't a vector.",
         shortStack: "Error: The stack doesn't have enough items.",
         tooDeep: "Error: Too deep.",
         unclosedString: "Error: Unclosed string.",
-        variableName: "Error: Variable names can't start with quotes",
-        variableParameterMatrix: "Error: Parameters are rationals or strings, try using place"
+        variableName: "Error: Variable names can't start with quotes.",
+        variableParameterMatrix: "Error: Parameters are rationals or strings, try using place."
     },
     input: {
         rational: "Input an integer, rational, decimal, or recurring decimal:",
@@ -67,39 +71,65 @@ const texts = {
 };
 
 function reset() {
-    instructions = instructionInput.value.split("\n");
-    instructions = instructions.map((s) => s.trim());
-    values = [];
-    repeats = [];
+    clearInterval(clock);
+    instructions = [];
     comments = [];
+    repeats = [];
+    values = [];
+    current = [];
+    rnList = [];
     outputList = [];
     aux = new Map();
+    parse(instructionInput.value);
+}
+
+function parse(instr) {
+    let parsedInstructions = instr.split("\n").map((s) => s.trim());
     let cpos = [];
-    for (let i = 0; i < instructions.length; i++) {
-        if (instructions[i].startsWith("\"")) {
+    for (let i = 0; i < parsedInstructions.length; i++) {
+        if (parsedInstructions[i].startsWith("\"")) {
             cpos.push(i);
         }
     }
+    let parsedComments = [];
     for (let i = 0; i < cpos.length; i++) {
         if (i >= 1 && cpos[i] == cpos[i - 1] + 1) {
-            let c = comments.pop();
-            c.push(instructions[cpos[i]].substring(1));
-            comments.push(c);
+            let c = parsedComments.pop();
+            c.push(parsedInstructions[cpos[i]].substring(1));
+            parsedComments.push(c);
         } else {
-            comments.push([cpos[i] - i, instructions[cpos[i]].substring(1)]);
+            parsedComments.push([cpos[i] - i, parsedInstructions[cpos[i]].substring(1)]);
         }
     }
+    comments.push(parsedComments);
     for (let i = cpos.length - 1; i >= 0; i--) {
-        instructions.splice(cpos[i], 1);
+        parsedInstructions.splice(cpos[i], 1);
     }
-    rnList = instructions.map((s) => {
+    instructions.push(parsedInstructions);
+    repeats.push([]);
+    rnList.push(parsedInstructions.map((s) => {
         if (s.startsWith("repeat")) {
             return 1;
         } else if (s == "next") {
             return 2;
         }
         return 0;
-    });
+    }));
+    current.push(0);
+    executingCurrent = 0;
+}
+
+function popState() {
+    if (instructions.length >= 2) {
+        instructions.pop();
+        comments.pop();
+        repeats.pop()
+        current.pop();
+        rnList.pop();
+        executingCurrent = current.at(-1);
+        return true;
+    }
+    return false;
 }
 
 function toHTML(o) {
@@ -305,7 +335,7 @@ function updateUI() {
     list = "";
     let indexRow = "";
     for (let i = (values.length - 1); i >= 0; i--) {
-        if (!allowRunning) {
+        if (!autoStepping) {
             indexRow += "<td>" + BigInt(i) + "</td>"
         }
         if (appearenceSelect.value == "latex") {
@@ -317,13 +347,13 @@ function updateUI() {
                 valElem = matrixToTable(values[i].clone());
             }
         }
-        if (allowRunning) {
+        if (autoStepping) {
             list += "<li>" + valElem + "</li>\n"
         } else {
             list += "<td>" + valElem + "</td>"
         }
     }
-    if (allowRunning) {
+    if (autoStepping) {
         valueStack.innerHTML = list;
     } else {
         valueStack.innerHTML = "<li><table><tr class=\"index\">" + indexRow + "</tr><tr class=\"valRow\">" + list + "</tr></table></li>"
@@ -348,30 +378,32 @@ function updateUI() {
         auxillaryArray.innerHTML = list;
         auxillaryArray.parentElement.hidden = false;
     }
-    if (repeats.length == 0) {
+    let rep = repeats.at(-1);
+    if (rep.length == 0) {
         //hide if empty
         repeatPile.parentElement.hidden = true;
     } else {
         list = "";
-        for (let i = 0; i < repeats.length; i++) {
-            list += "<li>" + repeats[i][0].toString() + ", " + repeats[i][1].toString() + ", " + repeats[i][2].toString() + ", " + repeats[i][3].toString() + "</li>\n";
+        for (let i = 0; i < rep.length; i++) {
+            list += "<li>" + rep[i][0].toString() + ", " + rep[i][1].toString() + ", " + rep[i][2].toString() + ", " + rep[i][3].toString() + "</li>\n";
         }
         repeatPile.innerHTML = list;
         repeatPile.parentElement.hidden = false;
     }
     list = "";
-    let c = comments.findIndex((e) => { return e[0] == 0; });
-    if (c >= 0) {
-        for (let j = 1; j < comments[c].length; j++) {
-            list += "<li><p class=\"comment\">\"" + comments[c][j] + "\"</p></li>\n";
+    let com = comments.at(-1);
+    if (com[0]?.[0] == 0) {
+        for (let j = 1; j < com[0].length; j++) {
+            list += "<li><p class=\"comment\">\"" + com[0][j] + "\"</p></li>\n";
         }
     }
-    for (let i = 0; i < instructions.length; i++) {
-        list += "<li " + (i == current ? "class=\"curr\" >" : ">") + (allowRunning || current == -2 || current == -1 ? "" : "<p class=\"index\">" + BigInt(i - current) + "</p><br>") + instructions[i] + "</li>\n";
-        let c = comments.findIndex((e) => { return e[0] == i + 1; });
-        if (c >= 0) {
-            for (let j = 1; j < comments[c].length; j++) {
-                list += "<li><p class=\"comment\">\"" + comments[c][j] + "\"</p></li>\n";
+    let instr = instructions.at(-1);
+    for (let i = 0; i < instr.length; i++) {
+        list += "<li " + (i == executingCurrent ? "class=\"curr\" >" : ">") + (autoStepping || current.length == 0 ? "" : "<p class=\"index\">" + BigInt(i - executingCurrent) + "</p><br>") + instr[i] + "</li>\n";
+        let cI = com.findIndex((e) => { return e[0] == i + 1; });
+        if (cI >= 0) {
+            for (let j = 1; j < com[cI].length; j++) {
+                list += "<li><p class=\"comment\">\"" + com[cI][j] + "\"</p></li>\n";
             }
         }
     }
@@ -421,36 +453,44 @@ function appendToOutput(message) {
 
 function step() {
     let e;
-    if (allowRunning) {
+    if (autoStepping) {
         // a burst of instructions
         for (let i = 0; i < steps; i++) {
             e = doInstruction();
-            if (!e) break;
+            if (e !== true) break;
         }
     } else {
         e = doInstruction();
     }
+    executingCurrent = current.at(-1);
     // e = undefined, true or false
     // undef -> stop, no error
     // true -> ok
     // false -> stop, yes error
     let end = false;
     let halt = true;
-    if (current >= instructions.length) {
+    if (e == "halt!") {
+        running = false;
+        executingCurrent = instructions.at(-1).length
+    } else if (executingCurrent >= instructions.at(-1).length) {
         // end of program reached
-        current = -1;
+        if (popState()) {
+            halt = false;
+        } else {
+            running = false;
+        }
         end = true;
-    } else if (e === true && allowRunning) {
+    } else if (e === true && autoStepping) {
         //continue to next iteration
         halt = false;
     }
     updateUI();
     if (e === false) {
         // an error occurred :(
-        allowRunning = false;
+        autoStepping = false;
+        running = false;
         updateControls();
         output.innerHTML += (output.innerHTML.length == 0 ? "" : "<br>") + "<span class=error>" + lastError + "</span";
-        current = -1;
     }
     if (followingCurrent) {
         scrollInstructions(end);
@@ -462,10 +502,11 @@ function step() {
 }
 
 function doInstruction() {
-    if (current < 0 || current >= instructions.length) {
+    let top = instructions.length - 1;
+    if (current[top] < 0 || current[top] >= instructions[top].length) {
         return;
     }
-    let I = instructions[current].split(" ");
+    let I = instructions[top][current[top]].split(" ");
     for (let i = 1; i < I.length; i++) {
         if (I[i].startsWith("]")) {
             let refer = Number.parseInt(I[i].substring(1));
@@ -664,15 +705,15 @@ function doInstruction() {
                     break;
                 case "break":
                     {
-                        if (repeats.length == 0) {
+                        if (repeats[top].length == 0) {
                             lastError = texts.errors.notInLoop;
                             return false;
                         }
-                        let r = repeats[0][2];
-                        let n = repeats[0][3];
-                        if (r < current && current < n) {
-                            current = n;
-                            repeats.shift();
+                        let r = repeats[top][0][2];
+                        let n = repeats[top][0][3];
+                        if (r < current[top] && current[top] < n) {
+                            current[top] = n;
+                            repeats[top].shift();
                         } else {
                             lastError = texts.errors.jumpedOutOfLoop;
                             return false;
@@ -763,6 +804,7 @@ function doInstruction() {
                     }
                     break;
                 case "end":
+                    current[top] = instructions[top].length;
                     return; //stops without errors
                 case "floor":
                     if (values.length < 1) {
@@ -825,6 +867,8 @@ function doInstruction() {
                         return false;
                     }
                     break;
+                case "halt":
+                    return "halt!";
                 case "inputR":
                     while (!interpretStringToRational(prompt(texts.input.rational, "0"), true));
                     break;
@@ -898,12 +942,12 @@ function doInstruction() {
                     }
                     break;
                 case "next":
-                    if (repeats.length >= 1) {
-                        if (repeats[0][0] < repeats[0][1]) {
-                            repeats[0][0]++;
-                            current = repeats[0][2];
+                    if (repeats[top].length >= 1) {
+                        if (repeats[top][0][0] < repeats[top][0][1]) {
+                            repeats[top][0][0]++;
+                            current[top] = repeats[top][0][2];
                         } else {
-                            repeats.shift();
+                            repeats[top].shift();
                         }
                     } else {
                         lastError = texts.errors.notInLoop;
@@ -969,6 +1013,22 @@ function doInstruction() {
                             lastError = texts.errors.argument;
                             return false;
                         }
+                    }
+                    break;
+                case "run":
+                    if (values.length < 1) {
+                        lastError = texts.errors.shortStack;
+                        return false;
+                    }
+                    if (values[0] instanceof Matrix) {
+                        if (values[0].rows >= 2n) {
+                            lastError = texts.errors.multirowMatrix;
+                            return false;
+                        }
+                        parse(String.fromCharCode(...values.shift().indices[0].map((e) => Number(e.numerator / e.denominator))));
+                    } else {
+                        lastError = texts.errors.argument;
+                        return false;
                     }
                     break;
                 case "step":
@@ -1080,8 +1140,8 @@ function doInstruction() {
                             lastError = texts.errors.negative;
                             return false;
                         }
-                        if (d < repeats.length) {
-                            values.unshift(new Rational(repeats[d][0]));
+                        if (d < repeats[top].length) {
+                            values.unshift(new Rational(repeats[top][d][0]));
                         } else {
                             lastError = texts.errors.tooDeep;
                             return false;
@@ -1174,8 +1234,12 @@ function doInstruction() {
                             return false;
                         }
                         let dist = Number.parseInt(I[1]);
+                        if (current[top] + dist < 0) {
+                            lastError = texts.errors.beforeCode;
+                            return false;
+                        }
                         if (dist != 0) {
-                            current += dist - 1;
+                            current[top] += dist - 1;
                         }
                     }
                     break;
@@ -1185,19 +1249,19 @@ function doInstruction() {
                             lastError = texts.errors.parameterNotRational;
                             return false;
                         }
-                        if (repeats.length == 0) {
+                        if (repeats[top].length == 0) {
                             lastError = texts.errors.notInLoop;
                             return false;
                         }
-                        let r = repeats[0][2];
-                        let n = repeats[0][3];
-                        if (r < current && current < n) {
+                        let r = repeats[top][0][2];
+                        let n = repeats[top][0][3];
+                        if (r < current[top] && current[top] < n) {
                             let dist = Number.parseInt(I[1]);
                             if (dist <= 0) {
                                 dist = 1;
                             }
-                            current = n + dist - 1;
-                            repeats.shift();
+                            current[top] = n + dist - 1;
+                            repeats[top].shift();
                         } else {
                             lastError = texts.errors.jumpedOutOfLoop;
                             return false;
@@ -1246,15 +1310,15 @@ function doInstruction() {
                             return false;
                         }
                         let depth = 1;
-                        let scan = current;
-                        while (depth >= 1 && scan + 1 < instructions.length) {
-                            let nextNext = rnList.indexOf(2, scan + 1);
+                        let scan = current[top];
+                        while (depth >= 1 && scan + 1 < instructions[top].length) {
+                            let nextNext = rnList[top].indexOf(2, scan + 1);
                             if (nextNext == -1) {
                                 // if no next statement...
-                                scan = instructions.length;
+                                scan = instructions[top].length;
                                 break;
                             }
-                            let nextRepeat = rnList.indexOf(1, scan + 1);
+                            let nextRepeat = rnList[top].indexOf(1, scan + 1);
                             if (nextRepeat != -1 && nextRepeat < nextNext) {
                                 scan = nextRepeat;
                                 depth++;
@@ -1264,9 +1328,9 @@ function doInstruction() {
                             }
                         }
                         if (BigInt(I[1]) <= 0n) {
-                            current = scan;
+                            current[top] = scan;
                         } else {
-                            repeats.unshift([1n, BigInt(I[1]), current, scan]);
+                            repeats[top].unshift([1n, BigInt(I[1]), current[top], scan]);
                         }
                     }
                     break;
@@ -1389,6 +1453,6 @@ function doInstruction() {
             }
             break;
     }
-    current++;
+    current[top]++;
     return true;
 }

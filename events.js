@@ -90,50 +90,50 @@ function updateLink() {
 
 resetButton.addEventListener("click", () => {
     reset();
-    current = -1;
+    running = false;
     updateUI();
 });
 
 startButton.addEventListener("click", () => {
-    if (allowRunning) {
-        if (current >= 0) {
+    if (autoStepping) {
+        if (running) {
             clearInterval(clock);
         }
         reset()
-        current = 0;
         updateUI();
         // sit back and watch the magic happen
+        running = true;
         clock = setInterval(step, speed);
     } else {
-        if (current == -1) {
-            reset();
-            current = 0;
-            updateUI();
-        } else {
+        if (running) {
             step();
+        } else {
+            reset();
+            running = true;
+            updateUI();
         }
     }
 });
 
 stopButton.addEventListener("click", () => {
-    allowRunning = !allowRunning;
+    autoStepping = !autoStepping;
     updateControls();
-    if (allowRunning) {
+    if (autoStepping && running) {
         step();
     }
 });
 
 function updateControls() {
-    resetButton.hidden = allowRunning;
-    startButton.innerHTML = allowRunning ? "Start" : "Step";
-    stopButton.innerHTML = allowRunning ? "Stop" : "Continue";
+    resetButton.hidden = autoStepping;
+    startButton.innerHTML = autoStepping ? "Start" : "Step";
+    stopButton.innerHTML = autoStepping ? "Stop" : "Continue";
 }
 
 speedButton.addEventListener("click", () => {
     clearInterval(clock);
     speedSelect = (speedSelect + 1n) % 5n
     updateSpeed();
-    if (allowRunning && current != 0) {
+    if (autoStepping && current != 0) {
         clock = setInterval(step, speed);
     }
     if (useSpeedCheck.checked) {
