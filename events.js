@@ -118,8 +118,12 @@ startButton.addEventListener("click", () => {
 stopButton.addEventListener("click", () => {
     autoStepping = !autoStepping;
     updateControls();
-    if (autoStepping && running) {
-        clock = setInterval(step, speed);
+    if (running) {
+        if (autoStepping) {
+            clock = setInterval(step, speed);
+        } else {
+            clearInterval(clock);
+        }
     }
 });
 

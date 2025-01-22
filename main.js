@@ -1337,7 +1337,7 @@ function doInstruction() {
                     if (aux.has(I[1])) {
                         values.unshift(aux.get(I[1]).clone());
                     } else {
-                        lastError = texts.errors.missingVariable.toSpliced(1, 0, I[1].substring(1).join(""));
+                        lastError = texts.errors.missingVariable.toSpliced(1, 0, I[1]).join("");
                         return false;
                     }
                     break;
