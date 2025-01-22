@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let url = new URL(document.location);
     let params = url.searchParams;
     if (params.has("instr")) {
-        
+
         instructionInput.value = params.get("instr");
     }
     if (params.has("speed")) {
@@ -118,12 +118,10 @@ startButton.addEventListener("click", () => {
 stopButton.addEventListener("click", () => {
     autoStepping = !autoStepping;
     updateControls();
-    if (running) {
-        if (autoStepping) {
-            clock = setInterval(step, speed);
-        } else {
-            clearInterval(clock);
-        }
+    if (running && autoStepping) {
+        clock = setInterval(step, speed);
+    } else {
+        clearInterval(clock);
     }
 });
 
