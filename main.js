@@ -919,6 +919,21 @@ function doInstruction() {
                     break;
                 case "halt":
                     return "halt!";
+                case "hyperStep":
+                    if (values.length < 1) {
+                        lastError = texts.errors.shortStack;
+                        return false;
+                    }
+                    if (values[0] instanceof Rational) {
+                        if (values[0].denominator >= 1n) {
+                            values.splice(0, 1, new Rational(0n));
+                        } else {
+                            values.splice(0, 1, new Rational(values[0].numerator < 0n ? -1n: 1n));
+                        }
+                    } else {
+                        lastError = texts.errors.argument;
+                    }
+                    break;
                 case "inputR":
                     while (!interpretStringToRational(prompt(texts.input.rational, "0"), true));
                     break;
@@ -1107,7 +1122,7 @@ function doInstruction() {
                         return false;
                     }
                     if (values[0] instanceof Rational) {
-                        values.splice(0, 1, new Rational(BigInt(values[0].numerator >= 1n)));
+                        values.splice(0, 1, new Rational(values[0].numerator >= 1n ? 1n : 0n));
                     } else {
                         lastError = texts.errors.argument;
                         return false;
