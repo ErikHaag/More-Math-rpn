@@ -38,6 +38,9 @@ let rnList = [];
 let outputList = [];
 //the most recent error message
 let lastError = "";
+//whether these lists had any elementss
+let openAA = false;
+let openRP = false;
 
 const texts = {
     errors: {
@@ -45,8 +48,8 @@ const texts = {
         beforeCode: "Error: Jumped beyond start of instructions.",
         command: "Error: Invalid command.",
         det0: "Error: Matrix has determinate of zero.",
-        div0: "Error: Division by zero.",
-        invalidEscapeCharacter: "Invalid escape character.",
+        invalidEscapeCharacter: "Error: Invalid escape character.",
+        indeterminateForm: "Error: Rational of indeterminate form!",
         jumpedOutOfLoop: "Error: Outside of current loop.",
         matrixDim: "Error: Matrices have incompatible sizes.",
         missingVariable: ["Error: Variable \"", "\" doesn't exist."],
@@ -54,6 +57,7 @@ const texts = {
         notInLoop: "Error: Not in a loop.",
         notPositive: "Error: Positive number expected.",
         outOfBounds: "Error: Out of bounds.",
+        parameterInfinity: "Error: A parameter isn't finite.",
         parameterNotRational: "Error: A parameter wasn't a rational or integer.",
         parameterNotString: "Error: A parameter wasn't a string.",
         parameterMatrix: "Error: Parameters are rationals or strings.",
@@ -61,6 +65,7 @@ const texts = {
         shortStack: "Error: The stack doesn't have enough items.",
         tooDeep: "Error: Too deep.",
         unclosedString: "Error: Unclosed string.",
+        unknown: "Error: An unknow error occurred, please create an issue so I can debug.",
         variableName: "Error: Variable names can't start with quotes.",
         variableParameterMatrix: "Error: Parameters are rationals or strings, try using place."
     },
@@ -81,6 +86,10 @@ function reset() {
     rnList = [];
     outputList = [];
     aux = new Map();
+    openAA = false;
+    openRP = false;
+    auxillaryArray.parentElement.hidden = true;
+    repeatPile.parentElement.hidden = true;
     parse(instructionInput.value);
 }
 
@@ -120,7 +129,6 @@ function parse(instr) {
     executingCurrent = 0;
 }
 
-
 function toHTML(o) {
     if (appearenceSelect.value == "latex") {
         return "<img src=\"https://latex.codecogs.com/svg.image?" + (dark ? "%5Ccolor%7BWhite%7D" : "") + o.toLatex() + "\">";
@@ -146,7 +154,7 @@ function matrixToTable(M) {
             h += "\n<td class=\"shift\">⎢ </td>";
         }
         for (let j = 0n; j < M.columns; j++) {
-            h += "\n<td class=\"matrixIndex\">" + rationalAppearence(M.indices[i][j].clone()) + "</td>";
+            h += "\n<td class=\"matrixIndex\">" + rationalAppearence(M.indices[i][j]) + "</td>";
         }
         if (M.rows == 1n) {
             h += "\n<td>]</td>";
@@ -163,24 +171,33 @@ function matrixToTable(M) {
 }
 
 function rationalAppearence(R) {
-    let str;
+    if (R instanceof Error) {
+        switch (appearenceSelect.value) {
+            case "fraction":
+            case "fractioncommas":
+                return "<table>\n<tr>\n<td class=\"numerator\">0</td>\n</tr>\n<tr>\n<td class=\"denominator\">0</td></tr></tabl/e>";
+            case "decimal":
+            case "decimalcommas":
+                return "<p>Indeterminate form</p>";
+            default:
+                return "<p>Huh?</p>";
+        }
+    }
+    if (R.denominator == 0n) {
+        return "<p>" + (R.numerator < 0n ? "-" : "") + "&infin;</p>";
+    }
     switch (appearenceSelect.value) {
         case "fraction":
-            str = rationalToTable(R, false);
-            break;
+            return rationalToTable(R, false);
         case "fractioncommas":
-            str = rationalToTable(R, true);
-            break;
+            return rationalToTable(R, true);
         case "decimal":
-            str = rationalToDecimal(R, decimals, false);
-            break;
+            return "<p>" + rationalToDecimal(R, decimals, false) + "</p>";
         case "decimalcommas":
-            str = rationalToDecimal(R, decimals, true);
-            break;
+            return "<p>" + rationalToDecimal(R, decimals, true) + "</p>";
         default:
-            str = "Huh?";
+            return "<p>Huh?</p>";
     }
-    return str;
 }
 
 function rationalToTable(R, commas = false) {
@@ -242,6 +259,7 @@ function interpretStringToRational(str, isInput = false) {
             int.sub(frac);
         }
         values.unshift(int);
+        return true;
     } else if (/^-?\d+[\.,]\d+$/.test(str)) {
         let numComponents = str.split(/[,\.]/);
         let int = new Rational(BigInt(numComponents[0]));
@@ -252,19 +270,26 @@ function interpretStringToRational(str, isInput = false) {
             int.sub(frac);
         }
         values.unshift(int);
+        return true;
     } else if (/^-?\d+\/\d+$/.test(str)) {
         let numComponents = str.split("/");
-        values.unshift(new Rational(BigInt(numComponents[0]), BigInt(numComponents[1])));
-        values[0].add(new Rational(0n));
+        let v = new Rational(BigInt(numComponents[0]), BigInt(numComponents[1]));
+        if (v instanceof Error) {
+            if (!isInput) {
+                lastError = texts.errors.indeterminateForm;
+            }
+            return false;
+        }
+        values.unshift(v);
+        return true;
     } else if (/^-?\d+$/.test(str)) {
         values.unshift(new Rational(BigInt(str)));
-    } else if (isInput) {
-        return false;
-    } else {
-        lastError = texts.errors.command
-        return false;
+        return true;
     }
-    return true;
+    if (!isInput) {
+        lastError = texts.errors.command;
+    }
+    return false;
 }
 
 function BigIntToString(I, commas = false) {
@@ -347,10 +372,7 @@ function updateUI() {
     } else {
         valueStack.innerHTML = "<li><table><tr class=\"index\">" + indexRow + "</tr><tr class=\"valRow\">" + list + "</tr></table></li>"
     }
-    if (aux.keys().next().done) {
-        // hide if empty
-        auxillaryArray.parentElement.hidden = true;
-    } else {
+    if (openAA) {
         list = ""
         for (let kv of aux.entries()) {
             list += "<li><p class=\"auxKey\">" + kv[0] + "</p><br>";
@@ -367,11 +389,8 @@ function updateUI() {
         auxillaryArray.innerHTML = list;
         auxillaryArray.parentElement.hidden = false;
     }
-    let rep = repeats.at(-1);
-    if (rep.length == 0) {
-        //hide if empty
-        repeatPile.parentElement.hidden = true;
-    } else {
+    if (openRP) {
+        let rep = repeats.at(-1);
         list = "";
         for (let i = 0; i < rep.length; i++) {
             list += "<li>" + rep[i][0].toString() + ", " + rep[i][1].toString() + ", " + rep[i][2].toString() + ", " + rep[i][3].toString() + "</li>\n";
@@ -381,13 +400,13 @@ function updateUI() {
     }
     list = "";
     let com = comments.at(-1);
-    if (com[0]?.[0] == 0) {
+    if (com?.[0]?.[0] == 0) {
         for (let j = 1; j < com[0].length; j++) {
             list += "<li><p class=\"comment\">\"" + com[0][j] + "\"</p></li>\n";
         }
     }
     let instr = instructions.at(-1);
-    for (let i = 0; i < instr.length; i++) {
+    for (let i = 0; i < instr?.length; i++) {
         list += "<li " + (running && i == executingCurrent ? "class=\"curr\" >" : ">") + (autoStepping || current.length == 0 ? "" : "<p class=\"index\">" + BigInt(i - executingCurrent) + "</p><br>") + instr[i] + "</li>\n";
         let cI = com.findIndex((e) => { return e[0] == i + 1; });
         if (cI >= 0) {
@@ -534,6 +553,10 @@ function doInstruction() {
                 return false;
             }
             if (parameter instanceof Rational) {
+                if (parameter.denominator == 0n) {
+                    texts.errors.parameterInfinity;
+                    return false;
+                }
                 I.splice(i, 1, (parameter.numerator / parameter.denominator).toString());
             } else {
                 lastError = texts.errors.parameterMatrix;
@@ -547,6 +570,10 @@ function doInstruction() {
                 return false;
             }
             if (parameter instanceof Rational) {
+                if (parameter.denominator == 0n) {
+                    texts.errors.parameterInfinity;
+                    return false;
+                }
                 I.splice(i, 1, (parameter.numerator / parameter.denominator).toString());
             } else {
                 lastError = texts.errors.parameterMatrix;
@@ -557,6 +584,10 @@ function doInstruction() {
             if (aux.has(key)) {
                 let parameter = aux.get(key).clone();
                 if (parameter instanceof Rational) {
+                    if (parameter.denominator == 0n) {
+                        texts.errors.parameterInfinity;
+                        return false;
+                    }
                     I.splice(i, 1, (parameter.numerator / parameter.denominator).toString());
                 } else {
                     lastError = texts.errors.variableParameterMatrix;
@@ -587,6 +618,7 @@ function doInstruction() {
     }
     const intRegex = /^-?\d+$/;
     const strRegex = /^"[\s\S]*"$/;
+    let errorHolder;
     switch (I.length) {
         case 1:
             switch (I[0]) {
@@ -600,11 +632,22 @@ function doInstruction() {
                             return false;
                         }
                         if (values[0] instanceof Rational && values[1] instanceof Rational) {
+                            let C = values[1].clone();
+                            if (C.denominator == 0n) {
+                                lastError = texts.errors.argument;
+                                return false;
+                            }
                             if (values[0].numerator == 0n) {
                                 lastError = texts.errors.div0;
                                 return false;
                             }
-                            let C = values[1].clone();
+                            if (values[0].denominator == 0n) {
+                                if (values[0].numerator == -1n) {
+                                    values[1].mult(-1n);
+                                }
+                                values.shift();
+                                break;
+                            }
                             C.div(values[0]);
                             let D = C.clone();
                             D.integer();
@@ -626,20 +669,20 @@ function doInstruction() {
                         return false;
                     }
                     if (values[0] instanceof Rational && values[1] instanceof Rational) {
-                        values[1].mult(values[0]);
+                        errorHolder = values[1].mult(values[0]);
                         values.shift();
                     } else if (values[0] instanceof Matrix && values[1] instanceof Rational) {
-                        values[0].scale(values[1]);
+                        errorHolder = values[0].scale(values[1]);
                         values.splice(1, 1);
                     } else if (values[0] instanceof Rational && values[1] instanceof Matrix) {
-                        values[1].scale(values[0]);
+                        errorHolder = values[1].scale(values[0]);
                         values.shift();
                     } else if (values[0] instanceof Matrix && values[1] instanceof Matrix) {
                         if (values[1].columns != values[0].rows) {
                             lastError = texts.errors.matrixDim;
                             return false;
                         }
-                        values[1].product(values[0]);
+                        errorHolder = values[1].product(values[0]);
                         values.shift();
                     } else {
                         //Impossible to get here, but fits the pattern!
@@ -653,7 +696,7 @@ function doInstruction() {
                         return false; ``
                     }
                     if (values[0] instanceof Rational && values[1] instanceof Rational || values[0] instanceof Matrix && values[1] instanceof Matrix) {
-                        values[1].add(values[0]);
+                        errorHolder = values[1].add(values[0]);
                         values.shift();
                     } else {
                         lastError = texts.errors.argument;
@@ -666,7 +709,7 @@ function doInstruction() {
                         return false;
                     }
                     if (values[0] instanceof Rational && values[1] instanceof Rational) {
-                        values[1].sub(values[0]);
+                        errorHolder = values[1].sub(values[0]);
                         values.shift();
                     } else {
                         lastError = texts.errors.argument;
@@ -679,11 +722,7 @@ function doInstruction() {
                         return false;
                     }
                     if (values[0] instanceof Rational && values[1] instanceof Rational) {
-                        if (values[0].numerator == 0) {
-                            lastError = texts.errors.div0;
-                            return false;
-                        }
-                        values[1].div(values[0]);
+                        errorHolder = values[1].div(values[0]);
                         values.shift();
                     } else {
                         lastError = texts.errors.argument;
@@ -761,15 +800,22 @@ function doInstruction() {
                     }
                     break;
                 case "det":
-                    if (values.length < 1) {
-                        lastError = texts.errors.shortStack;
-                        return false;
-                    }
-                    if (values[0] instanceof Matrix) {
-                        values.splice(0, 1, values[0].determinate());
-                    } else {
-                        lastError = texts.errors.argument;
-                        return false;
+                    {
+                        if (values.length < 1) {
+                            lastError = texts.errors.shortStack;
+                            return false;
+                        }
+                        if (values[0] instanceof Matrix) {
+                            let d = values[0].determinate();
+                            if (d instanceof Error) {
+                                errorHolder = d;
+                                break;
+                            }
+                            values.splice(0, 1, d);
+                        } else {
+                            lastError = texts.errors.argument;
+                            return false;
+                        }
                     }
                     break;
                 case "dim":
@@ -799,8 +845,8 @@ function doInstruction() {
                                 lastError = texts.errors.matrixDim;
                                 return false;
                             }
-                            let A = values[1].clone();
-                            values.splice(0, 2, A.dotProduct(values[0]));
+                            errorHolder = values[1].dot(values[0]);
+                            values.shift();
                         } else {
                             lastError = texts.errors.argument;
                             return false;
@@ -864,7 +910,7 @@ function doInstruction() {
                             lastError = texts.errors.matrixDim;
                             return false;
                         }
-                        values[1].hadamardProduct(values[0]);
+                        errorHolder = values[1].hadamardProduct(values[0]);
                         values.shift();
                     } else {
                         lastError = texts.errors.argument;
@@ -983,7 +1029,7 @@ function doInstruction() {
                             lastError = texts.errors.parameterNotVector;
                             return false;
                         }
-                        values[1].outerProduct(values[0]);
+                        errorHolder = values[1].outerProduct(values[0]);
                         values.shift();
                     } else {
                         lastError = texts.errors.argument;
@@ -1003,7 +1049,7 @@ function doInstruction() {
                         return false;
                     }
                     if (values[0] instanceof Matrix) {
-                        values[0].gaussianElimination();
+                        errorHolder = values[0].gaussianElimination();
                     } else {
                         lastError = texts.errors.argument;
                         return false;
@@ -1044,7 +1090,12 @@ function doInstruction() {
                             lastError = texts.errors.multirowMatrix;
                             return false;
                         }
-                        parse(String.fromCharCode(...values.shift().indices[0].map((e) => Number(e.numerator / e.denominator))));
+                        let d = values.shift().indices[0]
+                        if (d.map((e) => e.denominator).includes(0n)) {
+                            lastError = texts.errors.indeterminateForm;
+                            return false;
+                        }
+                        parse(String.fromCharCode(...d.map((e) => Number(e.numerator / e.denominator))));
                     } else {
                         lastError = texts.errors.argument;
                         return false;
@@ -1219,6 +1270,7 @@ function doInstruction() {
                         return false;
                     }
                     if (values[0]) {
+                        openAA = true;
                         aux.set(I[1], values[0].clone());
                     } else {
                         lastError = texts.errors.shortStack;
@@ -1368,6 +1420,7 @@ function doInstruction() {
                         if (BigInt(I[1]) <= 0n) {
                             current[top] = scan;
                         } else {
+                            openRP = true;
                             repeats[top].unshift([1n, BigInt(I[1]), current[top], scan]);
                         }
                     }
@@ -1382,10 +1435,10 @@ function doInstruction() {
                         return false;
                     }
                     if (values[0] instanceof Rational && values[1] instanceof Matrix) {
-                        values[1].scaleRow(Number.parseInt(I[1]), values[0]);
+                        errorHolder = values[1].scaleRow(Number.parseInt(I[1]), values[0]);
                         values.shift();
                     } else if (values[1] instanceof Rational && values[0] instanceof Matrix) {
-                        values[0].scaleRow(Number.parseInt(I[1]), values[1]);
+                        errorHolder = values[0].scaleRow(Number.parseInt(I[1]), values[1]);
                         values.splice(1, 1);
                     } else {
                         lastError = texts.errors.argument;
@@ -1409,10 +1462,10 @@ function doInstruction() {
                         return false;
                     }
                     if (values[0] instanceof Rational && values[1] instanceof Matrix) {
-                        values[1].addRow(Number.parseInt(I[1]), Number.parseInt(I[2]), values[0].clone());
+                        errorHolder = values[1].addRow(Number.parseInt(I[1]), Number.parseInt(I[2]), values[0].clone());
                         values.shift();
                     } else if (values[1] instanceof Rational && values[0] instanceof Matrix) {
-                        values[0].addRow(Number.parseInt(I[1]), Number.parseInt(I[2]), values[1].clone());
+                        errorHolder = values[0].addRow(Number.parseInt(I[1]), Number.parseInt(I[2]), values[1].clone());
                         values.splice(1, 1);
                     } else {
                         lastError = texts.errors.argument;
@@ -1490,6 +1543,19 @@ function doInstruction() {
                     return false;
             }
             break;
+    }
+    if (errorHolder instanceof Error) {
+        switch (errorHolder.message) {
+            case "Determinate indeterminate!":
+            case "Indeterminate form":
+            case "Row reduction failed!":
+                lastError = texts.errors.indeterminateForm;
+                break;
+            default:
+                lastError = texts.errors.unknown;
+                break;
+        }
+        return false;
     }
     current[top]++;
     return true;

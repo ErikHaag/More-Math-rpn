@@ -56,7 +56,7 @@ stateDisplayHideButton.addEventListener("click", () => {
     stateDisplay.hidden = !stateDisplay.hidden
     stateDisplayHideButton.innerText = "State " + (stateDisplay.hidden ? "hidden" : "shown");
     updateUI();
-})
+});
 
 valueStackShrinkButton.addEventListener("click", () => {
     let shrunk = valueStack.className == "shrink";

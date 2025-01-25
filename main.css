@@ -8,6 +8,14 @@ body.dark {
     color: white;
 }
 
+body.dark a {
+    color: darkturquoise;
+}
+
+body.dark a:visited {
+    color: darkcyan;
+}
+
 body.light #darkModeButton {
     background-color: skyblue;
     color: yellow;
@@ -16,6 +24,49 @@ body.light #darkModeButton {
 body.dark #darkModeButton {
     background-color: blue;
     color: lightgray;
+}
+
+body.light li.curr {
+    background-color: palegreen;
+}
+
+body.dark li.curr {
+    background-color: forestgreen;
+}
+
+body.light td.numerator {
+    border-bottom: 2px solid black;
+}
+
+body.dark td.numerator {
+    border-bottom: 2px solid white;
+}
+
+body.light td.denominator {
+    border-top: 2px solid black;
+}
+
+body.dark td.denominator {
+    border-top: 2px solid white;
+}
+
+
+button {
+    border: 1px black solid;
+    border-radius: 3px;
+}
+
+button.grayed {
+    background-color: lightgray;
+    color: gray;
+}
+
+button:focus, button:hover {
+    border: 3px black solid;
+}
+
+fieldset {
+    width: max-content;
 }
 
 #help {
@@ -31,33 +82,31 @@ body.dark #darkModeButton {
     z-index: 1;
 }
 
-#start {
-    background-color: lime;
-}
-
-button {
-    border: 1px black solid;
-    border-radius: 3px;
-}
-
-button.grayed {
-    background-color: lightgray;
-    color: gray;
-}
-
-button:hover, button:focus {
-    border: 3px black solid;
-}
-
-#speed {
-    width: 8ch;
-    text-align: center;
+#is>li{
+    font-family: 'Consolas', monospace;
 }
 
 li {
     padding: 10px;
     display: block;
     align-content: center;
+}
+
+li p, li td {
+    white-space: pre;
+}
+
+#links {
+    width: max-content;
+}
+
+#start {
+    background-color: lime;
+}
+
+#speed {
+    width: 8ch;
+    text-align: center;
 }
 
 ol {
@@ -73,6 +122,24 @@ ol.shrink {
     max-height: 10em;
 }
 
+#output>ol {
+    margin: 0px;
+}
+
+#output {
+    display: inline;
+    overflow: auto;
+}
+
+#output>ol>li {
+    padding: 5px 0px;
+}
+
+#output>span.error {
+    color: red;
+    font-weight: bold;
+}
+
 p {
     margin: 0px;
 }
@@ -85,35 +152,9 @@ p.comment {
     font-style: italic;
 }
 
-#output {
-    display: inline;
-    overflow: auto;
-}
-
-#output>ol {
-    margin: 0px;
-}
-
-#output>ol>li {
-    padding: 5px 0px;
-    white-space: pre;
-}
-
-#output>span.error {
-    color: red;
-    font-weight: bold;
-}
-
-#is>li{
-    font-family: 'Source Code Pro', monospace;
-}
-
-body.light li.curr {
-    background-color: palegreen;
-}
-
-body.dark li.curr {
-    background-color: forestgreen;
+p.index, tr.index {
+    font-size: small;
+    height: min-content;
 }
 
 table {
@@ -134,44 +175,7 @@ tr.valRow>td, tr.index>td {
     padding-right: 10px;
 }
 
-p.index, tr.index {
-    font-size: small;
-    height: min-content;
-}
-
-body.light td.numerator {
-    border-bottom: 2px solid black;
-}
-
-body.dark td.numerator {
-    border-bottom: 2px solid white;
-}
-
-body.light td.denominator {
-    border-top: 2px solid black;
-}
-
-body.dark td.denominator {
-    border-top: 2px solid white;
-}
-
 td.matrixIndex {
     padding-left: 5px;
     padding-right: 5px;
-}
-
-body.dark a {
-    color: darkturquoise;
-}
-
-body.dark a:visited {
-    color: darkcyan;
-}
-
-fieldset {
-    width: max-content;
-}
-
-#links {
-    width: max-content;
 }
