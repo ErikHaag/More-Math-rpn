@@ -101,20 +101,23 @@ li p, li td {
     width: max-content;
 }
 
+#speed {
+    width: 8ch;
+    text-align: center;
+}
+
 #start {
     background-color: lime;
 }
 
-#speed {
-    width: 8ch;
-    text-align: center;
+#stateDisplay ol {
+    overflow: auto;
 }
 
 ol {
     display: flex;
     flex-flow: row nowrap;
     height: min-content;
-    overflow: auto;
     padding-left: 0px;
     scroll-behavior: smooth;
 }
@@ -134,6 +137,7 @@ ol.shrink {
 
 #output>ol>li {
     padding: 5px 0px;
+    white-space: preserve nowrap;
 }
 
 #output>span.error {
