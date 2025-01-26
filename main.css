@@ -84,6 +84,7 @@ fieldset {
 
 #is>li{
     font-family: 'Consolas', monospace;
+    white-space-collapse: break-spaces;
 }
 
 li {
@@ -122,13 +123,13 @@ ol.shrink {
     max-height: 10em;
 }
 
-#output>ol {
-    margin: 0px;
-}
-
 #output {
     display: inline;
     overflow: auto;
+}
+
+#output>ol {
+    margin: 0px;
 }
 
 #output>ol>li {
