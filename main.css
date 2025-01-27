@@ -171,7 +171,8 @@ td {
 }
 
 td.shift {
-    position: relative;
+    white-space: normal;
+    position: relative; 
     top: 4px;
 }
 
