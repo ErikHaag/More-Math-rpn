@@ -845,7 +845,7 @@ function doInstruction() {
                                 lastError = texts.errors.matrixDim;
                                 return false;
                             }
-                            errorHolder = values[1].dot(values[0]);
+                            errorHolder = values[1].dotProduct(values[0]);
                             values.shift();
                         } else {
                             lastError = texts.errors.argument;
