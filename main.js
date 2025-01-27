@@ -554,7 +554,7 @@ function doInstruction() {
             }
             if (parameter instanceof Rational) {
                 if (parameter.denominator == 0n) {
-                    texts.errors.parameterInfinity;
+                    lastError = texts.errors.parameterInfinity;
                     return false;
                 }
                 I.splice(i, 1, (parameter.numerator / parameter.denominator).toString());
@@ -571,7 +571,7 @@ function doInstruction() {
             }
             if (parameter instanceof Rational) {
                 if (parameter.denominator == 0n) {
-                    texts.errors.parameterInfinity;
+                    lastError = texts.errors.parameterInfinity;
                     return false;
                 }
                 I.splice(i, 1, (parameter.numerator / parameter.denominator).toString());
