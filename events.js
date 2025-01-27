@@ -121,6 +121,9 @@ stopButton.addEventListener("click", () => {
     if (running && autoStepping) {
         clock = setInterval(step, speed);
     } else {
+        if (!autoStepping) {
+            updateUI();
+        }
         clearInterval(clock);
     }
 });
