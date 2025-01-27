@@ -93,7 +93,7 @@ li {
     align-content: center;
 }
 
-li p, li td {
+li p, li td.matrixIndex {
     white-space: pre;
 }
 
