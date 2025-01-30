@@ -51,7 +51,7 @@ function huffmanEncoding() {
         encoded <<= BigInt(e.length);
         encoded |= BigInt("0b" + e);
     }
-    const encodingString = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ.'";
+    const encodingString = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ@#";
     let encodedString = ""
     for (; encoded > 0n; encoded >>= 6n) {
         encodedString = encodingString[encoded & 63n] + encodedString;
@@ -82,7 +82,7 @@ function huffmanDecoding(treeString, encodedString) {
         let subTree = structuredClone(tree);
         let first = true;
         {
-            const encodingString = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ.'";
+            const encodingString = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ@#";
             for (const c of encodedString) {
                 let encodedInt = BigInt(encodingString.indexOf(c));
                 let mask = 32n;
