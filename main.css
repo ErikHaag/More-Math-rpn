@@ -97,21 +97,12 @@ li p, li td.matrixIndex {
     white-space: pre;
 }
 
+#link {
+    word-break: break-all;
+}
+
 #links {
     width: max-content;
-}
-
-#speed {
-    width: 8ch;
-    text-align: center;
-}
-
-#start {
-    background-color: lime;
-}
-
-#stateDisplay ol {
-    overflow: auto;
 }
 
 ol {
@@ -160,6 +151,19 @@ p.comment {
 p.index, tr.index {
     font-size: small;
     height: min-content;
+}
+
+#speed {
+    width: 8ch;
+    text-align: center;
+}
+
+#start {
+    background-color: lime;
+}
+
+#stateDisplay ol {
+    overflow: auto;
 }
 
 table {

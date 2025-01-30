@@ -3,8 +3,10 @@ document.addEventListener("DOMContentLoaded", () => {
     // hang on, where are we again?
     let url = new URL(document.location);
     let params = url.searchParams;
-    if (params.has("instr")) {
-
+    if (params.has("huffTree") && params.has("huffNum")) {
+        huffmanDecoding(params.get("huffTree"), params.get("huffNum"));
+        useCompressCheck.checked = true;
+    } else if (params.has("instr")) {
         instructionInput.value = params.get("instr");
     }
     if (params.has("speed")) {
@@ -12,7 +14,9 @@ document.addEventListener("DOMContentLoaded", () => {
         if (speedSelect < 0n) speedSelect = 0n;
         if (speedSelect > 4n) speedSelect = 4n;
         updateSpeed();
+        useCompressCheck.checked = true;
     }
+    updateLink();
 });
 
 
@@ -80,12 +84,26 @@ instructionInput.addEventListener("change", () => {
 });
 
 function updateLink() {
-    let formatted = encodeURIComponent(input.value);
-    let linkStr = "https://erikhaag.github.io/More-Math-rpn/?instr=" + formatted;
-    if (useSpeedCheck.checked) {
-        linkStr += "&speed=" + speedSelect;
+    let parameters = [];
+    let instructionsEncoded = false
+    if (useCompressCheck.checked) {
+        let [tree, num] = huffmanEncoding();
+        if (tree !== false && instructionInput.value.length > 0) {
+            parameters.push("huffTree=" + tree, "huffNum=" + num);
+            instructionsEncoded = true;
+        }
     }
-    link.textContent = linkStr;
+    if (!instructionsEncoded && instructionInput.value.length > 0) {
+        parameters.push("instr="+ encodeURIComponent(input.value));
+    }
+    if (useSpeedCheck.checked) {
+        parameters.push("speed=" + speedSelect);
+    }
+    let linkString = "https://erikhaag.github.io/More-Math-rpn/";
+    if (parameters.length > 0) {
+        linkString += "?" + parameters.join("&");
+    }
+    link.textContent = linkString;
 }
 
 resetButton.addEventListener("click", () => {
@@ -187,3 +205,7 @@ linkOptionsToggle.addEventListener("click", () => {
 useSpeedCheck.addEventListener("change", () => {
     updateLink();
 });
+
+useCompressCheck.addEventListener("change", () => {
+    updateLink();
+})
