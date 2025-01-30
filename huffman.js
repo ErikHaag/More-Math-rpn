@@ -43,7 +43,7 @@ function huffmanEncoding() {
             tree[i] = symbols[tree[i]];
         }
     }
-    tree = encodeURIComponent(tree.join(""));
+    tree = tree.join("")
     //translate symbols using LUT
     let encoded = 1n;
     for (const s of inputSymbols) {
@@ -56,7 +56,7 @@ function huffmanEncoding() {
     for (; encoded > 0n; encoded >>= 6n) {
         encodedString = encodingString[encoded & 63n] + encodedString;
     }
-    return [tree, encodedString];
+    return [encodeURIComponent(tree), encodeURIComponent(encodedString)];
 }
 
 function huffmanDecoding(treeString, encodedString) {
