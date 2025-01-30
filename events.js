@@ -86,15 +86,18 @@ instructionInput.addEventListener("change", () => {
 function updateLink() {
     let parameters = [];
     let instructionsEncoded = false
+    let naiveInstructions = encodeURIComponent(input.value);
     if (useCompressCheck.checked) {
         let [tree, num] = huffmanEncoding();
         if (tree !== false && instructionInput.value.length > 0) {
             parameters.push("huffTree=" + tree, "huffNum=" + num);
             instructionsEncoded = true;
+            compressionInfo.textContent = "Compressed/Original: " + Math.floor(100 * (tree.length + num.length + 17) / (naiveInstructions.length + 6)) + "%";
         }
     }
+    compressionInfo.hidden = !instructionsEncoded;
     if (!instructionsEncoded && instructionInput.value.length > 0) {
-        parameters.push("instr="+ encodeURIComponent(input.value));
+        parameters.push("instr=" + naiveInstructions);
     }
     if (useSpeedCheck.checked) {
         parameters.push("speed=" + speedSelect);

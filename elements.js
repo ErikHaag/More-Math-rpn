@@ -25,3 +25,4 @@ const linkOptionsToggle = document.getElementById("linkOptionsToggle");
 const linkOptions = document.getElementById("linkOptions");
 const useSpeedCheck = document.getElementById("useSpeed");
 const useCompressCheck = document.getElementById("useCompression");
+const compressionInfo = document.getElementById("compressionInfo");
