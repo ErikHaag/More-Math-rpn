@@ -145,25 +145,25 @@ function matrixToTable(M) {
     for (let i = 0n; i < M.rows; i++) {
         h += "\n<tr>";
         if (M.rows == 1n) {
-            h += "\n<td>[</td>";
+            h += "\n<td class=\"bracket D L U\"></td>";
         } else if (i == 0n) {
-            h += "\n<td class=\"shift\">⎡</td>";
+            h += "\n<td class=\"bracket L U\"></td>";
         } else if (i == M.rows - 1n) {
-            h += "\n<td class=\"shift\">⎣</td>";
+            h += "\n<td class=\"bracket D L\"></td>";
         } else {
-            h += "\n<td class=\"shift\">⎢ </td>";
+            h += "\n<td class=\"bracket L\"> </td>";
         }
         for (let j = 0n; j < M.columns; j++) {
             h += "\n<td class=\"matrixIndex\">" + rationalAppearence(M.indices[i][j]) + "</td>";
         }
         if (M.rows == 1n) {
-            h += "\n<td>]</td>";
+            h += "\n<td class=\"bracket D R U\"></td>";
         } else if (i == 0n) {
-            h += "\n<td class=\"shift\">⎤</td>";
+            h += "\n<td class=\"bracket R U\"></td>";
         } else if (i == M.rows - 1n) {
-            h += "\n<td class=\"shift\">⎦</td>";
+            h += "\n<td class=\"bracket D R\"></td>";
         } else {
-            h += "\n<td class=\"shift\">⎥</td>";
+            h += "\n<td class=\"bracket R\"></td>";
         }
         h += "\n</tr>";
     }

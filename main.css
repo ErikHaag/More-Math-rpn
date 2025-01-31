@@ -50,6 +50,37 @@ body.dark td.denominator {
     border-top: 2px solid white;
 }
 
+body.light td.bracket.D {
+    border-bottom: 2px solid black;
+}
+
+body.dark td.bracket.D {
+    border-bottom: 2px solid white;
+}
+
+body.light td.bracket.L {
+    border-left: 2px solid black;
+}
+
+body.dark td.bracket.L {
+    border-left: 2px solid white;
+}
+
+body.light td.bracket.R {
+    border-right: 2px solid black;
+}
+
+body.dark td.bracket.R {
+    border-right: 2px solid white;
+}
+
+body.light td.bracket.U {
+    border-top: 2px solid black;
+}
+
+body.dark td.bracket.U {
+    border-top: 2px solid white;
+}
 
 button {
     border: 1px black solid;
@@ -174,10 +205,8 @@ td {
     text-align: center;
 }
 
-td.shift {
-    white-space: normal;
-    position: relative; 
-    top: 4px;
+td.bracket {
+    width: 5px;
 }
 
 tr.valRow>td, tr.index>td {
