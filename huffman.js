@@ -22,7 +22,11 @@ function huffmanEncoding() {
     //collect leaves
     while (tree.length > 1) {
         tree.sort((a, b) => a.occurrences - b.occurrences);
-        tree.splice(0, 2, { children: [tree[0].children, tree[1].children], occurrences: tree[0].occurrences + tree[1].occurrences });
+        if (/opn/.exec([tree[0].children].concat([tree[1].children]).flat(Infinity).map((e)=>symbols[e]).join("")) == null) {
+            tree.splice(0, 2, { children: [tree[0].children, tree[1].children], occurrences: tree[0].occurrences + tree[1].occurrences });
+        } else {
+            tree.splice(0, 2, { children: [tree[1].children, tree[0].children], occurrences: tree[0].occurrences + tree[1].occurrences });
+        }
     }
     tree = tree[0].children;
     let charToBits = [];
