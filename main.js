@@ -1148,7 +1148,7 @@ function doInstruction() {
                         }
                         if (values[0] instanceof Matrix) {
                             let m = values.shift().indices.flat();
-                            for (let i = m.length; i >= 0; i--) {
+                            for (let i = 0; i < m.length; i++) {
                                 values.unshift(m[i]);
                             }
                         }
