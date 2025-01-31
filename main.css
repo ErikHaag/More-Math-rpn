@@ -199,6 +199,7 @@ p.index, tr.index {
 
 table {
     border-collapse: collapse;
+    justify-self: center;
 }
 
 td {
