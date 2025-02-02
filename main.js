@@ -11,6 +11,8 @@ let decimals = 3n;
 let instructions = [];
 //the comments and locations
 let comments = [];
+//the breakpoints in the code
+let breakpoints = [];
 //any repeats currently being dealt with
 let repeats = [];
 //the values shuffled on a stack
@@ -80,6 +82,7 @@ function reset() {
     clearInterval(clock);
     instructions = [];
     comments = [];
+    breakpoints = [];
     repeats = [];
     values = [];
     current = [];
@@ -95,25 +98,51 @@ function reset() {
 
 function parse(instr) {
     let parsedInstructions = instr.split("\n").map((s) => s.trim());
-    let cpos = [];
-    for (let i = 0; i < parsedInstructions.length; i++) {
-        if (parsedInstructions[i].startsWith("\"")) {
-            cpos.push(i);
+    //comments
+    {
+        let cpos = [];
+        for (let i = 0; i < parsedInstructions.length; i++) {
+            if (parsedInstructions[i].startsWith("\"")) {
+                cpos.push(i);
+            }
+        }
+        let parsedComments = [];
+        for (let i = 0; i < cpos.length; i++) {
+            if (i >= 1 && cpos[i] == cpos[i - 1] + 1) {
+                let c = parsedComments.pop();
+                c.push(parsedInstructions[cpos[i]].substring(1));
+                parsedComments.push(c);
+            } else {
+                parsedComments.push([cpos[i] - i, parsedInstructions[cpos[i]].substring(1)]);
+            }
+        }
+        comments.push(parsedComments);
+        for (let i = cpos.length - 1; i >= 0; i--) {
+            parsedInstructions.splice(cpos[i], 1);
         }
     }
-    let parsedComments = [];
-    for (let i = 0; i < cpos.length; i++) {
-        if (i >= 1 && cpos[i] == cpos[i - 1] + 1) {
-            let c = parsedComments.pop();
-            c.push(parsedInstructions[cpos[i]].substring(1));
-            parsedComments.push(c);
-        } else {
-            parsedComments.push([cpos[i] - i, parsedInstructions[cpos[i]].substring(1)]);
+    //breakpoints
+    {
+        let bpPos = [];
+        for (let i = 0; i < parsedInstructions.length; i++) {
+            if (parsedInstructions[i] == "!!!") {
+                bpPos.push(i);
+            }
         }
-    }
-    comments.push(parsedComments);
-    for (let i = cpos.length - 1; i >= 0; i--) {
-        parsedInstructions.splice(cpos[i], 1);
+        for (let i = bpPos.length - 1; i >= 0; i--) {
+            parsedInstructions.splice(bpPos[i], 1);
+        }
+        let removed = 0;
+        for (let i = 1; i < bpPos.length; i++) {
+            if (bpPos[i] == bpPos[i - 1] + 1) {
+                bpPos.splice(i, 1);
+                removed++;
+                i--;
+                continue;
+            }
+            bpPos[i] -= removed;
+        }
+        breakpoints.push(bpPos);
     }
     instructions.push(parsedInstructions);
     repeats.push([]);
@@ -405,6 +434,10 @@ function updateUI() {
             list += "<li><p class=\"comment\">\"" + com[0][j] + "\"</p></li>\n";
         }
     }
+    let bp = breakpoints.at(-1);
+    if (bp?.[0] == 0) {
+        list += "<li><p class=\"breakpoint\">!!!</p></li>";
+    }
     let instr = instructions.at(-1);
     for (let i = 0; i < instr?.length; i++) {
         list += "<li " + (running && i == executingCurrent ? "class=\"curr\" >" : ">") + (autoStepping || current.length == 0 ? "" : "<p class=\"index\">" + BigInt(i - executingCurrent) + "</p><br>") + instr[i] + "</li>\n";
@@ -413,6 +446,10 @@ function updateUI() {
             for (let j = 1; j < com[cI].length; j++) {
                 list += "<li><p class=\"comment\">\"" + com[cI][j] + "\"</p></li>\n";
             }
+        }
+        let bpI = bp.indexOf(i + 1);
+        if (bpI >= 0) {
+            list += "<li><p class=\"breakpoint\">!!!</p></li>";
         }
     }
     instructionList.innerHTML = list;
@@ -471,8 +508,10 @@ function step() {
         e = doInstruction();
     }
     executingCurrent = current.at(-1);
-    // e = undefined, true or false
-    // undef -> stop, no error
+    // e = undefined, "bp", "halt!", true or false
+    // undefined -> stop, no error
+    // "bp" -> hit breakpoint, basically hit stop button
+    // "halt!" -> stop completely
     // true -> ok
     // false -> stop, yes error
     let end = false;
@@ -480,11 +519,15 @@ function step() {
     if (e == "halt!") {
         running = false;
         executingCurrent = instructions.at(-1).length;
+    } else if (e == "bp") {
+        autoStepping = false;
+        updateControls();
     } else if (executingCurrent >= instructions.at(-1).length) {
         // end of program reached
         if (instructions.length >= 2) {
             instructions.pop();
             comments.pop();
+            breakpoints.pop();
             repeats.pop()
             current.pop();
             rnList.pop();
@@ -1612,6 +1655,6 @@ function doInstruction() {
         }
         return false;
     }
-    current[top]++;
+    if (breakpoints[top]?.includes(++current[top])) return "bp";
     return true;
 }

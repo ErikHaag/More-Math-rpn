@@ -11,11 +11,12 @@
 <body>
     <h1>Commands</h1>
     <p>
-        Operations are seperated by newlines (hitting the enter key), and parameters go after the operator seperated by
-        spaces.<br>
+        Commands are seperated by newlines (hitting the enter key).<br>
+        Parameters of a command are space seperated integers (and other things) on the same line after the command<br>
         Whitespace before and after a command will be ignored.<br>
-        Create comments with ".
+        Create comments with ", and a breakpoint with !!!
     </p>
+    <hr>
     <table>
         <tr>
             <th colspan="4" class="od">Standard</th>
@@ -149,13 +150,6 @@
             <td>it is the parameter</td>
             <td>none</td>
         </tr>
-        
-        <tr>
-            <td>&gt;&gt;</td>
-            <td>copies value at depth</td>
-            <td>depth to copy (0 is top)</td>
-            <td>none</td>
-        </tr>
         <tr>
             <th colspan="4" class="od">Checks &amp; Comparison</th>
         </tr>
@@ -203,6 +197,12 @@
             <th>description</th>
             <th>parameters required</th>
             <th>arguments required</th>
+        </tr>
+        <tr>
+            <td>&gt;&gt;</td>
+            <td>copies value at depth</td>
+            <td>depth to copy (0 is top)</td>
+            <td>none</td>
         </tr>
         <tr>
             <td>-&gt;</td>

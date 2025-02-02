@@ -82,6 +82,14 @@ body.dark td.bracket.U {
     border-top: 2px solid white;
 }
 
+body.light p.breakpoint {
+    color: darkblue;
+}
+
+body.dark p.breakpoint {
+    color: aquamarine;
+}
+
 button {
     border: 1px black solid;
     border-radius: 3px;
@@ -172,6 +180,10 @@ p {
 }
 
 p.auxKey {
+    font-weight: bold;
+}
+
+p.breakpoint {
     font-weight: bold;
 }
 
