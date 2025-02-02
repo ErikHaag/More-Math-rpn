@@ -44,30 +44,30 @@ let openRP = false;
 
 const texts = {
     errors: {
-        argument: "Error: Invalid argument(s).",
-        argumentNotVector: "Error: An argument wasn't a vector.",
-        beforeCode: "Error: Jumped beyond start of instructions.",
-        command: "Error: Invalid command.",
-        det0: "Error: Matrix has determinate of zero.",
-        invalidEscapeCharacter: "Error: Invalid escape character.",
-        indeterminateForm: "Error: Rational of indeterminate form!",
-        jumpedOutOfLoop: "Error: Outside of current loop.",
-        matrixDim: "Error: Matrices have incompatible sizes.",
-        missingVariable: ["Error: Variable \"", "\" doesn't exist."],
-        negative: "Error: Non-negative number expected.",
-        notInLoop: "Error: Not in a loop.",
-        notPositive: "Error: Positive number expected.",
-        outOfBounds: "Error: Out of bounds.",
-        parameterInfinity: "Error: A parameter isn't finite.",
-        parameterNotRational: "Error: A parameter wasn't a rational or integer.",
-        parameterNotString: "Error: A parameter wasn't a string.",
-        parameterMatrix: "Error: Parameters are rationals or strings.",
-        shortStack: "Error: The stack doesn't have enough items.",
-        tooDeep: "Error: Too deep.",
-        unclosedString: "Error: Unclosed string.",
-        unknown: "Error: An unknow error occurred, please create an issue so I can debug.",
-        variableName: "Error: Variable names can't start with quotes.",
-        variableParameterMatrix: "Error: Parameters are rationals or strings, try using place."
+        argument: "Invalid argument(s).",
+        argumentNotVector: "An argument wasn't a vector.",
+        beforeCode: "Jumped beyond start of instructions.",
+        command: "Invalid command.",
+        det0: "Matrix has determinate of zero.",
+        invalidEscapeCharacter: "Invalid escape character.",
+        indeterminateForm: "Rational of indeterminate form!",
+        jumpedOutOfLoop: "Outside of current loop.",
+        matrixDim: "Matrices have incompatible sizes.",
+        missingVariable: ["Variable \"", "\" doesn't exist."],
+        negative: "Non-negative number expected.",
+        notInLoop: "Not in a loop.",
+        notPositive: "Positive number expected.",
+        outOfBounds: "Out of bounds.",
+        parameterInfinity: "A parameter isn't finite.",
+        parameterNotRational: "A parameter wasn't a rational or integer.",
+        parameterNotString: "A parameter wasn't a string.",
+        parameterMatrix: "Parameters are rationals or strings.",
+        shortStack: "The stack doesn't have enough items.",
+        tooDeep: "Too deep.",
+        unclosedString: "Unclosed string.",
+        unknown: "An unknow error occurred, please create an issue so I can debug.",
+        variableName: "Variable names can't start with quotes.",
+        variableParameterMatrix: "Parameters are rationals or strings, try using place."
     },
     input: {
         rational: "Input an integer, rational, decimal, or recurring decimal:",
@@ -504,7 +504,7 @@ function step() {
         autoStepping = false;
         running = false;
         updateControls();
-        output.innerHTML += (output.innerHTML.length == 0 ? "" : "<br>") + "<span class=error>" + lastError + "</span";
+        output.innerHTML += (output.innerHTML.length == 0 ? "" : "<br>") + "<span class=error>Error: " + lastError + "</span";
     }
     if (followingCurrent) {
         scrollInstructions(end);
@@ -1252,22 +1252,33 @@ function doInstruction() {
                     }
                     break;
                 case "del":
-                    if (values.length < 1) {
-                        lastError = texts.errors.shortStack;
-                        return false;
-                    }
-                    if (!intRegex.test(I[1])) {
-                        lastError = texts.errors.parameterNotRational;
-                        return false;
-                    }
-                    index = Number.parseInt(I[1]);
-                    if (values[index]) {
-                        values.splice(index, 1);
-                    } else {
-                        lastError = texts.errors.outOfBounds;
-                        return false;
+                    {
+                        if (values.length < 1) {
+                            lastError = texts.errors.shortStack;
+                            return false;
+                        }
+                        if (!intRegex.test(I[1])) {
+                            lastError = texts.errors.parameterNotRational;
+                            return false;
+                        }
+                        let index = Number.parseInt(I[1]);
+                        if (values[index]) {
+                            values.splice(index, 1);
+                        } else {
+                            lastError = texts.errors.outOfBounds;
+                            return false;
+                        }
                     }
                     break;
+                case "error":
+                    {
+                        if (!strRegex.test(I[1])) {
+                            lastError = texts.errors.parameterNotString;
+                            return false;
+                        }
+                        lastError = I[1].slice(1, -1);
+                    }
+                    return false;
                 case "exists":
                     if (I[1].startsWith("\"")) {
                         lastError = texts.errors.variableName;
