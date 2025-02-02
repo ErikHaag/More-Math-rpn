@@ -77,6 +77,10 @@ auxillaryArrayShrinkButton.addEventListener("click", () => {
 followInstructionButton.addEventListener("click", () => {
     followingCurrent = !followingCurrent;
     followInstructionButton.innerHTML = followingCurrent ? "&leftrightarrow;" : "&Cross;";
+    if (followingCurrent) {
+        followingOffset = instructionList.scrollLeft
+        scrollInstructions();
+    }
 })
 
 instructionInput.addEventListener("change", () => {
