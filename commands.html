@@ -21,7 +21,7 @@
             <th colspan="4" class="od">Standard</th>
         </tr>
         <tr>
-            <th>operation</th>
+            <th>command</th>
             <th>description</th>
             <th>parameters required</th>
             <th>arguments required</th>
@@ -138,30 +138,6 @@
             <td>2 integers (rational with denominator of 1)</td>
         </tr>
         <tr>
-            <td>step</td>
-            <td>x &lt;= 0 &rightarrow; 0,<br>0 &lt; x &rightarrow; 1</td>
-            <td>none</td>
-            <td>1 rational</td>
-        </tr>
-        <tr>
-            <td>hyperStep</td>
-            <td>x = &infin; &rightarrow; 1, x = -&infin; &rightarrow; -1, otherwise &rightarrow; 0</td>
-            <td>none</td>
-            <td>1 rational</td>
-        </tr>
-        <tr>
-            <td>compare</td>
-            <td>compares 2 rationals outputing -1, 0, or 1</td>
-            <td>none</td>
-            <td>2 rationals</td>
-        </tr>
-        <tr>
-            <td>#</td>
-            <td>value stack height</td>
-            <td>none</td>
-            <td>none</td>
-        </tr>
-        <tr>
             <td>[</td>
             <td>in parameters, prepend a [ to use a stack value from bottom (0 is bottom)</td>
             <td>it is the parameter</td>
@@ -181,10 +157,49 @@
             <td>none</td>
         </tr>
         <tr>
+            <th colspan="4" class="od">Checks &amp; Comparison</th>
+        </tr>
+        <tr>
+            <th>command</th>
+            <th>description</th>
+            <th>parameters required</th>
+            <th>arguments required</th>
+        </tr>
+        <tr>
+            <td>#</td>
+            <td>value stack height</td>
+            <td>none</td>
+            <td>none</td>
+        </tr>
+        <tr>
+            <td>step</td>
+            <td>x &lt;= 0 &rightarrow; 0,<br>0 &lt; x &rightarrow; 1</td>
+            <td>none</td>
+            <td>1 rational</td>
+        </tr>
+        <tr>
+            <td>hyperStep</td>
+            <td>x = &infin; &rightarrow; 1, x = -&infin; &rightarrow; -1, otherwise &rightarrow; 0</td>
+            <td>none</td>
+            <td>1 rational</td>
+        </tr>
+        <tr>
+            <td>compare</td>
+            <td>compares 2 rationals outputing -1, 0, or 1</td>
+            <td>none</td>
+            <td>2 rationals</td>
+        </tr>
+        <tr>
+            <td>query</td>
+            <td>checks a spot on the stack,<br>if there's a rational, outputs 0, if it's a matrix, outputs 1</td>
+            <td>depth to check (0 is top)</td>
+            <td>none</td>
+        </tr>
+        <tr>
             <th colspan="4" class="od">Stack Manipulation</th>
         </tr>
         <tr>
-            <th>operation</th>
+            <th>command</th>
             <th>description</th>
             <th>parameters required</th>
             <th>arguments required</th>
@@ -211,7 +226,7 @@
             <th colspan="4" class="od">Matrices</th>
         </tr>
         <tr>
-            <th>operation</th>
+            <th>command</th>
             <th>description</th>
             <th>parameters required</th>
             <th>arguments required</th>
@@ -321,7 +336,7 @@
             <th colspan="4" class="od">Loops</th>
         </tr>
         <tr>
-            <th>operation</th>
+            <th>command</th>
             <th>description</th>
             <th>parameters required</th>
             <th>arguments required</th>
@@ -366,7 +381,7 @@
             <th colspan="4" class="od">Auxillary Manipulation</th>
         </tr>
         <tr>
-            <th>operation</th>
+            <th>command</th>
             <th>description</th>
             <th>parameters required</th>
             <th>arguments required</th>
@@ -405,7 +420,7 @@
             <th colspan="4" class="od">IO & Strings</th>
         </tr>
         <tr>
-            <th>operation</th>
+            <th>command</th>
             <th>description</th>
             <th>parameters required</th>
             <th>arguments required</th>
@@ -462,7 +477,7 @@
             <th colspan="4" class="od">Lambda Functions</th>
         </tr>
         <tr>
-            <th>operation</th>
+            <th>command</th>
             <th>description</th>
             <th>parameters required</th>
             <th>arguments required</th>

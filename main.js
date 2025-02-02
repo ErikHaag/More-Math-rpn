@@ -45,6 +45,7 @@ let openRP = false;
 const texts = {
     errors: {
         argument: "Error: Invalid argument(s).",
+        argumentNotVector: "Error: An argument wasn't a vector.",
         beforeCode: "Error: Jumped beyond start of instructions.",
         command: "Error: Invalid command.",
         det0: "Error: Matrix has determinate of zero.",
@@ -61,7 +62,6 @@ const texts = {
         parameterNotRational: "Error: A parameter wasn't a rational or integer.",
         parameterNotString: "Error: A parameter wasn't a string.",
         parameterMatrix: "Error: Parameters are rationals or strings.",
-        parameterNotVector: "Error: A parameter wasn't a vector.",
         shortStack: "Error: The stack doesn't have enough items.",
         tooDeep: "Error: Too deep.",
         unclosedString: "Error: Unclosed string.",
@@ -928,7 +928,7 @@ function doInstruction() {
                         if (values[0].denominator >= 1n) {
                             values.splice(0, 1, new Rational(0n));
                         } else {
-                            values.splice(0, 1, new Rational(values[0].numerator < 0n ? -1n: 1n));
+                            values.splice(0, 1, new Rational(values[0].numerator < 0n ? -1n : 1n));
                         }
                     } else {
                         lastError = texts.errors.argument;
@@ -1041,7 +1041,7 @@ function doInstruction() {
                     }
                     if (values[0] instanceof Matrix && values[1] instanceof Matrix) {
                         if (values[0].columns != 1 || values[1].columns != 1) {
-                            lastError = texts.errors.parameterNotVector;
+                            lastError = texts.errors.argumentNotVector;
                             return false;
                         }
                         errorHolder = values[1].outerProduct(values[0]);
@@ -1162,37 +1162,41 @@ function doInstruction() {
         case 2:
             switch (I[0]) {
                 case "->":
-                    if (values.length < 1) {
-                        lastError = texts.errors.shortStack;
-                        return false;
-                    }
-                    if (!intRegex.test(I[1])) {
-                        lastError = texts.errors.parameterNotRational;
-                        return false;
-                    }
-                    index = Number.parseInt(I[1]);
-                    if (values[index]) {
-                        values.unshift(values.splice(index, 1)[0]);
-                    } else {
-                        lastError = texts.errors.outOfBounds;
-                        return false;
+                    {
+                        if (values.length < 1) {
+                            lastError = texts.errors.shortStack;
+                            return false;
+                        }
+                        if (!intRegex.test(I[1])) {
+                            lastError = texts.errors.parameterNotRational;
+                            return false;
+                        }
+                        let index = Number.parseInt(I[1]);
+                        if (values[index]) {
+                            values.unshift(values.splice(index, 1)[0]);
+                        } else {
+                            lastError = texts.errors.outOfBounds;
+                            return false;
+                        }
                     }
                     break;
                 case "<-":
-                    if (values.length < 1) {
-                        lastError = texts.errors.shortStack;
-                        return false;
-                    }
-                    if (!intRegex.test(I[1])) {
-                        lastError = texts.errors.parameterNotRational;
-                        return false;
-                    }
-                    index = Number.parseInt(I[1]);
-                    if (values[index]) {
-                        values.splice(index, 0, values.shift());
-                    } else {
-                        lastError = texts.errors.outOfBounds;
-                        return false;
+                    {
+                        if (values.length < 1) {
+                            lastError = texts.errors.shortStack;
+                            return false;
+                        }
+                        if (!intRegex.test(I[1])) {
+                            lastError = texts.errors.parameterNotRational;
+                            return false;
+                        }
+                        let index = Number.parseInt(I[1]);
+                        if (values[index]) {
+                            values.splice(index, 0, values.shift());
+                        } else {
+                            lastError = texts.errors.outOfBounds;
+                            return false;
+                        }
                     }
                     break;
                 case ">>":
@@ -1406,6 +1410,31 @@ function doInstruction() {
                     } else {
                         lastError = texts.errors.missingVariable.toSpliced(1, 0, I[1]).join("");
                         return false;
+                    }
+                    break;
+                case "query":
+                    {
+                        if (values.length < 1) {
+                            lastError = texts.errors.shortStack;
+                            return false;
+                        }
+                        if (!intRegex.test(I[1])) {
+                            lastError = texts.errors.parameterNotRational;
+                            return false;
+                        }
+                        let index = BigInt(I[1]);
+                        if (values[index]) {
+                            if (values[index] instanceof Rational) {
+                                //Rational
+                                values.unshift(new Rational(0n));
+                            } else {
+                                //Matrix
+                                values.unshift(new Rational(1n))
+                            }
+                        } else {
+                            lastError = texts.errors.outOfBounds;
+                            return false;
+                        }
                     }
                     break;
                 case "repeat":
