@@ -98,50 +98,31 @@ function reset() {
 
 function parse(instr) {
     let parsedInstructions = instr.split("\n").map((s) => s.trim());
-    //comments
     {
-        let cpos = [];
+        //comments
+        let parsedComments = [];
+        let bpPos = [];
+        let instructionCount = 0;
         for (let i = 0; i < parsedInstructions.length; i++) {
             if (parsedInstructions[i].startsWith("\"")) {
-                cpos.push(i);
-            }
-        }
-        let parsedComments = [];
-        for (let i = 0; i < cpos.length; i++) {
-            if (i >= 1 && cpos[i] == cpos[i - 1] + 1) {
-                let c = parsedComments.pop();
-                c.push(parsedInstructions[cpos[i]].substring(1));
-                parsedComments.push(c);
-            } else {
-                parsedComments.push([cpos[i] - i, parsedInstructions[cpos[i]].substring(1)]);
-            }
-        }
-        comments.push(parsedComments);
-        for (let i = cpos.length - 1; i >= 0; i--) {
-            parsedInstructions.splice(cpos[i], 1);
-        }
-    }
-    //breakpoints
-    {
-        let bpPos = [];
-        for (let i = 0; i < parsedInstructions.length; i++) {
-            if (parsedInstructions[i] == "!!!") {
-                bpPos.push(i);
-            }
-        }
-        for (let i = bpPos.length - 1; i >= 0; i--) {
-            parsedInstructions.splice(bpPos[i], 1);
-        }
-        let removed = 0;
-        for (let i = 1; i < bpPos.length; i++) {
-            if (bpPos[i] == bpPos[i - 1] + 1) {
-                bpPos.splice(i, 1);
-                removed++;
+                let c = parsedInstructions.splice(i, 1)[0].substring(1);
+                if (i >= 1 && parsedComments.at(-1)?.[0] == instructionCount) {
+                    parsedComments.at(-1).push(c);
+                } else {
+                    parsedComments.push([instructionCount, c]);
+                }
                 i--;
-                continue;
+            } else if (parsedInstructions[i] == "!!!") {
+                if (bpPos.at(-1) != instructionCount) {
+                    bpPos.push(instructionCount);
+                }
+                parsedInstructions.splice(i, 1);
+                i--;
+            } else {
+                instructionCount++;
             }
-            bpPos[i] -= removed;
         }
+        comments.push(parsedComments);    
         breakpoints.push(bpPos);
     }
     instructions.push(parsedInstructions);
