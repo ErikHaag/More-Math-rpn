@@ -122,7 +122,8 @@ fieldset {
 }
 
 #is>li{
-    font-family: 'Consolas', monospace;
+    font-family: monospace;
+    font-size: large;
     white-space-collapse: break-spaces;
 }
 
@@ -159,6 +160,8 @@ ol.shrink {
 #output {
     display: inline;
     overflow: auto;
+    font-family: monospace;
+    font-size: large;
 }
 
 #output>ol {
