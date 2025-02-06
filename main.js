@@ -403,7 +403,7 @@ function updateUI() {
         let rep = repeats.at(-1);
         list = "";
         for (let i = 0; i < rep.length; i++) {
-            list += "<li> current: " + rep[i][0].toString() + "<br>max: " + rep[i][1].toString() + "<br>start: " + rep[i][2].toString() + "<br>end: " + rep[i][3].toString() + "</li>\n";
+            list += "<li>current: " + rep[i][0].toString() + "<br>max: " + rep[i][1].toString() + "<br>start: " + rep[i][2].toString() + "<br>end: " + rep[i][3].toString() + "</li>\n";
         }   
         repeatPile.innerHTML = list;
         repeatPile.parentElement.hidden = false;
