@@ -656,14 +656,13 @@ function doInstruction() {
                             return false;
                         }
                         if (values[0] instanceof Rational && values[1] instanceof Rational) {
-                            let C = values[1].clone();
-                            if (C.denominator == 0n) {
+                            if (values[1].denominator == 0n) {
                                 lastError = texts.errors.argument;
                                 return false;
                             }
                             if (values[0].numerator == 0n) {
-                                lastError = texts.errors.div0;
-                                return false;
+                                values.splice(1, 1);
+                                break;
                             }
                             if (values[0].denominator == 0n) {
                                 if (values[0].numerator == -1n) {
@@ -672,6 +671,7 @@ function doInstruction() {
                                 values.shift();
                                 break;
                             }
+                            let C = values[1].clone();
                             C.div(values[0]);
                             let D = C.clone();
                             D.integer();
