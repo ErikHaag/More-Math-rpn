@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (speedSelect < 0n) speedSelect = 0n;
         if (speedSelect > 4n) speedSelect = 4n;
         updateSpeed();
-        useCompressCheck.checked = true;
+        useSpeedCheck.checked = true;
     }
     updateLink();
 });
