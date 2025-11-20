@@ -868,7 +868,9 @@ function doInstruction() {
                                 return false;
                             }
                             errorHolder = values[1].dotProduct(values[0]);
-                            values.shift();
+                            if (errorHolder instanceof Rational) {
+                                values.splice(0, 2, errorHolder);
+                            }
                         } else {
                             lastError = texts.errors.argument;
                             return false;
